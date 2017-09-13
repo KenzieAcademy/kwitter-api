@@ -10,7 +10,14 @@
     "sequelize": "^4.8.3"
   },
   "devDependencies": {
-    "jest": "^21.0.2",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3",
+    "nodemon": "^1.12.0",
     "supertest": "^3.0.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "watch": "NODE_ENV=development nodemon",
+    "test": "NODE_ENV=test mocha"
   }
 }

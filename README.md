@@ -9,4 +9,6 @@ on newline:
 
 - Testing
     - [Organizing Express and Testing with Node](https://newline.theironyard.com/courses/10/objective_lessons/159)
+    - [Official Jest Documentation](https://facebook.github.io/jest/)
+    - [Official SuperTest Git Repo](https://github.com/visionmedia/supertest)
 
