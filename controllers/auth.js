@@ -21,12 +21,12 @@ router.get("/logout", (req, res) => {
 
 // Register a new user
 router.post("/register", (req, res) => {
-    const {username, displayName, password} = req.body;
+    const {username, display_name, password} = req.body;
     bcrypt.hash(password, 8)
-        .then(passwordHash => models("users").insert({
+        .then(password_hash => models("users").insert({
             username, 
-            displayName,
-            passwordHash
+            display_name,
+            password_hash
         }))
         .then(({rowCount}) => res.json({ rowCount }))
         .catch(({ detail, table }) => res.status(400).json({ detail, table }));
@@ -52,7 +52,7 @@ router.post("/login", (req, res) => {
                         table: "users"
                     });
                 } else {
-                    const success = bcrypt.compareSync(password, user.passwordHash);
+                    const success = bcrypt.compareSync(password, user.password_hash);
                     if (success) {
                         const payload = { id: user.id };
                         const token = jwt.sign(payload, jwtOptions.secretOrKey);

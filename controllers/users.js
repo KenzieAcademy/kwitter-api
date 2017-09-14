@@ -17,7 +17,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
 router.patch("/", (req, res) => {
     const {password} = req.body;
     if (password) {
-        req.body.passwordHash = bcrypt.hash(password, 8);
+        req.body.password_hash = bcrypt.hash(password, 8);
         delete req.body.password;
     }
 

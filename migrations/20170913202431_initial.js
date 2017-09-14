@@ -4,18 +4,18 @@ exports.up = function(knex, Promise) {
         knex.schema.createTable("users", table => {
             table.increments("id").primary();
             table.string("username").unique().notNull();
-            table.string("displayName");
-            table.string("passwordHash").notNull();
+            table.string("display_name");
+            table.string("password_hash").notNull();
         }),
         knex.schema.createTable("messages", table => {
             table.increments("id").primary();
             table.text("text").notNull();
-            table.integer("userId").references("id").inTable("users");
+            table.integer("user_id").references("id").inTable("users");
         }),
         knex.schema.createTable("likes", table => {
             table.increments("id").primary();
-            table.integer("userId").references("id").inTable("users");
-            table.integer("messageId").references("id").inTable("messages");
+            table.integer("user_id").references("id").inTable("users");
+            table.integer("message_id").references("id").inTable("messages");
         })
     ]);
 };
