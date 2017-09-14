@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
             table.increments("id").primary();
             table.string("username").unique().notNull();
             table.string("displayName");
-            table.string("password").notNull();
+            table.string("passwordHash").notNull();
         }),
         knex.schema.createTable("messages", table => {
             table.increments("id").primary();
