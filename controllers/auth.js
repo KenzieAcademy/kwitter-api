@@ -5,8 +5,7 @@ const jwt = require("jsonwebtoken");
 const { ExtractJwt } = require("passport-jwt");
 
 const router = express.Router();
-const { bookshelf } = require("../models/db");
-const { Users } = require('../models')
+const models = require("../models");
 
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -15,30 +14,35 @@ const jwtOptions = {
 
 router.get("/logout", (req, res) => {
     req.logout();
-    res.json({
-        success: true,
-        message: "Logged out!"
-    });
+    res.json({ success: true, message: "Logged out!" });
 });
 
 // Register a new user
 router.post("/register", (req, res) => {
-    Users.create(req.body)
-        .then(({rowCount}) => res.json({ rowCount }))
-        .catch(({ detail, table }) => res.status(400).json({ detail, table }));
+    const { username, display_name, password } = req.body;
+    bcrypt.hash(password, 8)
+        .then(password_hash => models.users.create({
+            username,
+            display_name,
+            password_hash
+      })).then(user => res.json({ user }));
 });
 
 
 
 router.post("/login", (req, res) => {
-    Users.authenticate(req.body)
-      .then(({ success, token }) => {
-        if (success) {
-          res.json({ token });
-        } else {
-          res.json({ success });
-        }
-      });
+    const { username, password } = req.body;
+    models.users.find({ username })
+        .then(user => {
+              console.log(user);
+              if (bcrypt.compareSync(password, user.get("password_hash"))) {
+                  const payload = { id: user.get("id") };
+                  const token = jwt.sign(payload, jwtOptions.secretOrKey);
+                  res.json({ token, success: true });
+              } else {
+                  res.json({ success: false });
+              }
+        });
 });
 
 module.exports = {

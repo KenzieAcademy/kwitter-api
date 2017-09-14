@@ -3,36 +3,38 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 const router = express.Router();
-const { User, bookshelf } = require("../models/db");
+const models = require("../models");
 
 // Get a user by id
-router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-    User.where("id", req.user.id).fetch({
-        withRelated: ["messages", "messages.likes"]
-    })
-    .then(user => res.json(user.toJSON()));
+router.get("/", (req, res) => {
+    models.users.findById(req.user.id)
+      .then(user => res.json({ user }));
 });
 
 // Update a user by id
 router.patch("/", (req, res) => {
     const {password} = req.body;
     if (password) {
-        req.body.password_hash = bcrypt.hash(password, 8);
+        req.body.password_hash = bcrypt.hashSync(password, 8);
         delete req.body.password;
     }
 
-    bookshelf.knex("users")
-        .update(req.body)
-        .where({...req.params, id: req.user.id})
-        .then(rowCount => res.json({ rowCount }))
+    models.users.update(req.body, {
+        where: {
+          id: req.user.id
+        }
+    })
+    .then(users => res.json({ users }));
 });
 
 // Delete a user by id
 router.delete("/", (req, res) => {
-    bookshelf.knex("users")
-        .del()
-        .where({id: req.user.id})
-        .then(({ rowCount }) => res.json({ rowCount }))
+    models.users.destroy({
+      where: {
+        id: req.user.id
+      }
+    })
+    .then(user => res.json({ user }));
 });
 
 module.exports = router;

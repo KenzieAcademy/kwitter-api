@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const { Strategy } = require("passport-jwt");
-const { bookshelf } = require("./models");
+const models = require("./models");
 
 
 const app = express();
@@ -25,17 +25,8 @@ app.use(morgan(formats[process.env.NODE_ENV || "development"]));
 app.use(bodyParser.json());
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
-    const { id } = payload;
-    bookshelf.knex("users")
-        .select()
-        .where({ id })
-        .then(([ user ]) => {
-            if (user) {
-                done(null, user);
-            } else {
-                done(null, false);
-            }
-        });
+    models.users.findById(payload.id)
+      .then(user => done(null, user || false));
 }));
 app.use(passport.initialize());
 
@@ -47,7 +38,7 @@ app.use("/user", passport.authenticate("jwt", { session: false }), controllers.u
 app.use("/messages", authMiddleware, controllers.messages);
 
 if (require.main === module) {
-    app.listen(app.get("port"), () => 
+    app.listen(app.get("port"), () =>
         console.log(`API server now running on port ${app.get("port")}`)
     );
 }

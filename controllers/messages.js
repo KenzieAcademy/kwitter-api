@@ -1,35 +1,34 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const { Message, bookshelf } = require("../models/db");
+const models = require("../models");
 
 router.get("/", (req, res) => {
-    Message.where("user_id", req.user.id).fetch({
-        withRelated: ["likes.user", "user"]
-    })
-    .then(messages => res.json(messages.toJSON()));
+    models.messages.findAll({
+        where: {
+            userId: req.user.get("id")
+        },
+        include: [{
+              model: models.likes
+        }]
+    }).then(messages => res.json({ messages }));
 });
 
 router.post("/", (req, res) => {
-    bookshelf.knex("messages")
-        .insert({...req.body, user_id: req.user.id})
-        .then(({rowCount}) => res.json({ rowCount }));
+    models.messages.create({ ...req.body, userId: req.user.get("id") })
+        .then(message => res.json({ message }))
 });
 
 router.get("/:id", (req, res) => {
-    bookshelf.knex("messages")
-        .select()
-        .where(req.params)
-        .then(([message]) => res.json({ message }));
+    models.messages.findById(req.params.id)
+        .then(message => res.json({ message }));
 });
 
 router.patch("/:id/like", (req, res) => {
-    bookshelf.knex("likes")
-        .insert({
-            user_id: req.user.id,
-            message_id: req.params.id
-        })
-        .then(({ rowCount }) => res.json({ rowCount }));
+    models.likes.create({
+      userId: req.user.get("id"),
+      messageId: req.params.id
+    }).then(like => res.json({ like }));
 });
 
 module.exports = router;
