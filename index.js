@@ -40,7 +40,7 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
 app.use(passport.initialize());
 
 // Routes
-app.use("/users", passport.authenticate("jwt", { session: false }), controllers.users);
+app.use("/user", passport.authenticate("jwt", { session: false }), controllers.users);
 app.use("/auth", controllers.auth);
 
 if (require.main === module) {

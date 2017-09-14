@@ -19,6 +19,20 @@ router.get("/logout", (req, res) => {
     });
 });
 
+// Register a new user
+router.post("/register", (req, res) => {
+    const {username, displayName, password} = req.body;
+    bcrypt.hash(password, 8)
+        .then(passwordHash => models("users").insert({
+            username, 
+            displayName,
+            passwordHash
+        }))
+        .then(({rowCount}) => res.json({ rowCount }))
+        .catch(({ detail, table }) => res.status(400).json({ detail, table }));
+});
+
+
 
 router.post("/login", (req, res) => {
     const {username, password, passwordConfirmation} = req.body;
