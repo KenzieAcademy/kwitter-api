@@ -1,15 +1,25 @@
 // Imports
 const express = require("express");
+// parse request body as JSON
+const bodyParser = require("body-parser");
+// request logging
+const morgan = require("morgan");
+
 const controllers = require("./controllers");
-
-console.log(process.env.NODE_ENV);
-
 
 const app = express();
 
-// grab port number from environment variable
+// Settings
 app.set("port", process.env.PORT || 3000);
-// map paths to controllers
+
+// Middleware
+const formats = {
+    "development": "dev",
+    "production": "common",
+    "test": "tiny"
+};
+app.use(morgan(formats[process.env.NODE_ENV || "development"]));
+app.use(bodyParser.json());
 app.use("/users", controllers.users);
 
 
