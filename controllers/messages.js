@@ -7,15 +7,7 @@ router.get("/", (req, res) => {
     Message.where("user_id", req.user.id).fetch({
         withRelated: ["likes.user", "user"]
     })
-    .then(messages => {
-        const json = messages.toJSON();
-        res.json({
-            id: json.id,
-            text: json.text,
-            likes: json.likes.map(like => like.user.display_name),
-            user: json.user.display_name
-        });
-    })
+    .then(messages => res.json(messages.toJSON()));
 });
 
 router.post("/", (req, res) => {
