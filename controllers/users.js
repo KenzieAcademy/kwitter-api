@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 const router = express.Router();
-const { User, bookshelf } = require("../models");
+const { User, bookshelf } = require("../models/db");
 
 // Get a user by id
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {

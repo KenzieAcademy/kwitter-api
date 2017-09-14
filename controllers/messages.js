@@ -1,7 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const { Message, bookshelf } = require("../models");
+const { Message, bookshelf } = require("../models/db");
 
 router.get("/", (req, res) => {
     Message.where("user_id", req.user.id).fetch({
@@ -23,7 +23,7 @@ router.get("/:id", (req, res) => {
         .then(([message]) => res.json({ message }));
 });
 
-router.post("/:id/like", (req, res) => {
+router.patch("/:id/like", (req, res) => {
     bookshelf.knex("likes")
         .insert({
             user_id: req.user.id,
@@ -33,4 +33,3 @@ router.post("/:id/like", (req, res) => {
 });
 
 module.exports = router;
-
