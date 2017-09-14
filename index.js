@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const { Strategy } = require("passport-jwt");
-const models = require("./models");
+const { bookshelf } = require("./models");
 
 
 const app = express();
@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
     const { id } = payload;
-    models("users")
+    bookshelf.knex("users")
         .select()
         .where({ id })
         .then(([ user ]) => {

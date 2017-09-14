@@ -1,32 +1,38 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const models = require("../models");
+const { Message, bookshelf } = require("../models");
 
 router.get("/", (req, res) => {
-    models("messages")
-        .join("users", "users.id", "=", "messages.user_id", "likes.user_id")
-        .join("likes", "likes.message_id", "=", "messages.id")
-        .select("messages.id", "messages.text", "users.display_name")
-        .where({"messages.user_id": req.user.id})
-        .then(messages => res.json({ messages }));
+    Message.where("user_id", req.user.id).fetch({
+        withRelated: ["likes.user", "user"]
+    })
+    .then(messages => {
+        const json = messages.toJSON();
+        res.json({
+            id: json.id,
+            text: json.text,
+            likes: json.likes.map(like => like.user.display_name),
+            user: json.user.display_name
+        });
+    })
 });
 
 router.post("/", (req, res) => {
-    models("messages")
+    bookshelf.knex("messages")
         .insert({...req.body, user_id: req.user.id})
         .then(({rowCount}) => res.json({ rowCount }));
 });
 
 router.get("/:id", (req, res) => {
-    models("messages")
+    bookshelf.knex("messages")
         .select()
         .where(req.params)
         .then(([message]) => res.json({ message }));
 });
 
 router.post("/:id/like", (req, res) => {
-    models("likes")
+    bookshelf.knex("likes")
         .insert({
             user_id: req.user.id,
             message_id: req.params.id

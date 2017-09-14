@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { ExtractJwt } = require("passport-jwt");
 
 const router = express.Router();
-const models = require("../models");
+const { bookshelf } = require("../models");
 
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -23,7 +23,7 @@ router.get("/logout", (req, res) => {
 router.post("/register", (req, res) => {
     const {username, display_name, password} = req.body;
     bcrypt.hash(password, 8)
-        .then(password_hash => models("users").insert({
+        .then(password_hash => bookshelf.knex("users").insert({
             username, 
             display_name,
             password_hash
@@ -42,7 +42,7 @@ router.post("/login", (req, res) => {
             table: "users"
         });
     } else {
-        models("users")
+        bookshelf.knex("users")
             .where({ username })
             .then(results => {
                 const [user] = results;
