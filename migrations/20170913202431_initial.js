@@ -10,12 +10,12 @@ exports.up = function(knex, Promise) {
         knex.schema.createTable("messages", table => {
             table.increments("id").primary();
             table.text("text").notNull();
-            table.integer("user_id").references("id").inTable("users");
+            table.integer("userId").references("id").inTable("users");
         }),
         knex.schema.createTable("likes", table => {
             table.increments("id").primary();
-            table.integer("user_id").references("id").inTable("users");
-            table.integer("message_id").references("id").inTable("messages");
+            table.integer("userId").references("id").inTable("users");
+            table.integer("messageId").references("id").inTable("messages");
         })
     ]);
 };

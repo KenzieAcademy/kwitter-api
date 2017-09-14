@@ -39,9 +39,12 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
 }));
 app.use(passport.initialize());
 
+const authMiddleware = passport.authenticate("jwt", { session: false });
+
 // Routes
-app.use("/user", passport.authenticate("jwt", { session: false }), controllers.users);
 app.use("/auth", controllers.auth);
+app.use("/user", passport.authenticate("jwt", { session: false }), controllers.users);
+app.use("/messages", authMiddleware, controllers.messages);
 
 if (require.main === module) {
     app.listen(app.get("port"), () => 
