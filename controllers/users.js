@@ -10,6 +10,7 @@ const models = require("../models");
 // read user by id
 router.get("/", (req, res) => {
     models.users.findById(req.user.id, {
+      attributes: ["displayName"],
       include: [{
           model: models.messages,
           include: [models.likes]
@@ -36,11 +37,25 @@ router.patch("/", (req, res) => {
 
 // delete a user by id
 router.delete("/", (req, res) => {
-    models.users.destroy({
+    models.likes.destroy({
       where: {
-        id: req.user.id
+        userId: req.user.id
       }
     })
+    .then(() =>
+      models.messages.destroy({
+        where: {
+          userId: req.user.id
+        }
+      })
+    )
+    .then(() =>
+      models.users.destroy({
+        where: {
+          id: req.user.id
+        }
+      })
+    )
     .then(user => res.json({ user }));
 });
 

@@ -17,16 +17,12 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 
 // Middleware
-const formats = {
-    "development": "dev",
-    "production": "common",
-    "test": "tiny"
-};
-app.use(morgan(formats[process.env.NODE_ENV || "development"]));
+app.use(morgan("tiny"));
 app.use(bodyParser.json());
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
     models.users.findById(payload.id)
+      // or, more succinctly..
       .then(user => done(null, user || false));
 }));
 app.use(passport.initialize());

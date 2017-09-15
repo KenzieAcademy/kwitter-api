@@ -11,10 +11,10 @@ module.exports = {
       username: {
         type: Sequelize.STRING
       },
-      display_name: {
+      displayName: {
         type: Sequelize.STRING
       },
-      password_hash: {
+      passwordHash: {
         type: Sequelize.STRING
       },
       createdAt: {

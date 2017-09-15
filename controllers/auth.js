@@ -21,24 +21,25 @@ router.get("/logout", (req, res) => {
 
 // Register a new user
 router.post("/register", (req, res) => {
-    const { username, display_name, password } = req.body;
+    const { username, displayName, password } = req.body;
     bcrypt.hash(password, 8)
-        .then(password_hash => models.users.create({
+        .then(passwordHash => models.users.create({
             username,
-            display_name,
-            password_hash
-      })).then(user => res.json({ user }));
+            displayName,
+            passwordHash
+      })).then(user => res.json({
+        username: user.get("username"),
+        displayName: user.get("displayName")
+      }));
 });
 
 
 
 router.post("/login", (req, res) => {
     const { username, password } = req.body;
-    console.log(username);
     models.users.find({  where: { username }})
         .then(user => {
-              console.log(user);
-              if (user && bcrypt.compareSync(password, user.get("password_hash"))) {
+              if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
                   const payload = { id: user.get("id") };
                   const token = jwt.sign(payload, jwtOptions.secretOrKey);
                   res.json({ token, success: true });
