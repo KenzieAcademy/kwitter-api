@@ -27,6 +27,6 @@
     "start": "node index.js",
     "watch": "nodemon",
     "postinstall": "sequelize db:migrate",
-    "heroku-prebuild": "npm install -g sequelize-cli"
+    "heroku-prebuild": "yarn global add sequelize-cli"
   }
 }
