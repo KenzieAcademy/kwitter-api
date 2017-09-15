@@ -21,6 +21,6 @@
   },
   "scripts": {
     "start": "node index.js",
-    "watch": "nodemon",
+    "watch": "nodemon"
   }
 }
