@@ -11,19 +11,19 @@
     "morgan": "^1.8.2",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
-    "passport-local": "^1.0.0",
     "pg": "6.4.1",
     "sequelize": "3.x"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
     "mocha": "^3.5.3",
     "nodemon": "^1.12.0",
     "supertest": "^3.0.0"
   },
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "watch": "NODE_ENV=development nodemon",
-    "test": "NODE_ENV=test mocha"
+    "start": "node index.js",
+    "watch": "nodemon",
+    "db": "dropdb gabble && createdb gabble && sequelize db:migrate",
+    "test": "mocha",
+    "postinstall": "yarn db"
   }
 }

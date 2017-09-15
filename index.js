@@ -1,13 +1,14 @@
 // Imports
-const controllers = require("./controllers");
-const { jwtOptions } = require("./controllers/auth");
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const { Strategy } = require("passport-jwt");
+
+const controllers = require("./controllers");
 const models = require("./models");
+const { jwtOptions, authMiddleware } = require("./controllers/auth");
+
 
 
 const app = express();
@@ -30,12 +31,12 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
 }));
 app.use(passport.initialize());
 
-const authMiddleware = passport.authenticate("jwt", { session: false });
 
 // Routes
 app.use("/auth", controllers.auth);
-app.use("/user", passport.authenticate("jwt", { session: false }), controllers.users);
-app.use("/messages", authMiddleware, controllers.messages);
+app.use("/user", authMiddleware, controllers.users);
+app.use("/messages", controllers.messages);
+app.use("/likes", authMiddleware, controllers.likes);
 
 if (require.main === module) {
     app.listen(app.get("port"), () =>

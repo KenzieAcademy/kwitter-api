@@ -7,6 +7,8 @@ const { ExtractJwt } = require("passport-jwt");
 const router = express.Router();
 const models = require("../models");
 
+const authMiddleware = passport.authenticate("jwt", { session: false });
+
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET
@@ -32,10 +34,11 @@ router.post("/register", (req, res) => {
 
 router.post("/login", (req, res) => {
     const { username, password } = req.body;
-    models.users.find({ username })
+    console.log(username);
+    models.users.find({  where: { username }})
         .then(user => {
               console.log(user);
-              if (bcrypt.compareSync(password, user.get("password_hash"))) {
+              if (user && bcrypt.compareSync(password, user.get("password_hash"))) {
                   const payload = { id: user.get("id") };
                   const token = jwt.sign(payload, jwtOptions.secretOrKey);
                   res.json({ token, success: true });
@@ -46,6 +49,7 @@ router.post("/login", (req, res) => {
 });
 
 module.exports = {
+    authMiddleware,
     jwtOptions,
     router
 };

@@ -5,13 +5,20 @@ const passport = require("passport");
 const router = express.Router();
 const models = require("../models");
 
-// Get a user by id
+/* NOTE: See controllers/auth.js for creating a user */
+
+// read user by id
 router.get("/", (req, res) => {
-    models.users.findById(req.user.id)
+    models.users.findById(req.user.id, {
+      include: [{
+          model: models.messages,
+          include: [models.likes]
+      }]
+    })
       .then(user => res.json({ user }));
 });
 
-// Update a user by id
+// update a user by id
 router.patch("/", (req, res) => {
     const {password} = req.body;
     if (password) {
@@ -27,7 +34,7 @@ router.patch("/", (req, res) => {
     .then(users => res.json({ users }));
 });
 
-// Delete a user by id
+// delete a user by id
 router.delete("/", (req, res) => {
     models.users.destroy({
       where: {

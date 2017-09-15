@@ -1,34 +1,57 @@
 const express = require("express");
-const passport = require("passport");
 const router = express.Router();
 const models = require("../models");
+const { authMiddleware } = require("./auth");
 
+// create message
+router.post("/", authMiddleware, (req, res) => {
+    models.messages.create({ ...req.body, userId: req.user.get("id") })
+        .then(message => res.json({ message }))
+});
+
+// read all messages
 router.get("/", (req, res) => {
     models.messages.findAll({
-        where: {
-            userId: req.user.get("id")
-        },
         include: [{
               model: models.likes
         }]
     }).then(messages => res.json({ messages }));
 });
 
-router.post("/", (req, res) => {
-    models.messages.create({ ...req.body, userId: req.user.get("id") })
-        .then(message => res.json({ message }))
-});
-
+// read message by id
 router.get("/:id", (req, res) => {
-    models.messages.findById(req.params.id)
+    models.messages.findById(req.params.id, {
+      include: [models.likes]
+    })
         .then(message => res.json({ message }));
 });
 
-router.patch("/:id/like", (req, res) => {
-    models.likes.create({
-      userId: req.user.get("id"),
-      messageId: req.params.id
-    }).then(like => res.json({ like }));
+// update message by id
+router.patch("/:id", authMiddleware, (req, res) => {
+    models.messages.update(req.body, {
+        where: {
+          id: req.params.id
+        }
+    })
+    .then(messages => res.json({ messages }));
+});
+
+// delete message
+router.delete("/:id", authMiddleware, (req, res) => {
+    models.likes.destroy({
+      where: {
+        messageId: req.params.id,
+        userId: req.user.id
+      }
+    })
+    .then(() => models.messages.destroy({
+        where: {
+          id: req.params.id,
+          userId: req.user.id
+        }
+      })
+    )
+    .then(messages => res.json({ messages }))
 });
 
 module.exports = router;
