@@ -22,8 +22,5 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon",
-    "db": "dropdb gabble && createdb gabble && sequelize db:migrate",
-    "test": "mocha",
-    "postinstall": "yarn db"
   }
 }
