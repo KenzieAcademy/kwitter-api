@@ -8,8 +8,6 @@ router.post("/", authMiddleware, (req, res) => {
     models.messages.create(Object.assign({}, req.body, {
       userId: req.user.get("id")
     }));
-    models.messages.create({ ...req.body, userId: req.user.get("id") })
-        .then(message => res.json({ message }))
 });
 
 // read all messages
