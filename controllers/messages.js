@@ -5,6 +5,9 @@ const { authMiddleware } = require("./auth");
 
 // create message
 router.post("/", authMiddleware, (req, res) => {
+    models.messages.create(Object.assign({}, req.body, {
+      userId: req.user.get("id")
+    }));
     models.messages.create({ ...req.body, userId: req.user.get("id") })
         .then(message => res.json({ message }))
 });
