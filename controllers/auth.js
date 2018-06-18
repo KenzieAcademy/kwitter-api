@@ -14,12 +14,44 @@ const jwtOptions = {
     secretOrKey: process.env.JWT_SECRET
 };
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   get:
+ *     tags:
+ *     - "user"
+ *     description: "Log out an existing user"
+ *     operationId: "logout"
+ *     responses:
+ *       201:
+ *         description: "Success, User logged out"
+ */
 router.get("/logout", (req, res) => {
     req.logout();
     res.json({ success: true, message: "Logged out!" });
 });
 
-// Register a new user
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     tags:
+ *     - "user"
+ *     description: "Create a new user"
+ *     operationId: "createUser"
+ *     parameters:
+ *       - in: "body"
+ *         name: "body"
+ *         description: "user details"
+ *         required: true
+ *         schema:
+ *             $ref: "#/definitions/User"
+ *     responses:
+ *       201:
+ *         description: "Success, User registered"
+ *       400:
+ *         description: "Unable to log in"
+ */
 router.post("/register", (req, res) => {
     const { username, displayName, password } = req.body;
     bcrypt.hash(password, 8)
@@ -33,8 +65,29 @@ router.post("/register", (req, res) => {
       }));
 });
 
-
-
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *     - "user"
+ *     description: "Login in an existing user"
+ *     operationId: "login"
+ *     parameters:
+ *       - in: "body"
+ *         name: "body"
+ *         description: "user details"
+ *         required: true
+ *         schema:
+ *             $ref: "#/definitions/Login"
+ *     responses:
+ *       201:
+ *         description: "Success, User logged in"
+ *       202:
+ *         description: "Success, User logged in"
+ *       400:
+ *         description: "Unable to log in"
+ */
 router.post("/login", (req, res) => {
     const { username, password } = req.body;
     models.users.find({  where: { username }})
