@@ -3,6 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require('swagger-ui-express');
 const { Strategy } = require("passport-jwt");
 
 const controllers = require("./controllers");
@@ -27,12 +29,39 @@ passport.use(new Strategy(jwtOptions, (payload, done) => {
 }));
 app.use(passport.initialize());
 
+const swaggerDefinition = {
+    info: {
+        title: "Kwitter",
+        version: "1.0"
+    },
+    basePath: "/",
+    schemes: ["http", "https"],
+    consumes: ["application/json"],
+    produces: ["application/json"]
+};
+
+const swaggerOptions = {
+    swaggerDefinition,
+    apis: [`${__dirname}/controllers/*.js`]
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 // Routes
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", controllers.auth);
-app.use("/user", authMiddleware, controllers.users);
+app.use("/users", authMiddleware, controllers.users);
 app.use("/messages", controllers.messages);
 app.use("/likes", authMiddleware, controllers.likes);
+
+// Redirect to docs
+app.get("/", (req, res) => {
+    res.redirect("/docs");
+});
+
+app.get("/swagger.json", (req, res) => {
+    res.send(swaggerSpec);
+});
 
 if (require.main === module) {
     app.listen(app.get("port"), () =>
