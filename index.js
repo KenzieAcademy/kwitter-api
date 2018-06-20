@@ -6,7 +6,7 @@ const passport = require("passport");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require('swagger-ui-express');
 const { Strategy } = require("passport-jwt");
-
+const cors = require('cors');
 const controllers = require("./controllers");
 const models = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
@@ -21,6 +21,7 @@ app.set("port", process.env.PORT || 3000);
 // Middleware
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
+app.use(cors());
 
 passport.use(new Strategy(jwtOptions, (payload, done) => {
     models.users.findById(payload.id)
