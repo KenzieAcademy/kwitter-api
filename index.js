@@ -4,14 +4,14 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const { Strategy } = require("passport-jwt");
+const cors = require("cors");
 
 const controllers = require("./controllers");
 const models = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
 
-
-
 const app = express();
+app.use(cors());
 
 // Settings
 app.set("port", process.env.PORT || 3000);
