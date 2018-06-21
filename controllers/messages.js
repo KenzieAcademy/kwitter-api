@@ -36,7 +36,7 @@ const { authMiddleware } = require("./auth");
 router.post("/", authMiddleware, (req, res) => {
     models.messages.create(Object.assign({}, req.body, {
       userId: req.user.get("id")
-    }));
+    })).then( () => res.end());
 });
 
 // read all messages
