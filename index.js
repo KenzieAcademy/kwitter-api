@@ -6,14 +6,14 @@ const passport = require("passport");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require('swagger-ui-express');
 const { Strategy } = require("passport-jwt");
-const cors = require('cors');
+const cors = require("cors");
+
 const controllers = require("./controllers");
 const models = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
 
-
-
 const app = express();
+app.use(cors());
 
 // Settings
 app.set("port", process.env.PORT || 3000);
