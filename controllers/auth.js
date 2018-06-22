@@ -95,7 +95,7 @@ router.post("/login", (req, res) => {
               if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
                   const payload = { id: user.get("id") };
                   const token = jwt.sign(payload, jwtOptions.secretOrKey);
-                  res.json({ token, success: true });
+                  res.json({ token, id: payload.id, success: true });
               } else {
                   res.json({ success: false });
               }
