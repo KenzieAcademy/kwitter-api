@@ -9,35 +9,40 @@ const models = require("../models");
 
 // read user by id
 router.get("/", (req, res) => {
-    models.users.findById(req.user.id, {
+  models.users
+    .findById(req.user.id, {
       attributes: ["displayName"],
-      include: [{
+      include: [
+        {
           model: models.messages,
           include: [models.likes]
-      }]
+        }
+      ]
     })
-      .then(user => res.json({ user }));
+    .then(user => res.json({ user }));
 });
 
 // update a user by id
 router.patch("/", (req, res) => {
-    const {password} = req.body;
-    if (password) {
-        req.body.password_hash = bcrypt.hashSync(password, 8);
-        delete req.body.password;
-    }
+  const { password } = req.body;
+  if (password) {
+    req.body.password_hash = bcrypt.hashSync(password, 8);
+    delete req.body.password;
+  }
 
-    models.users.update(req.body, {
-        where: {
-          id: req.user.id
-        }
+  models.users
+    .update(req.body, {
+      where: {
+        id: req.user.id
+      }
     })
     .then(users => res.json({ users }));
 });
 
 // delete a user by id
 router.delete("/", (req, res) => {
-    models.likes.destroy({
+  models.likes
+    .destroy({
       where: {
         userId: req.user.id
       }

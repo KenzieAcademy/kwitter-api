@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const swaggerJSDoc = require("swagger-jsdoc");
-const swaggerUi = require('swagger-ui-express');
+const swaggerUi = require("swagger-ui-express");
 const { Strategy } = require("passport-jwt");
 const cors = require("cors");
 
@@ -23,27 +23,30 @@ app.use(morgan("tiny"));
 app.use(bodyParser.json());
 app.use(cors());
 
-passport.use(new Strategy(jwtOptions, (payload, done) => {
-    models.users.findById(payload.id)
+passport.use(
+  new Strategy(jwtOptions, (payload, done) => {
+    models.users
+      .findById(payload.id)
       // or, more succinctly..
       .then(user => done(null, user || false));
-}));
+  })
+);
 app.use(passport.initialize());
 
 const swaggerDefinition = {
-    info: {
-        title: "Kwitter",
-        version: "1.0"
-    },
-    basePath: "/",
-    schemes: ["http", "https"],
-    consumes: ["application/json"],
-    produces: ["application/json"]
+  info: {
+    title: "Kwitter",
+    version: "1.0"
+  },
+  basePath: "/",
+  schemes: ["http", "https"],
+  consumes: ["application/json"],
+  produces: ["application/json"]
 };
 
 const swaggerOptions = {
-    swaggerDefinition,
-    apis: [`${__dirname}/controllers/*.js`]
+  swaggerDefinition,
+  apis: [`${__dirname}/controllers/*.js`]
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
@@ -57,17 +60,17 @@ app.use("/likes", authMiddleware, controllers.likes);
 
 // Redirect to docs
 app.get("/", (req, res) => {
-    res.redirect("/docs");
+  res.redirect("/docs");
 });
 
 app.get("/swagger.json", (req, res) => {
-    res.send(swaggerSpec);
+  res.send(swaggerSpec);
 });
 
 if (require.main === module) {
-    app.listen(app.get("port"), () =>
-        console.log(`API server now running on port ${app.get("port")}`)
-    );
+  app.listen(app.get("port"), () =>
+    console.log(`API server now running on port ${app.get("port")}`)
+  );
 }
 
 module.exports = app;
