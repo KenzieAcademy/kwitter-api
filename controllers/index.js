@@ -3,14 +3,13 @@ const messages = require("./messages");
 const likes = require("./likes");
 const { router } = require("./auth");
 
-
 /**
  * @swagger
  * definitions:
  *   User:
  *     required:
  *     - "text"
- *     - "userId" 
+ *     - "userId"
  *     properties:
  *       userId:
  *         type: "integer"
@@ -42,10 +41,9 @@ const { router } = require("./auth");
  *    in: header
  */
 
-
 module.exports = {
-    auth: router,
-    likes,
-    messages,
-    users
+  auth: router,
+  likes,
+  messages,
+  users
 };

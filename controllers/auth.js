@@ -10,8 +10,8 @@ const models = require("../models");
 const authMiddleware = passport.authenticate("jwt", { session: false });
 
 const jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET
 };
 
 /**
@@ -27,8 +27,8 @@ const jwtOptions = {
  *         description: "Success, User logged out"
  */
 router.get("/logout", (req, res) => {
-    req.logout();
-    res.json({ success: true, message: "Logged out!" });
+  req.logout();
+  res.json({ success: true, message: "Logged out!" });
 });
 
 /**
@@ -53,16 +53,22 @@ router.get("/logout", (req, res) => {
  *         description: "Unable to log in"
  */
 router.post("/register", (req, res) => {
-    const { username, displayName, password } = req.body;
-    bcrypt.hash(password, 8)
-        .then(passwordHash => models.users.create({
-            username,
-            displayName,
-            passwordHash
-      })).then(user => res.json({
+  const { username, displayName, password } = req.body;
+  bcrypt
+    .hash(password, 8)
+    .then(passwordHash =>
+      models.users.create({
+        username,
+        displayName,
+        passwordHash
+      })
+    )
+    .then(user =>
+      res.json({
         username: user.get("username"),
         displayName: user.get("displayName")
-      }));
+      })
+    );
 });
 
 /**
@@ -89,21 +95,20 @@ router.post("/register", (req, res) => {
  *         description: "Unable to log in"
  */
 router.post("/login", (req, res) => {
-    const { username, password } = req.body;
-    models.users.find({  where: { username }})
-        .then(user => {
-              if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
-                  const payload = { id: user.get("id") };
-                  const token = jwt.sign(payload, jwtOptions.secretOrKey);
-                  res.json({ token, id: payload.id, success: true });
-              } else {
-                  res.json({ success: false });
-              }
-        });
+  const { username, password } = req.body;
+  models.users.find({ where: { username } }).then(user => {
+    if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
+      const payload = { id: user.get("id") };
+      const token = jwt.sign(payload, jwtOptions.secretOrKey);
+      res.json({ token, id: payload.id, success: true });
+    } else {
+      res.json({ success: false });
+    }
+  });
 });
 
 module.exports = {
-    authMiddleware,
-    jwtOptions,
-    router
+  authMiddleware,
+  jwtOptions,
+  router
 };

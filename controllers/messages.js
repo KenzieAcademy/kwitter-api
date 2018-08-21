@@ -34,54 +34,66 @@ const { authMiddleware } = require("./auth");
  *           \ requested\nfunctionality.\n"
  */
 router.post("/", authMiddleware, (req, res) => {
-    models.messages.create(Object.assign({}, req.body, {
-      userId: req.user.get("id")
-    })).then(messages => res.json({ messages }));
+  models.messages
+    .create(
+      Object.assign({}, req.body, {
+        userId: req.user.get("id")
+      })
+    )
+    .then(messages => res.json({ messages }));
 });
 
 // read all messages
 router.get("/", (req, res) => {
-    models.messages.findAll({
-        include: [{
-              model: models.likes
-        }]
-    }).then(messages => res.json({ messages }));
+  models.messages
+    .findAll({
+      include: [
+        {
+          model: models.likes
+        }
+      ]
+    })
+    .then(messages => res.json({ messages }));
 });
 
 // read message by id
 router.get("/:id", (req, res) => {
-    models.messages.findById(req.params.id, {
+  models.messages
+    .findById(req.params.id, {
       include: [models.likes]
     })
-        .then(message => res.json({ message }));
+    .then(message => res.json({ message }));
 });
 
 // update message by id
 router.patch("/:id", authMiddleware, (req, res) => {
-    models.messages.update(req.body, {
-        where: {
-          id: req.params.id
-        }
+  models.messages
+    .update(req.body, {
+      where: {
+        id: req.params.id
+      }
     })
     .then(messages => res.json({ messages }));
 });
 
 // delete message
 router.delete("/:id", authMiddleware, (req, res) => {
-    models.likes.destroy({
+  models.likes
+    .destroy({
       where: {
         messageId: req.params.id,
         userId: req.user.id
       }
     })
-    .then(() => models.messages.destroy({
+    .then(() =>
+      models.messages.destroy({
         where: {
           id: req.params.id,
           userId: req.user.id
         }
       })
     )
-    .then(messages => res.json({ messages }))
+    .then(messages => res.json({ messages }));
 });
 
 module.exports = router;
