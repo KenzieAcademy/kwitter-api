@@ -54,7 +54,7 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 // Routes
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", controllers.auth);
-app.use("/users", authMiddleware, controllers.users);
+app.use("/users", controllers.users);
 app.use("/messages", controllers.messages);
 app.use("/likes", authMiddleware, controllers.likes);
 

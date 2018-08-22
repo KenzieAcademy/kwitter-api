@@ -5,10 +5,26 @@ const passport = require("passport");
 const router = express.Router();
 const models = require("../models");
 
+const { authMiddleware } = require("./auth");
 /* NOTE: See controllers/auth.js for creating a user */
 
+// get a specific user by id
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  models.users
+    .findById(id, {
+      include: [
+        {
+          model: models.messages,
+          include: [models.likes]
+        }
+      ]
+    })
+    .then(user => res.json({ user }));
+});
+
 // read user by id
-router.get("/", (req, res) => {
+router.get("/", authMiddleware, (req, res) => {
   models.users
     .findById(req.user.id, {
       attributes: ["displayName"],
@@ -23,7 +39,7 @@ router.get("/", (req, res) => {
 });
 
 // update a user by id
-router.patch("/", (req, res) => {
+router.patch("/", authMiddleware, (req, res) => {
   const { password } = req.body;
   if (password) {
     req.body.password_hash = bcrypt.hashSync(password, 8);
@@ -40,7 +56,7 @@ router.patch("/", (req, res) => {
 });
 
 // delete a user by id
-router.delete("/", (req, res) => {
+router.delete("/", authMiddleware, (req, res) => {
   models.likes
     .destroy({
       where: {
