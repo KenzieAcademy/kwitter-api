@@ -13,6 +13,11 @@ module.exports = function(sequelize, DataTypes) {
           likes.belongsTo(models.users);
           likes.belongsTo(models.messages);
         }
+      },
+      defaultScope: {
+        attributes: {
+          exclude: ["updatedAt"]
+        }
       }
     }
   );
