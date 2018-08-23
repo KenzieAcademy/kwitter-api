@@ -23,19 +23,14 @@ router.get("/:id", (req, res) => {
     .then(user => res.json({ user }));
 });
 
-// get user by the curently authenticated id
-router.get("/", authMiddleware, (req, res) => {
+// get list of users
+router.get("/", (req, res) => {
   models.users
-    .findById(req.user.id, {
-      attributes: ["displayName"],
-      include: [
-        {
-          model: models.messages,
-          include: [models.likes]
-        }
-      ]
+    .findAll({
+      limit: req.query.limit || 100,
+      offset: req.query.offset || 0
     })
-    .then(user => res.json({ user }));
+    .then(users => res.json({ users }));
 });
 
 // update a user by id
