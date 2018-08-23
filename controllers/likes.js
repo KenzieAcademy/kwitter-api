@@ -26,16 +26,21 @@ router.post("/", (req, res) => {
 
 // delete a like
 router.delete("/:id", (req, res) => {
-  console.log(req.params.id);
-  console.log(req.user.get("id"));
   models.likes
     .destroy({
       where: {
         id: req.params.id,
-        userId: req.user.get("id")
+        userId: req.user.id
       }
     })
-    .then(like => res.json({ like }));
+    .then(destroyedCount => {
+      if (destroyedCount === 0) {
+        res.status(400).send({ error: "Like does not exist" });
+      } else {
+        return res.json({ like });
+      }
+    })
+    .catch(err => res.status(500).send({ error: err.toString() }));
 });
 
 module.exports = router;
