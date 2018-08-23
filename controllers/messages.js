@@ -40,7 +40,7 @@ router.post("/", authMiddleware, (req, res) => {
         userId: req.user.get("id")
       })
     )
-    .then(messages => res.json({ messages }));
+    .then(message => res.json({ message }));
 });
 
 // read all messages
@@ -75,7 +75,7 @@ router.patch("/:id", authMiddleware, (req, res) => {
         id: req.params.id
       }
     })
-    .then(messages => res.json({ messages }));
+    .then(message => res.json({ message }));
 });
 
 // delete message
@@ -95,7 +95,7 @@ router.delete("/:id", authMiddleware, (req, res) => {
         }
       })
     )
-    .then(messages => res.json({ messages }));
+    .then(message => res.json({ message }));
 });
 
 module.exports = router;
