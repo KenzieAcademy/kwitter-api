@@ -51,7 +51,9 @@ router.get("/", (req, res) => {
         {
           model: models.likes
         }
-      ]
+      ],
+      limit: req.query.limit || 100,
+      offset: req.query.offset || 0
     })
     .then(messages => res.json({ messages }));
 });
