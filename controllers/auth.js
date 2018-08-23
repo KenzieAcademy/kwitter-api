@@ -96,15 +96,18 @@ router.post("/register", (req, res) => {
  */
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
-  models.users.find({ where: { username } }).then(user => {
-    if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
-      const payload = { id: user.get("id") };
-      const token = jwt.sign(payload, jwtOptions.secretOrKey);
-      res.json({ token, id: payload.id, success: true });
-    } else {
-      res.json({ success: false });
-    }
-  });
+  models.users
+    .scope(null)
+    .find({ where: { username } })
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
+        const payload = { id: user.get("id") };
+        const token = jwt.sign(payload, jwtOptions.secretOrKey);
+        res.json({ token, id: payload.id, success: true });
+      } else {
+        res.json({ success: false });
+      }
+    });
 });
 
 module.exports = {
