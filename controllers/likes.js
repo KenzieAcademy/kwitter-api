@@ -4,7 +4,24 @@ const models = require("../models");
 
 // create a like
 router.post("/", (req, res) => {
-  models.likes.create(req.body).then(like => res.json({ like }));
+  const likeObject = {
+    userId: req.user.id,
+    messageId: req.body.messageId
+  };
+  models.likes
+    .findOne({
+      where: likeObject
+    })
+    .then(like => {
+      if (like !== null) {
+        res.status(400).send({ error: "Like already exists" });
+      } else {
+        return models.likes.create(likeObject).then(like => res.json({ like }));
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ error: err.toString() });
+    });
 });
 
 // delete a like
