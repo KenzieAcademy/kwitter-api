@@ -23,7 +23,7 @@ router.get("/:id", (req, res) => {
     .then(user => res.json({ user }));
 });
 
-// read user by id
+// get user by the curently authenticated id
 router.get("/", authMiddleware, (req, res) => {
   models.users
     .findById(req.user.id, {
