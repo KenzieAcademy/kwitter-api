@@ -3,6 +3,7 @@ const passport = require("passport");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { ExtractJwt } = require("passport-jwt");
+const Sequelize = require("sequelize");
 
 const router = express.Router();
 const models = require("../models");
@@ -68,7 +69,14 @@ router.post("/register", (req, res) => {
         username: user.get("username"),
         displayName: user.get("displayName")
       })
-    );
+    )
+    .catch(err => {
+      if (err instanceof Sequelize.ValidationError) {
+        return res.status(400).send({ errors: err.errors });
+      }
+      console.error(err);
+      res.status(500).send();
+    });
 });
 
 /**
