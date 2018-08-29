@@ -12,7 +12,8 @@ module.exports = function(sequelize, DataTypes) {
             msg: "Message text must be between 2 and 255 characters"
           }
         }
-      }
+      },
+      userId: DataTypes.INTEGER
     },
     {
       classMethods: {
