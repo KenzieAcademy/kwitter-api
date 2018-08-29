@@ -3,8 +3,15 @@ module.exports = function(sequelize, DataTypes) {
   var messages = sequelize.define(
     "messages",
     {
-      text: DataTypes.STRING,
-      userId: DataTypes.INTEGER
+      text: {
+        type: DataTypes.STRING,
+        validate: {
+          len: {
+            args: [2, 255],
+            msg: "Message text must be between 2 and 255 characters"
+          }
+        }
+      }
     },
     {
       classMethods: {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const models = require("../models");
 const { authMiddleware } = require("./auth");
+const Sequelize = require("sequelize");
 
 // create message
 /**
@@ -40,7 +41,13 @@ router.post("/", authMiddleware, (req, res) => {
         userId: req.user.get("id")
       })
     )
-    .then(message => res.json({ message }));
+    .then(message => res.json({ message }))
+    .catch(err => {
+      if (err instanceof Sequelize.ValidationError) {
+        return res.status(400).send({ errors: err.errors });
+      }
+      res.status(500).send();
+    });
 });
 
 // read all messages
