@@ -1,6 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const passport = require("passport");
+const Sequelize = require("sequelize");
 
 const router = express.Router();
 const models = require("../models");
@@ -39,14 +38,20 @@ router.patch("/", authMiddleware, (req, res) => {
 
   models.users
     .update(
-      { passwordHash: bcrypt.hashSync(password, 8) },
+      { passwordHash: password },
       {
         where: {
           id: req.user.id
         }
       }
     )
-    .then(users => res.json({ users }));
+    .then(users => res.json({ users }))
+    .catch(err => {
+      if (err instanceof Sequelize.ValidationError) {
+        return res.status(400).send({ errors: err.errors });
+      }
+      res.status(500).send();
+    });
 });
 
 // delete a user by id
