@@ -36,17 +36,16 @@ router.get("/", (req, res) => {
 // update a user by id
 router.patch("/", authMiddleware, (req, res) => {
   const { password } = req.body;
-  if (password) {
-    req.body.password_hash = bcrypt.hashSync(password, 8);
-    delete req.body.password;
-  }
 
   models.users
-    .update(req.body, {
-      where: {
-        id: req.user.id
+    .update(
+      { passwordHash: bcrypt.hashSync(password, 8) },
+      {
+        where: {
+          id: req.user.id
+        }
       }
-    })
+    )
     .then(users => res.json({ users }));
 });
 
