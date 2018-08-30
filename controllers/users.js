@@ -38,7 +38,7 @@ router.patch("/", authMiddleware, (req, res) => {
 
   models.users
     .update(
-      { passwordHash: password },
+      { password },
       {
         where: {
           id: req.user.id

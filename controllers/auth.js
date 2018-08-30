@@ -55,15 +55,12 @@ router.get("/logout", (req, res) => {
  */
 router.post("/register", (req, res) => {
   const { username, displayName, password } = req.body;
-  bcrypt
-    .hash(password, 8)
-    .then(passwordHash =>
-      models.users.create({
-        username,
-        displayName,
-        passwordHash
-      })
-    )
+  models.users
+    .create({
+      username,
+      displayName,
+      password
+    })
     .then(user =>
       res.json({
         username: user.get("username"),
@@ -108,7 +105,7 @@ router.post("/login", (req, res) => {
     .scope(null)
     .find({ where: { username } })
     .then(user => {
-      if (user && bcrypt.compareSync(password, user.get("passwordHash"))) {
+      if (user && bcrypt.compareSync(password, user.get("password"))) {
         const payload = { id: user.get("id") };
         const token = jwt.sign(payload, jwtOptions.secretOrKey);
         res.json({ token, id: payload.id, success: true });

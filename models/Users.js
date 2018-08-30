@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
     {
       username: DataTypes.STRING,
       displayName: DataTypes.STRING,
-      passwordHash: {
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -26,12 +26,12 @@ module.exports = function(sequelize, DataTypes) {
       },
       hooks: {
         afterValidate: function(user) {
-          user.passwordHash = bcrypt.hashSync(user.passwordHash, 8);
+          user.password = bcrypt.hashSync(user.password, 8);
         }
       },
       defaultScope: {
         attributes: {
-          exclude: ["passwordHash"]
+          exclude: ["password"]
         }
       }
     }
