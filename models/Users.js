@@ -24,6 +24,17 @@ module.exports = function(sequelize, DataTypes) {
             msg: "Password must be between 3 and 20 characters"
           }
         }
+      },
+      about: {
+        type: DataTypes.STRING,
+        defaultValue: "",
+        allowNull: false,
+        validate: {
+          len: {
+            args: [0, 255],
+            msg: "About must be 255 characters or less"
+          }
+        }
       }
     },
     {
@@ -35,7 +46,11 @@ module.exports = function(sequelize, DataTypes) {
       },
       hooks: {
         afterValidate: function(user) {
-          user.password = bcrypt.hashSync(user.password, 8);
+          // PATCH /users endpoint does not require a password to be passed
+          // so check if the password is provided before trying to hash it (this prevents bcrypt from throwing an error)
+          if (user.password) {
+            user.password = bcrypt.hashSync(user.password, 8);
+          }
         }
       },
       defaultScope: {
