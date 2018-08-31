@@ -34,17 +34,17 @@ router.get("/", (req, res) => {
 
 // update a user by id
 router.patch("/", authMiddleware, (req, res) => {
-  const { password } = req.body;
+  const patch = {};
+  if (req.body.password !== undefined) {
+    patch.password = req.body.password;
+  }
 
   models.users
-    .update(
-      { password },
-      {
-        where: {
-          id: req.user.id
-        }
+    .update(patch, {
+      where: {
+        id: req.user.id
       }
-    )
+    })
     .then(users => res.json({ users }))
     .catch(err => {
       if (err instanceof Sequelize.ValidationError) {
