@@ -5,7 +5,16 @@ module.exports = function(sequelize, DataTypes) {
     "users",
     {
       username: DataTypes.STRING,
-      displayName: DataTypes.STRING,
+      displayName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: {
+            args: [3, 20],
+            msg: "Display name must be between 3 and 20 characters"
+          }
+        }
+      },
       password: {
         type: DataTypes.STRING,
         allowNull: false,

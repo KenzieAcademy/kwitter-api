@@ -39,6 +39,10 @@ router.patch("/", authMiddleware, (req, res) => {
     patch.password = req.body.password;
   }
 
+  if (req.body.displayName !== undefined) {
+    patch.displayName = req.body.displayName;
+  }
+
   models.users
     .update(patch, {
       where: {
