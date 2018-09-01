@@ -53,7 +53,8 @@ router.patch("/", authMiddleware, (req, res) => {
         id: req.user.id
       }
     })
-    .then(users => res.json({ users }))
+    .then(_ => models.users.findOne({ where: { id: req.user.id } }))
+    .then(user => res.send({ user }))
     .catch(err => {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({ errors: err.errors });
