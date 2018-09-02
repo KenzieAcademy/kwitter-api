@@ -35,7 +35,7 @@ router.delete("/:id", (req, res) => {
       if (destroyedCount === 0) {
         res.status(400).send({ error: "Like does not exist" });
       } else {
-        return res.json({ like });
+        return res.json({ id: req.params.id });
       }
     })
     .catch(err => res.status(500).send({ error: err.toString() }));
