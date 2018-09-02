@@ -2,7 +2,7 @@ const express = require("express");
 const Sequelize = require("sequelize");
 
 const router = express.Router();
-const models = require("../models");
+const { User, Message, Like } = require("../models");
 const { sequelize } = require("../models");
 
 const { authMiddleware } = require("./auth");
@@ -11,26 +11,24 @@ const { authMiddleware } = require("./auth");
 // get a specific user by id
 router.get("/:id", (req, res) => {
   const id = req.params.id;
-  models.users
-    .findById(id, {
-      include: [
-        {
-          model: models.messages,
-          include: [models.likes]
-        }
-      ]
-    })
-    .then(user => res.json({ user }));
+  User.findById(id, {
+    include: [
+      {
+        model: Message,
+        include: [Like]
+      }
+    ]
+  }).then(user => res.json({ user }));
 });
 
 // get list of users
 router.get("/", (req, res) => {
-  models.users
-    .findAll({
-      limit: req.query.limit || 100,
-      offset: req.query.offset || 0
-    })
-    .then(users => res.json({ users }));
+  User.findAll({
+    limit: req.query.limit || 100,
+    offset: req.query.offset || 0
+  }).then(users => {
+    res.json({ users });
+  });
 });
 
 // update a user by id
@@ -48,13 +46,12 @@ router.patch("/", authMiddleware, (req, res) => {
     patch.about = req.body.about;
   }
 
-  models.users
-    .update(patch, {
-      where: {
-        id: req.user.id
-      }
-    })
-    .then(_ => models.users.findOne({ where: { id: req.user.id } }))
+  User.update(patch, {
+    where: {
+      id: req.user.id
+    }
+  })
+    .then(_ => User.findOne({ where: { id: req.user.id } }))
     .then(user => res.send({ user }))
     .catch(err => {
       if (err instanceof Sequelize.ValidationError) {
@@ -67,15 +64,14 @@ router.patch("/", authMiddleware, (req, res) => {
 // delete a user by id
 router.delete("/", authMiddleware, (req, res) => {
   sequelize.transaction().then(transaction =>
-    models.likes
-      .destroy({
-        transaction,
-        where: {
-          userId: req.user.id
-        }
-      })
+    Like.destroy({
+      transaction,
+      where: {
+        userId: req.user.id
+      }
+    })
       .then(() =>
-        models.messages.destroy({
+        Message.destroy({
           transaction,
           where: {
             userId: req.user.id
@@ -83,7 +79,7 @@ router.delete("/", authMiddleware, (req, res) => {
         })
       )
       .then(() =>
-        models.users.destroy({
+        User.destroy({
           transaction,
           where: {
             id: req.user.id

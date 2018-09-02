@@ -6,7 +6,7 @@ const { ExtractJwt } = require("passport-jwt");
 const Sequelize = require("sequelize");
 
 const router = express.Router();
-const models = require("../models");
+const { User } = require("../models");
 
 const authMiddleware = passport.authenticate("jwt", { session: false });
 
@@ -55,12 +55,11 @@ router.get("/logout", (req, res) => {
  */
 router.post("/register", (req, res) => {
   const { username, displayName, password } = req.body;
-  models.users
-    .create({
-      username,
-      displayName,
-      password
-    })
+  User.create({
+    username,
+    displayName,
+    password
+  })
     .then(user =>
       res.json({
         username: user.get("username"),
@@ -101,8 +100,7 @@ router.post("/register", (req, res) => {
  */
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
-  models.users
-    .scope(null)
+  User.scope(null)
     .find({ where: { username } })
     .then(user => {
       if (user && bcrypt.compareSync(password, user.get("password"))) {

@@ -1,7 +1,7 @@
 "use strict";
 module.exports = function(sequelize, DataTypes) {
-  var messages = sequelize.define(
-    "messages",
+  const Message = sequelize.define(
+    "message",
     {
       text: {
         type: DataTypes.STRING,
@@ -19,8 +19,8 @@ module.exports = function(sequelize, DataTypes) {
       classMethods: {
         associate: function(models) {
           // associations can be defined here
-          messages.belongsTo(models.users);
-          messages.hasMany(models.likes);
+          Message.belongsTo(models.User);
+          Message.hasMany(models.Like);
         }
       },
       defaultScope: {
@@ -30,5 +30,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   );
-  return messages;
+  return Message;
 };

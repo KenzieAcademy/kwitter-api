@@ -9,7 +9,7 @@ const { Strategy } = require("passport-jwt");
 const cors = require("cors");
 
 const controllers = require("./controllers");
-const models = require("./models");
+const { User } = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
 
 const app = express();
@@ -25,8 +25,7 @@ app.use(cors());
 
 passport.use(
   new Strategy(jwtOptions, (payload, done) => {
-    models.users
-      .findById(payload.id)
+    User.findById(payload.id)
       // or, more succinctly..
       .then(user => done(null, user || false));
   })

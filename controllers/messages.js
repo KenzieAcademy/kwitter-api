@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const models = require("../models");
+const { Message, Like } = require("../models");
 const { authMiddleware } = require("./auth");
 const Sequelize = require("sequelize");
 
@@ -35,12 +35,11 @@ const Sequelize = require("sequelize");
  *           \ requested\nfunctionality.\n"
  */
 router.post("/", authMiddleware, (req, res) => {
-  models.messages
-    .create(
-      Object.assign({}, req.body, {
-        userId: req.user.get("id")
-      })
-    )
+  Message.create(
+    Object.assign({}, req.body, {
+      userId: req.user.get("id")
+    })
+  )
     .then(message => res.json({ message }))
     .catch(err => {
       if (err instanceof Sequelize.ValidationError) {
@@ -52,50 +51,43 @@ router.post("/", authMiddleware, (req, res) => {
 
 // read all messages
 router.get("/", (req, res) => {
-  models.messages
-    .findAll({
-      include: [
-        {
-          model: models.likes
-        }
-      ],
-      limit: req.query.limit || 100,
-      offset: req.query.offset || 0
-    })
-    .then(messages => res.json({ messages }));
+  Message.findAll({
+    include: [
+      {
+        model: Like
+      }
+    ],
+    limit: req.query.limit || 100,
+    offset: req.query.offset || 0
+  }).then(messages => res.json({ messages }));
 });
 
 // read message by id
 router.get("/:id", (req, res) => {
-  models.messages
-    .findById(req.params.id, {
-      include: [models.likes]
-    })
-    .then(message => res.json({ message }));
+  Message.findById(req.params.id, {
+    include: [Like]
+  }).then(message => res.json({ message }));
 });
 
 // update message by id
 router.patch("/:id", authMiddleware, (req, res) => {
-  models.messages
-    .update(req.body, {
-      where: {
-        id: req.params.id
-      }
-    })
-    .then(message => res.json({ message }));
+  Message.update(req.body, {
+    where: {
+      id: req.params.id
+    }
+  }).then(message => res.json({ message }));
 });
 
 // delete message
 router.delete("/:id", authMiddleware, (req, res) => {
-  models.likes
-    .destroy({
-      where: {
-        messageId: req.params.id,
-        userId: req.user.id
-      }
-    })
+  Like.destroy({
+    where: {
+      messageId: req.params.id,
+      userId: req.user.id
+    }
+  })
     .then(() =>
-      models.messages.destroy({
+      Message.destroy({
         where: {
           id: req.params.id,
           userId: req.user.id

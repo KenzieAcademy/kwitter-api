@@ -19,16 +19,9 @@ if (config.use_env_variable) {
   );
 }
 
-fs.readdirSync(__dirname)
-  .filter(function(file) {
-    return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-    );
-  })
-  .forEach(function(file) {
-    var model = sequelize["import"](path.join(__dirname, file));
-    db[model.name] = model;
-  });
+db.Like = sequelize.import("./Like");
+db.Message = sequelize.import("./Message");
+db.User = sequelize.import("./User");
 
 Object.keys(db).forEach(function(modelName) {
   if (db[modelName].associate) {

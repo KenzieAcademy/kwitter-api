@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const models = require("../models");
+const { Like } = require("../models");
 
 // create a like
 router.post("/", (req, res) => {
@@ -8,15 +8,14 @@ router.post("/", (req, res) => {
     userId: req.user.id,
     messageId: req.body.messageId
   };
-  models.likes
-    .findOne({
-      where: likeObject
-    })
+  Like.findOne({
+    where: likeObject
+  })
     .then(like => {
       if (like !== null) {
         res.status(400).send({ error: "Like already exists" });
       } else {
-        return models.likes.create(likeObject).then(like => res.json({ like }));
+        return Like.create(likeObject).then(like => res.json({ like }));
       }
     })
     .catch(err => {
@@ -26,13 +25,12 @@ router.post("/", (req, res) => {
 
 // delete a like
 router.delete("/:id", (req, res) => {
-  models.likes
-    .destroy({
-      where: {
-        id: req.params.id,
-        userId: req.user.id
-      }
-    })
+  Like.destroy({
+    where: {
+      id: req.params.id,
+      userId: req.user.id
+    }
+  })
     .then(destroyedCount => {
       if (destroyedCount === 0) {
         res.status(400).send({ error: "Like does not exist" });
