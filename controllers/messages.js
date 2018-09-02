@@ -94,7 +94,12 @@ router.delete("/:id", authMiddleware, (req, res) => {
         }
       })
     )
-    .then(message => res.json({ message }));
+    .then(destroyedCount => {
+      if (destroyedCount === 0) {
+        return res.status(400).send({ error: "Message does not exist" });
+      }
+      res.json({ id: req.params.id });
+    });
 });
 
 module.exports = router;
