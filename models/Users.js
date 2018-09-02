@@ -4,7 +4,20 @@ module.exports = function(sequelize, DataTypes) {
   var users = sequelize.define(
     "users",
     {
-      username: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notContains: {
+            args: " ",
+            msg: "Username cannot include spaces"
+          },
+          len: {
+            args: [3, 20],
+            msg: "Username must be between 3 and 20 characters"
+          }
+        }
+      },
       displayName: {
         type: DataTypes.STRING,
         allowNull: false,
