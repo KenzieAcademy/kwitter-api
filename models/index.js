@@ -1,17 +1,13 @@
 "use strict";
+const Sequelize = require("sequelize");
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config/config.json")[env];
 
-var fs = require("fs");
-var path = require("path");
-var Sequelize = require("sequelize");
-var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || "development";
-var config = require(__dirname + "/../config/config.json")[env];
-var db = {};
-
+let sequelize;
 if (config.use_env_variable) {
-  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+  sequelize = new Sequelize(process.env[config.use_env_variable]);
 } else {
-  var sequelize = new Sequelize(
+  sequelize = new Sequelize(
     config.database,
     config.username,
     config.password,
@@ -19,19 +15,23 @@ if (config.use_env_variable) {
   );
 }
 
-db.Like = sequelize.import("./Like");
-db.Message = sequelize.import("./Message");
-db.User = sequelize.import("./User");
+// import models into sequelize
+const Like = sequelize.import("./Like");
+const Message = sequelize.import("./Message");
+const User = sequelize.import("./User");
 
-db.User.hasMany(db.Message);
+// setup associations between models
+User.hasMany(Message);
 
-db.Message.belongsTo(db.User);
-db.Message.hasMany(db.Like);
+Message.belongsTo(User);
+Message.hasMany(Like);
 
-db.Like.belongsTo(db.User);
-db.Like.belongsTo(db.Message);
+Like.belongsTo(User);
+Like.belongsTo(Message);
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;
+module.exports = {
+  sequelize,
+  Like,
+  Message,
+  User
+};
