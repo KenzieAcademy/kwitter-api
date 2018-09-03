@@ -23,11 +23,13 @@ db.Like = sequelize.import("./Like");
 db.Message = sequelize.import("./Message");
 db.User = sequelize.import("./User");
 
-Object.keys(db).forEach(function(modelName) {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+db.User.hasMany(db.Message);
+
+db.Message.belongsTo(db.User);
+db.Message.hasMany(db.Like);
+
+db.Like.belongsTo(db.User);
+db.Like.belongsTo(db.Message);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

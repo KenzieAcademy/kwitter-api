@@ -7,13 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       messageId: DataTypes.INTEGER
     },
     {
-      classMethods: {
-        associate: function(models) {
-          // associations can be defined here
-          Like.belongsTo(models.User);
-          Like.belongsTo(models.Message);
-        }
-      },
       defaultScope: {
         attributes: {
           exclude: ["updatedAt"]

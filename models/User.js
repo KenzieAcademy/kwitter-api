@@ -51,12 +51,6 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     {
-      classMethods: {
-        associate: function(models) {
-          // associations can be defined here
-          User.hasMany(models.Message);
-        }
-      },
       hooks: {
         afterValidate: function(user) {
           // PATCH /users endpoint does not require a password to be passed
