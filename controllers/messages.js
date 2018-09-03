@@ -58,7 +58,8 @@ router.get("/", (req, res) => {
       }
     ],
     limit: req.query.limit || 100,
-    offset: req.query.offset || 0
+    offset: req.query.offset || 0,
+    order: [["createdAt", "DESC"]]
   }).then(messages => res.json({ messages }));
 });
 
