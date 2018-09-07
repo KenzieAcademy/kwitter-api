@@ -81,26 +81,17 @@ router.patch("/:id", authMiddleware, (req, res) => {
 
 // delete message
 router.delete("/:id", authMiddleware, (req, res) => {
-  Like.destroy({
+  Message.destroy({
     where: {
-      messageId: req.params.id,
+      id: req.params.id,
       userId: req.user.id
     }
-  })
-    .then(() =>
-      Message.destroy({
-        where: {
-          id: req.params.id,
-          userId: req.user.id
-        }
-      })
-    )
-    .then(destroyedCount => {
-      if (destroyedCount === 0) {
-        return res.status(400).send({ error: "Message does not exist" });
-      }
-      res.json({ id: req.params.id });
-    });
+  }).then(destroyedCount => {
+    if (destroyedCount === 0) {
+      return res.status(400).send({ error: "Message does not exist" });
+    }
+    res.json({ id: req.params.id });
+  });
 });
 
 module.exports = router;

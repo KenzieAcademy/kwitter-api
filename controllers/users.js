@@ -3,7 +3,6 @@ const Sequelize = require("sequelize");
 
 const router = express.Router();
 const { User, Message, Like } = require("../models");
-const { sequelize } = require("../models");
 
 const { authMiddleware } = require("./auth");
 /* NOTE: See controllers/auth.js for creating a user */
@@ -64,36 +63,15 @@ router.patch("/", authMiddleware, (req, res) => {
 
 // delete a user by id
 router.delete("/", authMiddleware, (req, res) => {
-  sequelize.transaction().then(transaction =>
-    Like.destroy({
-      transaction,
-      where: {
-        userId: req.user.id
-      }
-    })
-      .then(() =>
-        Message.destroy({
-          transaction,
-          where: {
-            userId: req.user.id
-          }
-        })
-      )
-      .then(() =>
-        User.destroy({
-          transaction,
-          where: {
-            id: req.user.id
-          }
-        })
-      )
-      .then(() => transaction.commit())
-      .then(() => res.json({ id: req.user.id }))
-      .catch(() => {
-        res.send(500).send();
-        transaction.rollback();
-      })
-  );
+  User.destroy({
+    where: {
+      id: req.user.id
+    }
+  })
+    .then(() => res.json({ id: req.user.id }))
+    .catch(() => {
+      res.send(500).send();
+    });
 });
 
 module.exports = router;
