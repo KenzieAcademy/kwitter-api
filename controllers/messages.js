@@ -4,36 +4,7 @@ const { Message, Like } = require("../models");
 const { authMiddleware } = require("./auth");
 const Sequelize = require("sequelize");
 
-// create message
-/**
- * @swagger
- * /messages:
- *   post:
- *     security:
- *       - Bearer: []
- *     tags:
- *     - "message"
- *     summary: "Create a new message"
- *     description: "Create a new message"
- *     operationId: "createMessage"
- *     parameters:
- *       - in: "body"
- *         name: "body"
- *         description: "message details"
- *         required: true
- *         schema:
- *             $ref: "#/components/schemas/Message"
- *     responses:
- *       201:
- *         description: "Success, account saved"
- *       202:
- *         description: "Success, account saved"
- *       400:
- *         description: "Unable to save account"
- *       403:
- *         description: "The capability token provided does not grant access to the\
- *           \ requested\nfunctionality.\n"
- */
+// create a message
 router.post("/", authMiddleware, (req, res) => {
   Message.create(
     Object.assign({}, req.body, {

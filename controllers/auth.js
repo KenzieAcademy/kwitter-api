@@ -15,44 +15,13 @@ const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET
 };
 
-/**
- * @swagger
- * /auth/logout:
- *   get:
- *     tags:
- *     - "user"
- *     description: "Log out an existing user"
- *     operationId: "logout"
- *     responses:
- *       201:
- *         description: "Success, User logged out"
- */
+// logout user
 router.get("/logout", (req, res) => {
   req.logout();
   res.json({ success: true, message: "Logged out!" });
 });
 
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     tags:
- *     - "user"
- *     description: "Create a new user"
- *     operationId: "createUser"
- *     parameters:
- *       - in: "body"
- *         name: "body"
- *         description: "user details"
- *         required: true
- *         schema:
- *             $ref: "#/components/schemas/User"
- *     responses:
- *       201:
- *         description: "Success, User registered"
- *       400:
- *         description: "Unable to log in"
- */
+// register a new user
 router.post("/register", (req, res) => {
   const { username, displayName, password } = req.body;
   User.create({
@@ -75,29 +44,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     tags:
- *     - "user"
- *     description: "Login in an existing user"
- *     operationId: "login"
- *     parameters:
- *       - in: "body"
- *         name: "body"
- *         description: "user details"
- *         required: true
- *         schema:
- *             $ref: "#/components/schemas/Login"
- *     responses:
- *       201:
- *         description: "Success, User logged in"
- *       202:
- *         description: "Success, User logged in"
- *       400:
- *         description: "Unable to log in"
- */
+// login user
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
   User.scope(null)

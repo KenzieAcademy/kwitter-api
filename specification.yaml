@@ -1,0 +1,87 @@
+openapi: 3.0.1
+info:
+  title: Kwitter
+  version: "1.0.0"
+servers:
+  - url: http://localhost:3000
+    description: localhost
+  - url: https://kwitter-api.herokuapp.com
+    description: Production Server
+paths:
+  /auth/login:
+    post:
+      summary: Login user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  id:
+                    type: integer
+                  token:
+                    type: string
+  /auth/logout:
+    get:
+      summary: Logout a user
+      tags:
+        - Auth
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+  /auth/register:
+    post:
+      summary: "Register a new user"
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                displayName:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  displayName:
+                    type: string

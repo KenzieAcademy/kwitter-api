@@ -1,13 +1,13 @@
-// Imports
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
-const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const { Strategy } = require("passport-jwt");
 const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
+const YAML = require("yamljs");
+const swaggerSpec = YAML.load("./specification.yaml");
 
 const controllers = require("./controllers");
 const { User } = require("./models");
@@ -26,27 +26,10 @@ app.use(cors());
 
 passport.use(
   new Strategy(jwtOptions, (payload, done) => {
-    User.findById(payload.id)
-      // or, more succinctly..
-      .then(user => done(null, user || false));
+    User.findById(payload.id).then(user => done(null, user || false));
   })
 );
 app.use(passport.initialize());
-
-const swaggerDefinition = {
-  openapi: "3.0.1",
-  info: {
-    title: "Kwitter",
-    version: "1.0"
-  }
-};
-
-const swaggerOptions = {
-  swaggerDefinition,
-  apis: [`${__dirname}/controllers/*.js`]
-};
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 // Routes
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -64,14 +47,10 @@ app.get("/swagger.json", (req, res) => {
   res.send(swaggerSpec);
 });
 
-if (require.main === module) {
-  SwaggerParser.validate(swaggerSpec)
-    .then(() =>
-      app.listen(app.get("port"), () =>
-        console.log(`API server now running on port ${app.get("port")}`)
-      )
+SwaggerParser.validate(swaggerSpec)
+  .then(() =>
+    app.listen(app.get("port"), () =>
+      console.log(`API server now running on port ${app.get("port")}`)
     )
-    .catch(err => console.error(err.toString()));
-}
-
-module.exports = app;
+  )
+  .catch(err => console.error(err.toString()));
