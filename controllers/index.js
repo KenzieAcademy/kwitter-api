@@ -5,8 +5,9 @@ const { router } = require("./auth");
 
 /**
  * @swagger
- * definitions:
- *   User:
+ * components:
+ *  schemas:
+ *    User:
  *     required:
  *     - "text"
  *     - "userId"
@@ -15,7 +16,7 @@ const { router } = require("./auth");
  *         type: "integer"
  *       text:
  *         type: "string"
- *   Login:
+ *    Login:
  *     required:
  *     - "username"
  *     - "password"
@@ -24,7 +25,7 @@ const { router } = require("./auth");
  *         type: "string"
  *       password:
  *         type: "string"
- *   Message:
+ *    Message:
  *     required:
  *     - "username"
  *     properties:

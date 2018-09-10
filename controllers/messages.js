@@ -22,7 +22,7 @@ const Sequelize = require("sequelize");
  *         description: "message details"
  *         required: true
  *         schema:
- *             $ref: "#/definitions/Message"
+ *             $ref: "#/components/schemas/Message"
  *     responses:
  *       201:
  *         description: "Success, account saved"

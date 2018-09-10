@@ -6,6 +6,7 @@ const passport = require("passport");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const { Strategy } = require("passport-jwt");
+const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
 
 const controllers = require("./controllers");
@@ -33,14 +34,11 @@ passport.use(
 app.use(passport.initialize());
 
 const swaggerDefinition = {
+  openapi: "3.0.1",
   info: {
     title: "Kwitter",
     version: "1.0"
-  },
-  basePath: "/",
-  schemes: ["http", "https"],
-  consumes: ["application/json"],
-  produces: ["application/json"]
+  }
 };
 
 const swaggerOptions = {
@@ -67,9 +65,13 @@ app.get("/swagger.json", (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(app.get("port"), () =>
-    console.log(`API server now running on port ${app.get("port")}`)
-  );
+  SwaggerParser.validate(swaggerSpec)
+    .then(() =>
+      app.listen(app.get("port"), () =>
+        console.log(`API server now running on port ${app.get("port")}`)
+      )
+    )
+    .catch(err => console.error(err.toString()));
 }
 
 module.exports = app;

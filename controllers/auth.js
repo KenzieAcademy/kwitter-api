@@ -46,7 +46,7 @@ router.get("/logout", (req, res) => {
  *         description: "user details"
  *         required: true
  *         schema:
- *             $ref: "#/definitions/User"
+ *             $ref: "#/components/schemas/User"
  *     responses:
  *       201:
  *         description: "Success, User registered"
@@ -89,7 +89,7 @@ router.post("/register", (req, res) => {
  *         description: "user details"
  *         required: true
  *         schema:
- *             $ref: "#/definitions/Login"
+ *             $ref: "#/components/schemas/Login"
  *     responses:
  *       201:
  *         description: "Success, User logged in"
