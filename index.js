@@ -1,4 +1,4 @@
-// Imports
+require("dotenv-safe").config({ allowEmptyValues: true });
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
