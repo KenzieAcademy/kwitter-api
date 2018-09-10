@@ -1,11 +1,6 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(
-  process.env.DB_DATABASE,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  { dialect: process.env.DB_DIALECT }
-);
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 
 // import models into sequelize
 const Like = sequelize.import("./Like");
