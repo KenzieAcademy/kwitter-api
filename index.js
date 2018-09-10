@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const passport = require("passport");
 const swaggerUi = require("swagger-ui-express");
@@ -21,7 +20,7 @@ app.set("port", process.env.PORT || 3000);
 
 // Middleware
 app.use(morgan("tiny"));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 passport.use(
