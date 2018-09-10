@@ -7,9 +7,8 @@ const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
 const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./specification.yaml");
-
 const controllers = require("./controllers");
-const { User } = require("./models");
+const { User, sequelize } = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
 
 const app = express();
@@ -47,6 +46,7 @@ app.get("/swagger.json", (req, res) => {
 });
 
 SwaggerParser.validate(swaggerSpec)
+  .then(() => sequelize.authenticate())
   .then(() =>
     app.listen(app.get("port"), () =>
       console.log(`API server now running on port ${app.get("port")}`)
