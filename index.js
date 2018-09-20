@@ -13,15 +13,14 @@ const { User, sequelize } = require("./models");
 const { jwtOptions, authMiddleware } = require("./controllers/auth");
 
 const app = express();
-app.use(cors());
 
 // Settings
 app.set("port", process.env.PORT || 3000);
 
 // Middleware
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(express.json());
-app.use(cors());
 
 passport.use(
   new Strategy(jwtOptions, (payload, done) => {
