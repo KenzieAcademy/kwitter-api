@@ -15,7 +15,7 @@
     "morgan": "^1.8.2",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
-    "pg": "6.4.1",
+    "pg": "^6.4.2",
     "sequelize": "3.x",
     "swagger-parser": "^5.0.5",
     "swagger-ui-express": "^4.0.1",
