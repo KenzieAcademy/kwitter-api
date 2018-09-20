@@ -6,11 +6,10 @@ const Sequelize = require("sequelize");
 
 // create a message
 router.post("/", authMiddleware, (req, res) => {
-  Message.create(
-    Object.assign({}, req.body, {
-      userId: req.user.get("id")
-    })
-  )
+  Message.create({
+    text: req.body.text,
+    userId: req.user.get("id")
+  })
     .then(message => res.json({ message }))
     .catch(err => {
       if (err instanceof Sequelize.ValidationError) {
