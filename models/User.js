@@ -48,6 +48,14 @@ module.exports = function(sequelize, DataTypes) {
             msg: "About must be 255 characters or less"
           }
         }
+      },
+      picture: {
+        type: DataTypes.BLOB,
+        allowNull: true
+      },
+      pictureContentType: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     },
     {
@@ -62,7 +70,22 @@ module.exports = function(sequelize, DataTypes) {
       },
       defaultScope: {
         attributes: {
-          exclude: ["password"]
+          exclude: ["password", "picture", "pictureContentType"]
+        }
+      },
+      scopes: {
+        picture: {
+          attributes: {
+            exclude: [
+              "id",
+              "username",
+              "displayName",
+              "password",
+              "about",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
         }
       }
     }
