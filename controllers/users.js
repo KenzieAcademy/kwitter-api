@@ -1,5 +1,11 @@
 const express = require("express");
 const Sequelize = require("sequelize");
+const multer = require("multer");
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 200000 }
+});
 
 const router = express.Router();
 const { User, Message, Like } = require("../models");
@@ -71,6 +77,52 @@ router.delete("/", authMiddleware, (req, res) => {
     .then(() => res.json({ id: req.user.id }))
     .catch(() => {
       res.send(500).send();
+    });
+});
+
+router.get("/:id/picture", (req, res) => {
+  const { id } = req.params;
+  User.scope("picture")
+    .findById(id)
+    .then(user => {
+      if (user === null || user.picture === null) {
+        return res.status(404).send();
+      }
+      const { picture, pictureContentType } = user;
+      res.set({
+        "Content-Type": pictureContentType,
+        "Content-Disposition": "inline"
+      });
+      res.send(picture);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).send();
+    });
+});
+
+router.put("/picture", authMiddleware, upload.single("picture"), (req, res) => {
+  const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
+  const { buffer, mimetype } = req.file;
+  const { id } = req.user;
+
+  if (!supportedContentTypes.includes(mimetype)) {
+    res.status(415).send();
+    return;
+  }
+
+  User.scope("picture")
+    .update(
+      { picture: buffer, pictureContentType: mimetype },
+      { where: { id } }
+    )
+    .then(_ => {
+      res.set({ "Content-Location": `/users/${id}/picture`})
+      res.send();
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).send();
     });
 });
 
