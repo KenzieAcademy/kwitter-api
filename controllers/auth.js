@@ -55,7 +55,7 @@ router.post("/login", (req, res) => {
         const token = jwt.sign(payload, jwtOptions.secretOrKey);
         res.json({ token, id: payload.id, success: true });
       } else {
-        res.json({ success: false });
+        res.status(401).json({ success: false });
       }
     });
 });
