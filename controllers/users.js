@@ -117,6 +117,7 @@ router.put("/picture", authMiddleware, upload.single("picture"), (req, res) => {
       { where: { id } }
     )
     .then(_ => {
+      res.set({ "Content-Location": `/users/${id}/picture`})
       res.send();
     })
     .catch(err => {
