@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "c221fd69-36a0-47b4-a61a-c49f1eac51f9",
 		"name": "Kwitter API",
+		"description": "* next to the name of the request indicates that this request requires an Authorization header",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -80,22 +81,18 @@
 					"response": []
 				},
 				{
-					"name": "Logout",
+					"name": "*Logout",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"test\",\n\t\"password\": \"test\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{domain}}/auth/logout",
@@ -117,7 +114,7 @@
 			"name": "Likes",
 			"item": [
 				{
-					"name": "Add Like",
+					"name": "*Add Like",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -148,17 +145,13 @@
 					"response": []
 				},
 				{
-					"name": "Remove Like",
+					"name": "*Remove Like",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
 							}
 						],
 						"body": {
@@ -185,7 +178,7 @@
 			"name": "Messages",
 			"item": [
 				{
-					"name": "Create Message",
+					"name": "*Create Message",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -271,17 +264,13 @@
 					"response": []
 				},
 				{
-					"name": "Delete Message by id",
+					"name": "*Delete Message by id",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
 								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
 							}
 						],
 						"body": {
@@ -312,7 +301,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "{{domain}}/users/21224",
 							"host": [
@@ -332,7 +324,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "{{domain}}/users?limit=100&offset=0",
 							"host": [
@@ -357,7 +352,7 @@
 					"response": []
 				},
 				{
-					"name": "Update User",
+					"name": "*Update User",
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -388,7 +383,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete Currently Authenticated User",
+					"name": "*Delete Currently Authenticated User",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -411,6 +406,71 @@
 							]
 						},
 						"description": "Delete the currently signed on user."
+					},
+					"response": []
+				},
+				{
+					"name": "*Set User Profile Picture",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "picture",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{domain}}/users/picture",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"users",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile Picture by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/users/2/picture",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"users",
+								"2",
+								"picture"
+							]
+						}
 					},
 					"response": []
 				}
