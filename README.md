@@ -15,8 +15,8 @@ DATABASE_URL="postgres://127.0.0.1/kwitter"
 JWT_SECRET="whateveryouwant"
 ```
 
-- `DATABASE_URL="postgres://127.0.0.1/kwitter" npm install`
-- `node index.js` or `nodemon index.js`
+- From the command line, type `npm install`
+- From the command line, type `node index.js` or `nodemon index.js`
 
   confirm that the api is working locally by making a request to `GET localhost:3000/messages`
 
