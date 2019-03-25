@@ -23,8 +23,9 @@ app.use(morgan("tiny"));
 app.use(express.json());
 
 passport.use(
-  new Strategy(jwtOptions, (payload, done) => {
-    User.findById(payload.id).then(user => done(null, user || false));
+  new Strategy(jwtOptions, async (payload, done) => {
+    const user = await User.findById(payload.id);
+    done(null, user || false);
   })
 );
 app.use(passport.initialize());
@@ -45,11 +46,14 @@ app.get("/swagger.json", (req, res) => {
   res.send(swaggerSpec);
 });
 
-SwaggerParser.validate(swaggerSpec)
-  .then(() => sequelize.authenticate())
-  .then(() =>
+(async () => {
+  try {
+    await SwaggerParser.validate(swaggerSpec);
+    await sequelize.authenticate();
     app.listen(app.get("port"), () =>
       console.log(`API server now running on port ${app.get("port")}`)
-    )
-  )
-  .catch(err => console.error(err.toString()));
+    );
+  } catch (err) {
+    console.error(err.toString());
+  }
+})();

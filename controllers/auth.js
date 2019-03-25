@@ -22,42 +22,38 @@ router.get("/logout", (req, res) => {
 });
 
 // register a new user
-router.post("/register", (req, res) => {
+router.post("/register", async (req, res) => {
   const { username, displayName, password } = req.body;
-  User.create({
-    username,
-    displayName,
-    password
-  })
-    .then(user =>
-      res.json({
-        username: user.get("username"),
-        displayName: user.get("displayName")
-      })
-    )
-    .catch(err => {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
-      }
-      console.error(err);
-      res.status(500).send();
+  try {
+    const user = await User.create({
+      username,
+      displayName,
+      password
     });
+    res.json({
+      username: user.get("username"),
+      displayName: user.get("displayName")
+    });
+  } catch (err) {
+    if (err instanceof Sequelize.ValidationError) {
+      return res.status(400).send({ errors: err.errors });
+    }
+    console.error(err);
+    res.status(500).send();
+  }
 });
 
 // login user
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  User.scope(null)
-    .find({ where: { username } })
-    .then(user => {
-      if (user && bcrypt.compareSync(password, user.get("password"))) {
-        const payload = { id: user.get("id") };
-        const token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.json({ token, id: payload.id });
-      } else {
-        res.status(401).json({ message: "Invalid username or password" });
-      }
-    });
+  const user = await User.scope(null).find({ where: { username } });
+  if (user && bcrypt.compareSync(password, user.get("password"))) {
+    const payload = { id: user.get("id") };
+    const token = jwt.sign(payload, jwtOptions.secretOrKey);
+    res.json({ token, id: payload.id });
+  } else {
+    res.status(401).json({ message: "Invalid username or password" });
+  }
 });
 
 module.exports = {

@@ -14,31 +14,31 @@ const { authMiddleware } = require("./auth");
 /* NOTE: See controllers/auth.js for creating a user */
 
 // get a specific user by id
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const id = req.params.id;
-  User.findById(id, {
+  const user = await User.findById(id, {
     include: [
       {
         model: Message,
         include: [Like]
       }
     ]
-  }).then(user => res.json({ user }));
+  });
+  res.json({ user });
 });
 
 // get list of users
-router.get("/", (req, res) => {
-  User.findAll({
+router.get("/", async (req, res) => {
+  const users = await User.findAll({
     limit: req.query.limit || 100,
     offset: req.query.offset || 0,
     order: [["createdAt", "DESC"]]
-  }).then(users => {
-    res.json({ users });
   });
+  res.json({ users });
 });
 
 // update a user by id
-router.patch("/", authMiddleware, (req, res) => {
+router.patch("/", authMiddleware, async (req, res) => {
   const patch = {};
   if (req.body.password !== undefined) {
     patch.password = req.body.password;
@@ -52,78 +52,82 @@ router.patch("/", authMiddleware, (req, res) => {
     patch.about = req.body.about;
   }
 
-  User.update(patch, {
-    where: {
-      id: req.user.id
-    }
-  })
-    .then(_ => User.findOne({ where: { id: req.user.id } }))
-    .then(user => res.send({ user }))
-    .catch(err => {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
+  try {
+    await User.update(patch, {
+      where: {
+        id: req.user.id
       }
-      res.status(500).send();
     });
+    const user = await User.findOne({ where: { id: req.user.id } });
+    res.send({ user });
+  } catch (err) {
+    if (err instanceof Sequelize.ValidationError) {
+      return res.status(400).send({ errors: err.errors });
+    }
+    res.status(500).send();
+  }
 });
 
 // delete a user by id
-router.delete("/", authMiddleware, (req, res) => {
-  User.destroy({
-    where: {
-      id: req.user.id
-    }
-  })
-    .then(() => res.json({ id: req.user.id }))
-    .catch(() => {
-      res.send(500).send();
-    });
-});
-
-router.get("/:id/picture", (req, res) => {
-  const { id } = req.params;
-  User.scope("picture")
-    .findById(id)
-    .then(user => {
-      if (user === null || user.picture === null) {
-        return res.status(404).send();
+router.delete("/", authMiddleware, async (req, res) => {
+  try {
+    await User.destroy({
+      where: {
+        id: req.user.id
       }
-      const { picture, pictureContentType } = user;
-      res.set({
-        "Content-Type": pictureContentType,
-        "Content-Disposition": "inline"
-      });
-      res.send(picture);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send();
     });
-});
-
-router.put("/picture", authMiddleware, upload.single("picture"), (req, res) => {
-  const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
-  const { buffer, mimetype } = req.file;
-  const { id } = req.user;
-
-  if (!supportedContentTypes.includes(mimetype)) {
-    res.status(415).send();
-    return;
+    res.json({ id: req.user.id });
+  } catch (err) {
+    console.error(err);
+    res.send(500).send();
   }
+});
 
-  User.scope("picture")
-    .update(
-      { picture: buffer, pictureContentType: mimetype },
-      { where: { id } }
-    )
-    .then(_ => {
-      res.set({ "Content-Location": `/users/${id}/picture`})
+router.get("/:id/picture", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.scope("picture").findById(id);
+    if (user === null || user.picture === null) {
+      return res.status(404).send();
+    }
+    const { picture, pictureContentType } = user;
+    res.set({
+      "Content-Type": pictureContentType,
+      "Content-Disposition": "inline"
+    });
+    res.send(picture);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send();
+  }
+});
+
+router.put(
+  "/picture",
+  authMiddleware,
+  upload.single("picture"),
+  async (req, res) => {
+    const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
+    const { buffer, mimetype } = req.file;
+    const { id } = req.user;
+
+    if (!supportedContentTypes.includes(mimetype)) {
+      res.status(415).send();
+      return;
+    }
+
+    try {
+      await User.scope("picture").update(
+        { picture: buffer, pictureContentType: mimetype },
+        { where: { id } }
+      );
+      res.set({ "Content-Location": `/users/${id}/picture` });
       res.send();
-    })
-    .catch(err => {
+    } catch (err) {
       console.log(err);
       res.status(500).send();
-    });
-});
+    }
+  }
+);
 
 module.exports = router;
