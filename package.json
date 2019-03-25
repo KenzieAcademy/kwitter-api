@@ -23,7 +23,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.0",
+    "nodemon": "^1.18.10",
     "sequelize-cli": "^3.0.0-2"
   },
   "scripts": {
