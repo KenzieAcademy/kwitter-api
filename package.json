@@ -29,7 +29,7 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon",
-    "postinstall": "source .env && sequelize db:migrate --url $DATABASE_URL",
+    "postinstall": "if [ -e .env ]; then source .env; fi && sequelize db:migrate --url $DATABASE_URL",
     "heroku-prebuild": "npm install -g sequelize-cli"
   }
 }
