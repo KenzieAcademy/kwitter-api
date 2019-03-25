@@ -7,7 +7,7 @@
     "node": ">=8.3.0"
   },
   "dependencies": {
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.5",
     "cors": "^2.8.4",
     "dotenv-safe": "^6.0.0",
     "express": "^4.15.4",
