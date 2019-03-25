@@ -1,6 +1,8 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  operatorsAliases: false
+});
 
 // import models into sequelize
 const Like = sequelize.import("./Like");
