@@ -15,46 +15,45 @@ const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET
 };
 
-// logout user
-router.get("/logout", (req, res) => {
-  req.logout();
-  res.json({ success: true, message: "Logged out!" });
-});
-
-// register a new user
-router.post("/register", async (req, res) => {
-  const { username, displayName, password } = req.body;
-  try {
-    const user = await User.create({
-      username,
-      displayName,
-      password
-    });
-    res.json({
-      username: user.get("username"),
-      displayName: user.get("displayName")
-    });
-  } catch (err) {
-    if (err instanceof Sequelize.ValidationError) {
-      return res.status(400).send({ errors: err.errors });
+router
+  // logout user
+  .get("/logout", (req, res) => {
+    req.logout();
+    res.json({ success: true, message: "Logged out!" });
+  })
+  // register a new user
+  .post("/register", async (req, res) => {
+    const { username, displayName, password } = req.body;
+    try {
+      const user = await User.create({
+        username,
+        displayName,
+        password
+      });
+      res.json({
+        username: user.get("username"),
+        displayName: user.get("displayName")
+      });
+    } catch (err) {
+      if (err instanceof Sequelize.ValidationError) {
+        return res.status(400).send({ errors: err.errors });
+      }
+      console.error(err);
+      res.status(500).send();
     }
-    console.error(err);
-    res.status(500).send();
-  }
-});
-
-// login user
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.scope(null).find({ where: { username } });
-  if (user && bcrypt.compareSync(password, user.get("password"))) {
-    const payload = { id: user.get("id") };
-    const token = jwt.sign(payload, jwtOptions.secretOrKey);
-    res.json({ token, id: payload.id });
-  } else {
-    res.status(401).json({ message: "Invalid username or password" });
-  }
-});
+  })
+  // login user
+  .post("/login", async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.scope(null).find({ where: { username } });
+    if (user && bcrypt.compareSync(password, user.get("password"))) {
+      const payload = { id: user.get("id") };
+      const token = jwt.sign(payload, jwtOptions.secretOrKey);
+      res.json({ token, id: payload.id });
+    } else {
+      res.status(401).json({ message: "Invalid username or password" });
+    }
+  });
 
 module.exports = {
   authMiddleware,

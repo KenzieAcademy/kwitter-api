@@ -18,9 +18,10 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 
 // Middleware
-app.use(cors());
-app.use(morgan("tiny"));
-app.use(express.json());
+app
+  .use(cors())
+  .use(morgan("tiny"))
+  .use(express.json());
 
 passport.use(
   new Strategy(jwtOptions, async (payload, done) => {
@@ -31,21 +32,23 @@ passport.use(
 app.use(passport.initialize());
 
 // Routes
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/auth", controllers.auth);
-app.use("/users", controllers.users);
-app.use("/messages", controllers.messages);
-app.use("/likes", authMiddleware, controllers.likes);
+app
+  .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+  .use("/auth", controllers.auth)
+  .use("/users", controllers.users)
+  .use("/messages", controllers.messages)
+  .use("/likes", authMiddleware, controllers.likes);
 
 // Redirect to docs
-app.get("/", (req, res) => {
-  res.redirect("/docs");
-});
+app
+  .get("/", (req, res) => {
+    res.redirect("/docs");
+  })
+  .get("/swagger.json", (req, res) => {
+    res.send(swaggerSpec);
+  });
 
-app.get("/swagger.json", (req, res) => {
-  res.send(swaggerSpec);
-});
-
+// Startup
 (async () => {
   try {
     await SwaggerParser.validate(swaggerSpec);
