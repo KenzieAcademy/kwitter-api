@@ -41,15 +41,6 @@ router
     });
     res.json({ message });
   })
-  // update message by id
-  .patch("/:id", authMiddleware, async (req, res) => {
-    const message = await Message.update(req.body, {
-      where: {
-        id: req.params.id
-      }
-    });
-    res.json({ message });
-  })
   // delete message
   .delete("/:id", authMiddleware, async (req, res) => {
     const destroyedCount = await Message.destroy({
