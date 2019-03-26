@@ -57,7 +57,7 @@ router
           id: req.user.id
         }
       });
-      const user = await User.findOne({ where: { id: req.user.id } });
+      const user = await User.findById(req.user.id);
       res.send({ user });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
