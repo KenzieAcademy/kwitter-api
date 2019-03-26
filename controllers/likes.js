@@ -1,24 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const { Like } = require("../models");
+const Sequelize = require("sequelize");
 
 router
   // create a like
   .post("/", async (req, res) => {
-    const likeObject = {
-      userId: req.user.id,
-      messageId: req.body.messageId
-    };
     try {
-      const like = await Like.findOne({
-        where: likeObject
+      const like = await Like.create({
+        userId: req.user.id,
+        messageId: req.body.messageId
       });
-      if (like !== null) {
-        return res.status(409).send({ error: "Like already exists" });
-      }
-      const newlike = await Like.create(likeObject);
-      res.json({ like: newlike });
+      res.json({ like });
     } catch (err) {
+      if (err instanceof Sequelize.ValidationError) {
+        return res.status(400).send({ errors: err.errors });
+      }
       console.error(err);
       res.status(500).send({ error: err.toString() });
     }
