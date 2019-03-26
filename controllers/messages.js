@@ -59,7 +59,7 @@ router
       }
     });
     if (destroyedCount === 0) {
-      return res.status(400).send({ error: "Message does not exist" });
+      return res.status(404).send({ error: "Message does not exist" });
     }
     res.json({ id: req.params.id });
   });

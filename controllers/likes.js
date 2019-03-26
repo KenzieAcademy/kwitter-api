@@ -14,7 +14,7 @@ router
         where: likeObject
       });
       if (like !== null) {
-        return res.status(400).send({ error: "Like already exists" });
+        return res.status(409).send({ error: "Like already exists" });
       }
       const newlike = await Like.create(likeObject);
       res.json({ like: newlike });
@@ -33,7 +33,7 @@ router
         }
       });
       if (destroyedCount === 0) {
-        return res.status(400).send({ error: "Like does not exist" });
+        return res.status(404).send({ error: "Like does not exist" });
       } else {
         return res.json({ id: req.params.id });
       }
