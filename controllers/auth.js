@@ -46,7 +46,7 @@ router
   .post("/login", async (req, res) => {
     const { username, password } = req.body;
     const user = await User.scope(null).find({ where: { username } });
-    if (user && bcrypt.compareSync(password, user.get("password"))) {
+    if (user && (await bcrypt.compare(password, user.get("password")))) {
       const payload = { id: user.get("id") };
       const token = jwt.sign(payload, jwtOptions.secretOrKey);
       res.json({ token, id: payload.id });
