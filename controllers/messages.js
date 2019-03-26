@@ -23,11 +23,7 @@ router
   // read all messages
   .get("/", async (req, res) => {
     const messages = await Message.findAll({
-      include: [
-        {
-          model: Like
-        }
-      ],
+      include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
