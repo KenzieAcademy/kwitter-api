@@ -7,6 +7,75 @@ servers:
     description: localhost
   - url: https://kwitter-api.herokuapp.com
     description: Production Server
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        displayName:
+          type: string
+        about:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    Like:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        messageId:
+          type: integer
+        createdAt:
+          type: string
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+        userId:
+          type: integer
+        createdAt:
+          type: string
+        likes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Like"
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+  parameters:
+    limitParam:
+      name: limit
+      in: query
+      description: Number of items to return
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        default: 100
+    offsetParam:
+      name: offset
+      in: query
+      description: Number of items to skip
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        default: 0
 paths:
   /auth/login:
     post:
@@ -43,6 +112,8 @@ paths:
       summary: Logout a user
       tags:
         - Auth
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: OK
@@ -85,3 +156,280 @@ paths:
                     type: string
                   displayName:
                     type: string
+  /likes:
+    post:
+      summary: Add Like
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  like:
+                    $ref: "#/components/schemas/Like"
+  /likes/{likeId}:
+    delete:
+      summary: Remove Like
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: likeId
+          schema:
+            type: integer
+          required: true
+          description: id of the like to remove
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+  /messages:
+    get:
+      summary: Get a list of messages
+      tags:
+        - Messages
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number of messages to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of messages to return
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Message"
+    post:
+      summary: Create a message
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The message to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: "#/components/schemas/Message"
+  /messages/{messageId}:
+    get:
+      summary: Get a message
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: messageId
+          schema:
+            type: integer
+          required: true
+          description: id of the message to get
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: "#/components/schemas/Message"
+    delete:
+      summary: Delete a message
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: messageId
+          schema:
+            type: integer
+          required: true
+          description: id of the message to delete
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+  /users:
+    delete:
+      summary: Delete user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+    get:
+      summary: Get a list of users
+      tags:
+        - Users
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number of users to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The number of users to return
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+    patch:
+      summary: Update user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The user updates
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                about:
+                  type: string
+                displayName:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+  /users/{userId}:
+    get:
+      summary: Get a user
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          description: The id of the user to get
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+  /users/picture:
+    put:
+      summary: Set user's picture
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Picture data that is one of gif, jpeg, png
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                picture:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: OK
+  /users/{userId}/picture:
+    get:
+      summary: Get a user's picture
+      tags:
+        - Users
+      responses:
+        200:
+          description: OK
+          content:
+            img/png:
+              schema:
+                type: string
+                format: binary
+            img/gif:
+              schema:
+                type: string
+                format: binary
+            img/jpeg:
+              schema:
+                type: string
+                format: binary
