@@ -10,7 +10,8 @@ const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./specification.yaml");
 const controllers = require("./controllers");
 const { User, sequelize } = require("./models");
-const { jwtOptions, authMiddleware } = require("./controllers/auth");
+const { authMiddleware } = require("./controllers/auth");
+const { ExtractJwt } = require("passport-jwt");
 
 const app = express();
 
@@ -24,7 +25,10 @@ app
   .use(express.json());
 
 passport.use(
-  new Strategy(jwtOptions, async (payload, done) => {
+  new Strategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET
+  }, async (payload, done) => {
     const user = await User.findById(payload.id);
     done(null, user || false);
   })
