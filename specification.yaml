@@ -378,9 +378,10 @@ paths:
       parameters:
         - in: path
           name: userId
+          required: true
           schema:
             type: integer
-          description: The id of the user to get
+          description: The id of the user
       responses:
         200:
           description: OK
@@ -417,6 +418,14 @@ paths:
       summary: Get a user's picture
       tags:
         - Users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+          description: The id of the user
+
       responses:
         200:
           description: OK
