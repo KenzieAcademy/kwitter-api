@@ -13,38 +13,35 @@ const { User, sequelize } = require("./models");
 const { authMiddleware } = require("./controllers/auth");
 const { ExtractJwt } = require("passport-jwt");
 
+// Setup
 const app = express();
+passport.use(
+  new Strategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET
+    },
+    async (payload, done) => {
+      const user = await User.findById(payload.id);
+      done(null, user || false);
+    }
+  )
+);
 
-// Settings
-app.set("port", process.env.PORT || 3000);
-
-// Middleware
 app
+  .set("port", process.env.PORT || 3000)
+  // Middleware
   .use(cors())
   .use(morgan("tiny"))
-  .use(express.json());
-
-passport.use(
-  new Strategy({
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
-  }, async (payload, done) => {
-    const user = await User.findById(payload.id);
-    done(null, user || false);
-  })
-);
-app.use(passport.initialize());
-
-// Routes
-app
+  .use(express.json())
+  .use(passport.initialize())
+  // Routes
   .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
   .use("/auth", controllers.auth)
   .use("/users", controllers.users)
   .use("/messages", controllers.messages)
-  .use("/likes", authMiddleware, controllers.likes);
-
-// Redirect to docs
-app
+  .use("/likes", authMiddleware, controllers.likes)
+  // Redirect to docs
   .get("/", (req, res) => {
     res.redirect("/docs");
   })
