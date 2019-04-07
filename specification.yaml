@@ -260,7 +260,23 @@ paths:
                 properties:
                   like:
                     $ref: "#/components/schemas/Like"
-        
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrors'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
   /likes/{likeId}:
     delete:
       summary: Remove Like
@@ -285,6 +301,24 @@ paths:
                 properties:
                   id:
                     type: number
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Unauthorized
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
   /messages:
     get:
       summary: Get a list of messages
