@@ -93,6 +93,9 @@ paths:
                   type: string
                 password:
                   type: string
+              required:
+                - username
+                - password
       responses:
         200:
           description: OK
@@ -107,6 +110,18 @@ paths:
                     type: integer
                   token:
                     type: string
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+                  
   /auth/logout:
     get:
       summary: Logout a user
@@ -126,6 +141,9 @@ paths:
                     type: boolean
                   message:
                     type: string
+                required:
+                  - success
+                  - message
   /auth/register:
     post:
       summary: "Register a new user"
@@ -144,6 +162,10 @@ paths:
                   type: string
                 password:
                   type: string
+              required:
+                - username
+                - displayName
+                - password
       responses:
         200:
           description: OK
@@ -156,6 +178,47 @@ paths:
                     type: string
                   displayName:
                     type: string
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                        type:
+                          type: string
+                        path:
+                          type: string
+                        value:
+                          type: string
+                        origin:
+                          type: string
+                        instance:
+                          type: object
+                        validatorKeys:
+                          type: string
+                        validatorName: 
+                          type: string
+                          nullable: true
+                        validatorArgs:
+                          type: array
+                      required: 
+                        - message
+                        - type
+                        - path
+                        - value
+                        - origin
+                        - instance
+                        - validatorKeys
+                        - validatorName
+                        - validatorArgs
   /likes:
     post:
       summary: Add Like
@@ -173,6 +236,7 @@ paths:
                 properties:
                   like:
                     $ref: "#/components/schemas/Like"
+        
   /likes/{likeId}:
     delete:
       summary: Remove Like
