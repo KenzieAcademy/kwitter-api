@@ -109,6 +109,13 @@ components:
               - validatorArgs
       required:
         - errors
+    DatabaseError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -347,6 +354,12 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Message"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseError'
     post:
       summary: Create a message
       tags:
@@ -373,6 +386,8 @@ paths:
                 properties:
                   message:
                     $ref: "#/components/schemas/Message"
+                required:
+                  - message
   /messages/{messageId}:
     get:
       summary: Get a message
@@ -395,6 +410,15 @@ paths:
                 properties:
                   message:
                     $ref: "#/components/schemas/Message"
+                    nullable: true
+                required:
+                  - message
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
     delete:
       summary: Delete a message
       tags:
@@ -418,6 +442,18 @@ paths:
                 properties:
                   id:
                     type: integer
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+        404:
+          description: Not Found
+          content:
+            application/json:
+                schema:
+                  $ref: "#/components/schemas/DatabaseError"
   /users:
     delete:
       summary: Delete user
