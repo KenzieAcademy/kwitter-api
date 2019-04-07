@@ -24,6 +24,13 @@ components:
           type: string
         updatedAt:
           type: string
+      required:
+        - id
+        - username
+        - displayName
+        - about
+        - createdAt
+        - updatedAt
     Like:
       type: object
       properties:
@@ -35,6 +42,11 @@ components:
           type: integer
         createdAt:
           type: string
+      required:
+        - id
+        - userId
+        - messageId
+        - createdAt
     Message:
       type: object
       properties:
@@ -50,6 +62,53 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Like"
+      required:
+        - id
+        - text
+        - userId
+        - createdAt
+        - likes
+    ValidationErrors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              type:
+                type: string
+              path:
+                type: string
+              value:
+                type: string
+              origin:
+                type: string
+              instance:
+                type: object
+              validatorKeys:
+                type: string
+              validatorName: 
+                type: string
+                nullable: true
+              validatorArgs:
+                type: array
+                items:
+                  type: object
+            required: 
+              - message
+              - type
+              - path
+              - value
+              - origin
+              - instance
+              - validatorKeys
+              - validatorName
+              - validatorArgs
+      required:
+        - errors
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -183,42 +242,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        message:
-                          type: string
-                        type:
-                          type: string
-                        path:
-                          type: string
-                        value:
-                          type: string
-                        origin:
-                          type: string
-                        instance:
-                          type: object
-                        validatorKeys:
-                          type: string
-                        validatorName: 
-                          type: string
-                          nullable: true
-                        validatorArgs:
-                          type: array
-                      required: 
-                        - message
-                        - type
-                        - path
-                        - value
-                        - origin
-                        - instance
-                        - validatorKeys
-                        - validatorName
-                        - validatorArgs
+                $ref: "#/components/schemas/ValidationErrors"
   /likes:
     post:
       summary: Add Like
