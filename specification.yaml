@@ -179,6 +179,10 @@ paths:
                     type: integer
                   token:
                     type: string
+                required:
+                  - success
+                  - id
+                  - token
         401:
           description: Unauthorized
           content:
@@ -247,6 +251,9 @@ paths:
                     type: string
                   displayName:
                     type: string
+                required:
+                  - username
+                  - displayName
         400:
           description: Bad Request
           content:
@@ -317,6 +324,8 @@ paths:
                 properties:
                   id:
                     type: number
+                required:
+                  - id
         401:
           description: Unauthorized
           content:
@@ -384,6 +393,8 @@ paths:
               properties:
                 text:
                   type: string
+              required:
+                - text
       responses:
         200:
           description: OK
@@ -456,6 +467,8 @@ paths:
                 properties:
                   id:
                     type: integer
+                required:
+                  - id
         400:
           description: Bad Request
           content:
@@ -491,6 +504,8 @@ paths:
                 properties:
                   id:
                     type: integer
+                required:
+                  - id
         401:
           description: Unauthorized
           content:
@@ -561,6 +576,8 @@ paths:
                 properties:
                   user:
                     $ref: "#/components/schemas/User"
+                required:
+                  - user
         400:
           description: Bad Request
           content:
