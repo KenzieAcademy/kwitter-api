@@ -194,7 +194,6 @@ paths:
                     type: string
                 required:
                   - message
-
   /auth/logout:
     get:
       summary: Logout a user
