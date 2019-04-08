@@ -90,14 +90,14 @@ components:
                 type: object
               validatorKeys:
                 type: string
-              validatorName: 
+              validatorName:
                 type: string
                 nullable: true
               validatorArgs:
                 type: array
                 items:
                   type: object
-            required: 
+            required:
               - message
               - type
               - path
@@ -116,6 +116,9 @@ components:
           type: string
       required:
         - error
+    AuthError:
+      type: string
+      example: Unauthorized
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -187,7 +190,7 @@ paths:
                     type: string
                 required:
                   - message
-                  
+
   /auth/logout:
     get:
       summary: Logout a user
@@ -267,12 +270,18 @@ paths:
                 properties:
                   like:
                     $ref: "#/components/schemas/Like"
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrors'
+                $ref: "#/components/schemas/ValidationErrors"
         500:
           description: Internal Server Error
           content:
@@ -313,8 +322,7 @@ paths:
           content:
             text/plain:
               schema:
-                type: string
-                example: Unauthorized
+                $ref: "#/components/schemas/AuthError"
         404:
           description: Not Found
           content:
@@ -359,7 +367,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DatabaseError'
+                $ref: "#/components/schemas/DatabaseError"
     post:
       summary: Create a message
       tags:
@@ -388,6 +396,12 @@ paths:
                     $ref: "#/components/schemas/Message"
                 required:
                   - message
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
   /messages/{messageId}:
     get:
       summary: Get a message
@@ -448,12 +462,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DatabaseError"
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
         404:
           description: Not Found
           content:
             application/json:
-                schema:
-                  $ref: "#/components/schemas/DatabaseError"
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
   /users:
     delete:
       summary: Delete user
@@ -471,6 +491,13 @@ paths:
                 properties:
                   id:
                     type: integer
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+
     get:
       summary: Get a list of users
       tags:
@@ -498,6 +525,12 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/User"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
     patch:
       summary: Update user
       tags:
@@ -528,6 +561,18 @@ paths:
                 properties:
                   user:
                     $ref: "#/components/schemas/User"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrors"
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
   /users/{userId}:
     get:
       summary: Get a user
@@ -550,6 +595,15 @@ paths:
                 properties:
                   user:
                     $ref: "#/components/schemas/User"
+                    nullable: true
+                required:
+                  - user
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
   /users/picture:
     put:
       summary: Set user's picture
@@ -568,9 +622,17 @@ paths:
                 picture:
                   type: string
                   format: binary
+              required:
+                - picture
       responses:
         200:
           description: OK
+        401:
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: "#/components/schemas/AuthError"
   /users/{userId}/picture:
     get:
       summary: Get a user's picture
@@ -600,3 +662,9 @@ paths:
               schema:
                 type: string
                 format: binary
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"

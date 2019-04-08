@@ -17,24 +17,40 @@ router
   // get a specific user by id
   .get("/:id", async (req, res) => {
     const id = req.params.id;
-    const user = await User.findById(id, {
-      include: [
-        {
-          model: Message,
-          include: [Like]
-        }
-      ]
-    });
-    res.json({ user });
+    try {
+      const user = await User.findById(id, {
+        include: [
+          {
+            model: Message,
+            include: [Like]
+          }
+        ]
+      });
+      res.json({ user });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Sequelize.DatabaseError) {
+        return res.status(400).send({ error: err.toString() });
+      }
+      return res.status(500).send();
+    }
   })
   // get list of users
   .get("/", async (req, res) => {
-    const users = await User.findAll({
-      limit: req.query.limit || 100,
-      offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]]
-    });
-    res.json({ users });
+    try {
+      const users = await User.findAll({
+        limit: req.query.limit || 100,
+        offset: req.query.offset || 0,
+        order: [["createdAt", "DESC"]]
+      });
+      res.json({ users });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Sequelize.DatabaseError) {
+        return res.status(400).send({ error: err.toString() });
+      }
+      return res.status(500).send();
+    }
   })
   // update a user by id
   .patch("/", authMiddleware, async (req, res) => {
@@ -96,7 +112,10 @@ router
       res.send(picture);
     } catch (err) {
       console.log(err);
-      res.status(500).send();
+      if (err instanceof Sequelize.DatabaseError) {
+        return res.status(400).send({ error: err.toString() });
+      }
+      return res.status(500).send();
     }
   })
   // add user's picture
