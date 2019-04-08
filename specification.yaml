@@ -149,6 +149,7 @@ paths:
   /auth/login:
     post:
       summary: Login user
+      operationId: login
       tags:
         - Auth
       requestBody:
@@ -197,6 +198,7 @@ paths:
   /auth/logout:
     get:
       summary: Logout a user
+      operationId: logout
       tags:
         - Auth
       security:
@@ -218,7 +220,8 @@ paths:
                   - message
   /auth/register:
     post:
-      summary: "Register a new user"
+      summary: Register a new user
+      operationId: register
       tags:
         - Auth
       requestBody:
@@ -262,6 +265,7 @@ paths:
   /likes:
     post:
       summary: Add Like
+      operationId: addLike
       tags:
         - Likes
       security:
@@ -302,6 +306,7 @@ paths:
   /likes/{likeId}:
     delete:
       summary: Remove Like
+      operationId: removeLike
       tags:
         - Likes
       security:
@@ -345,6 +350,7 @@ paths:
   /messages:
     get:
       summary: Get a list of messages
+      operationId: getMessages
       tags:
         - Messages
       parameters:
@@ -378,6 +384,7 @@ paths:
                 $ref: "#/components/schemas/DatabaseError"
     post:
       summary: Create a message
+      operationId: createMessage
       tags:
         - Messages
       security:
@@ -415,6 +422,7 @@ paths:
   /messages/{messageId}:
     get:
       summary: Get a message
+      operationId: getMessage
       tags:
         - Messages
       parameters:
@@ -445,6 +453,7 @@ paths:
                 $ref: "#/components/schemas/DatabaseError"
     delete:
       summary: Delete a message
+      operationId: deleteMessage
       tags:
         - Messages
       security:
@@ -489,6 +498,7 @@ paths:
   /users:
     delete:
       summary: Delete user
+      operationId: deleteUser
       tags:
         - Users
       security:
@@ -514,6 +524,7 @@ paths:
 
     get:
       summary: Get a list of users
+      operationId: getUsers
       tags:
         - Users
       parameters:
@@ -547,6 +558,7 @@ paths:
                 $ref: "#/components/schemas/DatabaseError"
     patch:
       summary: Update user
+      operationId: updateUser
       tags:
         - Users
       security:
@@ -592,6 +604,7 @@ paths:
   /users/{userId}:
     get:
       summary: Get a user
+      operationId: getUser
       tags:
         - Users
       parameters:
@@ -623,6 +636,7 @@ paths:
   /users/picture:
     put:
       summary: Set user's picture
+      operationId: setUserPicture
       tags:
         - Users
       security:
@@ -652,6 +666,7 @@ paths:
   /users/{userId}/picture:
     get:
       summary: Get a user's picture
+      operationId: getUserPicture
       tags:
         - Users
       parameters:
