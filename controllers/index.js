@@ -1,11 +1,10 @@
 const users = require("./users");
 const messages = require("./messages");
 const likes = require("./likes");
-const { router } = require("./auth");
-
+const auth = require("./auth");
 module.exports = {
-  auth: router,
-  likes,
-  messages,
-  users
+  ...auth,
+  ...likes,
+  ...messages,
+  ...users
 };

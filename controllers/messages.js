@@ -1,12 +1,11 @@
-const express = require("express");
-const router = express.Router();
 const { Message, Like } = require("../models");
 const { authMiddleware } = require("./auth");
 const Sequelize = require("sequelize");
 
-router
-  // create a message
-  .post("/", authMiddleware, async (req, res) => {
+// create a message
+const createMessage = [
+  authMiddleware,
+  async (req, res) => {
     try {
       const message = await Message.create({
         text: req.body.text,
@@ -19,44 +18,50 @@ router
       }
       res.status(500).send();
     }
-  })
-  // read all messages
-  .get("/", async (req, res) => {
-    try {
-      const messages = await Message.findAll({
-        include: [Like],
-        limit: req.query.limit || 100,
-        offset: req.query.offset || 0,
-        order: [["createdAt", "DESC"]]
-      });
-      res.json({ messages });
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
-      } else if (err instanceof Sequelize.DatabaseError) {
-        return res.status(400).send({ error: err.toString() });
-      }
-      res.status(500).send();
+  }
+];
+
+// get messages
+const getMessages = async (req, res) => {
+  try {
+    const messages = await Message.findAll({
+      include: [Like],
+      limit: req.query.limit || 100,
+      offset: req.query.offset || 0,
+      order: [["createdAt", "DESC"]]
+    });
+    res.json({ messages });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof Sequelize.ValidationError) {
+      return res.status(400).send({ errors: err.errors });
+    } else if (err instanceof Sequelize.DatabaseError) {
+      return res.status(400).send({ error: err.toString() });
     }
-  })
-  // read message by id
-  .get("/:id", async (req, res) => {
-    try {
-      const message = await Message.findById(req.params.id, {
-        include: [Like]
-      });
-      res.json({ message });
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Sequelize.DatabaseError) {
-        return res.status(400).send({ error: err.toString() });
-      }
-      return res.status(500).send();
+    res.status(500).send();
+  }
+};
+
+// get message by id
+const getMessage = async (req, res) => {
+  try {
+    const message = await Message.findById(req.params.id, {
+      include: [Like]
+    });
+    res.json({ message });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof Sequelize.DatabaseError) {
+      return res.status(400).send({ error: err.toString() });
     }
-  })
-  // delete message
-  .delete("/:id", authMiddleware, async (req, res) => {
+    return res.status(500).send();
+  }
+};
+
+// delete message
+const deleteMessage = [
+  authMiddleware,
+  async (req, res) => {
     try {
       const destroyedCount = await Message.destroy({
         where: {
@@ -75,6 +80,12 @@ router
       }
       return res.status(500).send();
     }
-  });
+  }
+];
 
-module.exports = router;
+module.exports = {
+  deleteMessage,
+  getMessage,
+  getMessages,
+  createMessage
+};

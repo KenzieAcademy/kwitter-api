@@ -1,11 +1,11 @@
-const express = require("express");
-const router = express.Router();
 const { Like } = require("../models");
 const Sequelize = require("sequelize");
+const { authMiddleware } = require("./auth");
 
-router
-  // create a like
-  .post("/", async (req, res) => {
+// add a like
+const addLike = [
+  authMiddleware,
+  async (req, res) => {
     try {
       const like = await Like.create({
         userId: req.user.id,
@@ -19,9 +19,12 @@ router
       console.error(err);
       res.status(500).send({ error: err.toString() });
     }
-  })
-  // delete a like
-  .delete("/:id", async (req, res) => {
+  }
+];
+// remove a like
+const removeLike = [
+  authMiddleware,
+  async (req, res) => {
     try {
       const destroyedCount = await Like.destroy({
         where: {
@@ -38,6 +41,10 @@ router
       console.error(err);
       res.status(500).send({ error: err.toString() });
     }
-  });
+  }
+];
 
-module.exports = router;
+module.exports = {
+  addLike,
+  removeLike
+};

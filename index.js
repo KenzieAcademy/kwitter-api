@@ -12,9 +12,11 @@ const controllers = require("./controllers");
 const { User, sequelize } = require("./models");
 const { authMiddleware } = require("./controllers/auth");
 const { ExtractJwt } = require("passport-jwt");
+const EnforcerMiddleware = require("openapi-enforcer-middleware");
 
 // Setup
 const app = express();
+const enforcer = EnforcerMiddleware("./specification.yaml");
 passport.use(
   new Strategy(
     {
@@ -36,11 +38,8 @@ app
   .use(express.json())
   .use(passport.initialize())
   // Routes
+  .use(enforcer.middleware())
   .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-  .use("/auth", controllers.auth)
-  .use("/users", controllers.users)
-  .use("/messages", controllers.messages)
-  .use("/likes", authMiddleware, controllers.likes)
   // Redirect to docs
   .get("/", (req, res) => {
     res.redirect("/docs");
@@ -54,6 +53,8 @@ app
   try {
     await SwaggerParser.validate(swaggerSpec);
     await sequelize.authenticate();
+    await enforcer.promise;
+    await enforcer.controllers("./controllers");
     app.listen(app.get("port"), () =>
       console.log(`API server now running on port ${app.get("port")}`)
     );
