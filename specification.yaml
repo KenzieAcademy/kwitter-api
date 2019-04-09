@@ -176,14 +176,11 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
                   id:
                     type: integer
                   token:
                     type: string
                 required:
-                  - success
                   - id
                   - token
         401:
