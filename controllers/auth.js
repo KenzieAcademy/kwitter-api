@@ -7,10 +7,13 @@ const { User } = require("../models");
 const authMiddleware = passport.authenticate("jwt", { session: false });
 
 // logout user
-const logout = (req, res) => {
-  req.logout();
-  res.send({ success: true, message: "Logged out!" });
-};
+const logout = [
+  authMiddleware,
+  (req, res) => {
+    req.logout();
+    res.send({ success: true, message: "Logged out!" });
+  }
+];
 
 // register a new user
 const register = async (req, res) => {
