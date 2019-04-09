@@ -11,7 +11,7 @@ const addLike = [
         userId: req.user.id,
         messageId: req.body.messageId
       });
-      res.json({ like });
+      res.send({ like });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({ errors: err.errors });
@@ -35,7 +35,7 @@ const removeLike = [
       if (destroyedCount === 0) {
         return res.status(404).send({ error: "Like does not exist" });
       } else {
-        return res.json({ id: req.params.id });
+        return res.send({ id: req.params.id });
       }
     } catch (err) {
       console.error(err);

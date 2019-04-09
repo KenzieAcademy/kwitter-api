@@ -11,7 +11,7 @@ const createMessage = [
         text: req.body.text,
         userId: req.user.get("id")
       });
-      res.json({ message });
+      res.send({ message });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({ errors: err.errors });
@@ -30,7 +30,7 @@ const getMessages = async (req, res) => {
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    res.json({ messages });
+    res.send({ messages });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.ValidationError) {
@@ -48,7 +48,7 @@ const getMessage = async (req, res) => {
     const message = await Message.findById(req.params.id, {
       include: [Like]
     });
-    res.json({ message });
+    res.send({ message });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {
@@ -72,7 +72,7 @@ const deleteMessage = [
       if (destroyedCount === 0) {
         return res.status(404).send({ error: "Message does not exist" });
       }
-      res.json({ id: req.params.id });
+      res.send({ id: req.params.id });
     } catch (err) {
       console.error(err);
       if (err instanceof Sequelize.DatabaseError) {

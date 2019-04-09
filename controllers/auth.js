@@ -9,7 +9,7 @@ const authMiddleware = passport.authenticate("jwt", { session: false });
 // logout user
 const logout = (req, res) => {
   req.logout();
-  res.json({ success: true, message: "Logged out!" });
+  res.send({ success: true, message: "Logged out!" });
 };
 
 // register a new user
@@ -21,7 +21,7 @@ const register = async (req, res) => {
       displayName,
       password
     });
-    res.json({
+    res.send({
       username: user.get("username"),
       displayName: user.get("displayName")
     });
@@ -41,9 +41,9 @@ const login = async (req, res) => {
   if (user && (await bcrypt.compare(password, user.get("password")))) {
     const payload = { id: user.get("id") };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
-    res.json({ token, id: payload.id });
+    res.send({ token, id: payload.id });
   } else {
-    res.status(401).json({ message: "Invalid username or password" });
+    res.status(401).send({ message: "Invalid username or password" });
   }
 };
 

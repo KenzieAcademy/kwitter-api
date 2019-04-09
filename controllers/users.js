@@ -21,7 +21,7 @@ const getUser = async (req, res) => {
         }
       ]
     });
-    res.json({ user });
+    res.send({ user });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {
@@ -38,7 +38,7 @@ const getUsers = async (req, res) => {
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    res.json({ users });
+    res.send({ users });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {
@@ -90,7 +90,7 @@ const deleteUser = [
           id: req.user.id
         }
       });
-      res.json({ id: req.user.id });
+      res.send({ id: req.user.id });
     } catch (err) {
       console.error(err);
       res.send(500).send();
