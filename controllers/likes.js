@@ -14,7 +14,14 @@ const addLike = [
       res.send({ like });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
+        return res.status(400).send({
+          errors: err.errors.map(err => ({
+            message: err.message,
+            type: err.type,
+            path: err.path,
+            value: err.value
+          }))
+        });
       }
       console.error(err);
       res.status(500).send({ error: err.toString() });

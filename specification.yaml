@@ -84,29 +84,11 @@ components:
                 type: string
               value:
                 type: string
-              origin:
-                type: string
-              instance:
-                type: object
-              validatorKeys:
-                type: string
-              validatorName:
-                type: string
-                nullable: true
-              validatorArgs:
-                type: array
-                items:
-                  type: object
             required:
               - message
               - type
               - path
               - value
-              - origin
-              - instance
-              - validatorKeys
-              - validatorName
-              - validatorArgs
       required:
         - errors
     DatabaseError:

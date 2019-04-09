@@ -14,7 +14,14 @@ const createMessage = [
       res.send({ message });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
+        return res.status(400).send({
+          errors: err.errors.map(err => ({
+            message: err.message,
+            type: err.type,
+            path: err.path,
+            value: err.value
+          }))
+        });
       }
       res.status(500).send();
     }
@@ -34,7 +41,14 @@ const getMessages = async (req, res) => {
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.ValidationError) {
-      return res.status(400).send({ errors: err.errors });
+      return res.status(400).send({
+        errors: err.errors.map(err => ({
+          message: err.message,
+          type: err.type,
+          path: err.path,
+          value: err.value
+        }))
+      });
     } else if (err instanceof Sequelize.DatabaseError) {
       return res.status(400).send({ error: err.toString() });
     }
