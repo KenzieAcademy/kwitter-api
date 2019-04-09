@@ -270,6 +270,17 @@ paths:
         - Likes
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messageId:
+                  type: integer
+              required:
+                - messageId
       responses:
         200:
           description: OK
