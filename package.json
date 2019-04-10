@@ -15,7 +15,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "openapi-enforcer": "^1.1.11",
-    "openapi-enforcer-middleware": "^1.0.7",
+    "openapi-enforcer-middleware": "github:thurt/openapi-enforcer-middleware#overwrite-res-json",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pg": "^6.4.2",
