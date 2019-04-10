@@ -100,7 +100,7 @@ const deleteUser = [
       res.send({ id: req.user.id });
     } catch (err) {
       console.error(err);
-      res.send(500).send();
+      res.status(500).send();
     }
   }
 ];
