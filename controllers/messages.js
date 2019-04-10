@@ -11,7 +11,7 @@ const createMessage = [
         text: req.body.text,
         userId: req.user.get("id")
       });
-      res.send({ message });
+      res.json({ message });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({
@@ -37,7 +37,7 @@ const getMessages = async (req, res) => {
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    res.send({ messages });
+    res.json({ messages });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.ValidationError) {
@@ -62,7 +62,7 @@ const getMessage = async (req, res) => {
     const message = await Message.findById(req.params.id, {
       include: [Like]
     });
-    res.send({ message });
+    res.json({ message });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {

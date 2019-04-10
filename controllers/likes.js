@@ -11,7 +11,7 @@ const addLike = [
         userId: req.user.id,
         messageId: req.body.messageId
       });
-      res.send({ like });
+      res.json({ like });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({

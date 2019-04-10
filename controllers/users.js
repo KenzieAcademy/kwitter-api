@@ -21,7 +21,7 @@ const getUser = async (req, res) => {
         }
       ]
     });
-    res.send({ user });
+    res.json({ user });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {
@@ -38,7 +38,7 @@ const getUsers = async (req, res) => {
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    res.send({ users });
+    res.json({ users });
   } catch (err) {
     console.error(err);
     if (err instanceof Sequelize.DatabaseError) {
@@ -71,7 +71,7 @@ const updateUser = [
         }
       });
       const user = await User.findById(req.user.id);
-      res.send({ user });
+      res.json({ user });
     } catch (err) {
       if (err instanceof Sequelize.ValidationError) {
         return res.status(400).send({
