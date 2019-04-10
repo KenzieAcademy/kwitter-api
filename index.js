@@ -8,9 +8,7 @@ const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
 const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./specification.yaml");
-const controllers = require("./controllers");
 const { User, sequelize } = require("./models");
-const { authMiddleware } = require("./controllers/auth");
 const { ExtractJwt } = require("passport-jwt");
 const EnforcerMiddleware = require("openapi-enforcer-middleware");
 
