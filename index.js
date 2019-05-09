@@ -11,6 +11,7 @@ const swaggerSpec = YAML.load("./specification.yaml");
 const { User, sequelize } = require("./models");
 const { ExtractJwt } = require("passport-jwt");
 const EnforcerMiddleware = require("openapi-enforcer-middleware");
+const statuses = require("statuses");
 
 // Setup
 const app = express();
@@ -44,6 +45,21 @@ app
   })
   .get("/swagger.json", (req, res) => {
     res.send(swaggerSpec);
+  })
+  .use((err, req, res, next) => {
+    if (err.statusCode >= 400 && err.statusCode < 500 && err.exception) {
+      res.status(err.statusCode).json({
+        message: err.message,
+        statusCode: err.statusCode
+      });
+    } else {
+      const statusCode = err.statusCode || 500;
+      console.error(err.stack);
+      res.json({
+        message: statuses[statusCode],
+        statusCode: statusCode
+      });
+    }
   });
 
 // Startup
