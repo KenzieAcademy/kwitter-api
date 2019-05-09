@@ -531,7 +531,6 @@ paths:
             text/plain:
               schema:
                 $ref: "#/components/schemas/AuthError"
-
     get:
       summary: Get a list of users
       operationId: getUsers
@@ -584,7 +583,7 @@ paths:
           application/json:
             schema:
               type: object
-              properties:
+              properties: ## todo: is there a way to required at least one of these with openapi?
                 password:
                   type: string
                 about:
