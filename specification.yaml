@@ -218,10 +218,16 @@ paths:
               properties:
                 username:
                   type: string
+                  minLength: 3
+                  maxLength: 20
                 displayName:
                   type: string
+                  minLength: 3
+                  maxLength: 20
                 password:
                   type: string
+                  minLength: 3
+                  maxLength: 20
               required:
                 - username
                 - displayName
@@ -403,6 +409,8 @@ paths:
               properties:
                 text:
                   type: string
+                  minLength: 2
+                  maxLength: 255
               required:
                 - text
       responses:
@@ -586,10 +594,16 @@ paths:
               properties: ## todo: is there a way to required at least one of these with openapi?
                 password:
                   type: string
+                  minLength: 3
+                  maxLength: 20
                 about:
                   type: string
+                  minLength: 0
+                  maxLength: 255
                 displayName:
                   type: string
+                  minLength: 3
+                  maxLength: 20
       responses:
         200:
           description: OK

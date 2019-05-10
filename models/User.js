@@ -11,43 +11,21 @@ module.exports = function(sequelize, DataTypes) {
           notContains: {
             args: " ",
             msg: "Username cannot include spaces"
-          },
-          len: {
-            args: [3, 20],
-            msg: "Username must be between 3 and 20 characters"
           }
         }
       },
       displayName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: {
-            args: [3, 20],
-            msg: "Display name must be between 3 and 20 characters"
-          }
-        }
+        allowNull: false
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: {
-            args: [3, 20],
-            msg: "Password must be between 3 and 20 characters"
-          }
-        }
+        allowNull: false
       },
       about: {
         type: DataTypes.STRING,
         defaultValue: "",
-        allowNull: false,
-        validate: {
-          len: {
-            args: [0, 255],
-            msg: "About must be 255 characters or less"
-          }
-        }
+        allowNull: false
       },
       picture: {
         type: DataTypes.BLOB,
