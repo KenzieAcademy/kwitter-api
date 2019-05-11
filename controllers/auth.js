@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Sequelize = require("sequelize");
 const passport = require("passport");
 const { User } = require("../models");
 
@@ -16,7 +15,7 @@ const logout = [
 ];
 
 // register a new user
-const register = async (req, res) => {
+const register = async (req, res, next) => {
   const { username, displayName, password } = req.body;
   try {
     const user = await User.create({
@@ -29,18 +28,7 @@ const register = async (req, res) => {
       displayName: user.get("displayName")
     });
   } catch (err) {
-    if (err instanceof Sequelize.ValidationError) {
-      return res.status(400).send({
-        errors: err.errors.map(err => ({
-          message: err.message,
-          type: err.type,
-          path: err.path,
-          value: err.value
-        }))
-      });
-    }
-    console.error(err);
-    res.status(500).send();
+    next(err);
   }
 };
 

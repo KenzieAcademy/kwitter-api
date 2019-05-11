@@ -1,5 +1,3 @@
-const express = require("express");
-const Sequelize = require("sequelize");
 const { User, Message, Like } = require("../models");
 const { authMiddleware } = require("./auth");
 const multer = require("multer");
@@ -10,7 +8,7 @@ const upload = multer({
 });
 
 // get a specific user by id
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   const id = req.params.id;
   try {
     const user = await User.findById(id, {
@@ -23,15 +21,11 @@ const getUser = async (req, res) => {
     });
     res.json({ user });
   } catch (err) {
-    console.error(err);
-    if (err instanceof Sequelize.DatabaseError) {
-      return res.status(400).send({ error: err.toString() });
-    }
-    return res.status(500).send();
+    next(err);
   }
 };
 // get list of users
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.findAll({
       limit: req.query.limit || 100,
@@ -40,17 +34,13 @@ const getUsers = async (req, res) => {
     });
     res.json({ users });
   } catch (err) {
-    console.error(err);
-    if (err instanceof Sequelize.DatabaseError) {
-      return res.status(400).send({ error: err.toString() });
-    }
-    return res.status(500).send();
+    next(err);
   }
 };
 // update a user by id
 const updateUser = [
   authMiddleware,
-  async (req, res) => {
+  async (req, res, next) => {
     const patch = {};
     if (req.body.password !== undefined) {
       patch.password = req.body.password;
@@ -73,24 +63,14 @@ const updateUser = [
       const user = await User.findById(req.user.id);
       res.json({ user });
     } catch (err) {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({
-          errors: err.errors.map(err => ({
-            message: err.message,
-            type: err.type,
-            path: err.path,
-            value: err.value
-          }))
-        });
-      }
-      res.status(500).send();
+      next(err);
     }
   }
 ];
 // delete a user by id
 const deleteUser = [
   authMiddleware,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       await User.destroy({
         where: {
@@ -99,14 +79,13 @@ const deleteUser = [
       });
       res.send({ id: req.user.id });
     } catch (err) {
-      console.error(err);
-      res.status(500).send();
+      next(err);
     }
   }
 ];
 
 // get user's picture
-const getUserPicture = async (req, res) => {
+const getUserPicture = async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await User.scope("picture").findById(id);
@@ -120,11 +99,7 @@ const getUserPicture = async (req, res) => {
     });
     res.send(picture);
   } catch (err) {
-    console.log(err);
-    if (err instanceof Sequelize.DatabaseError) {
-      return res.status(400).send({ error: err.toString() });
-    }
-    return res.status(500).send();
+    next(err);
   }
 };
 
@@ -132,7 +107,7 @@ const getUserPicture = async (req, res) => {
 const setUserPicture = [
   authMiddleware,
   upload.single("picture"),
-  async (req, res) => {
+  async (req, res, next) => {
     const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
     const { buffer, mimetype } = req.file;
     const { id } = req.user;
@@ -150,8 +125,7 @@ const setUserPicture = [
       res.set({ "Content-Location": `/users/${id}/picture` });
       res.send();
     } catch (err) {
-      console.log(err);
-      res.status(500).send();
+      next(err);
     }
   }
 ];

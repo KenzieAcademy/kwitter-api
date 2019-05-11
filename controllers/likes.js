@@ -1,11 +1,10 @@
 const { Like } = require("../models");
-const Sequelize = require("sequelize");
 const { authMiddleware } = require("./auth");
 
 // add a like
 const addLike = [
   authMiddleware,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const like = await Like.create({
         userId: req.user.id,
@@ -13,25 +12,14 @@ const addLike = [
       });
       res.json({ like });
     } catch (err) {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({
-          errors: err.errors.map(err => ({
-            message: err.message,
-            type: err.type,
-            path: err.path,
-            value: err.value
-          }))
-        });
-      }
-      console.error(err);
-      res.status(500).send({ error: err.toString() });
+      next(err);
     }
   }
 ];
 // remove a like
 const removeLike = [
   authMiddleware,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const destroyedCount = await Like.destroy({
         where: {
@@ -45,8 +33,7 @@ const removeLike = [
         return res.send({ id: req.params.id });
       }
     } catch (err) {
-      console.error(err);
-      res.status(500).send({ error: err.toString() });
+      next(err);
     }
   }
 ];

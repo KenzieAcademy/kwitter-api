@@ -12,6 +12,7 @@ const { User, sequelize } = require("./models");
 const { ExtractJwt } = require("passport-jwt");
 const EnforcerMiddleware = require("openapi-enforcer-middleware");
 const statuses = require("statuses");
+const Sequelize = require("sequelize");
 
 // Setup
 const app = express();
@@ -47,7 +48,19 @@ app
     res.send(swaggerSpec);
   })
   .use((err, req, res, next) => {
-    if (err.statusCode >= 400 && err.statusCode < 500 && err.exception) {
+    if (err instanceof Sequelize.ValidationError) {
+      err.statusCode = 400;
+      if (err instanceof Sequelize.UniqueConstraintError) {
+        // Sequelize.UniqueConstraintError requires special handling to pull out the first error message
+        const uniqueConstraintError = new VError(err, err.errors[0].message);
+        next(uniqueConstraintError);
+        return;
+      }
+    }
+    next(err);
+  })
+  .use((err, req, res, next) => {
+    if (err.statusCode >= 400 && err.statusCode < 500) {
       res.status(err.statusCode).json({
         message: err.message,
         statusCode: err.statusCode
