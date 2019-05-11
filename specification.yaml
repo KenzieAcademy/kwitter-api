@@ -68,36 +68,18 @@ components:
         - userId
         - createdAt
         - likes
-    ValidationErrors:
+    OperationalError:
       type: object
       properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              message:
-                type: string
-              type:
-                type: string
-              path:
-                type: string
-              value:
-                type: string
-            required:
-              - message
-              - type
-              - path
-              - value
-      required:
-        - errors
-    DatabaseError:
-      type: object
-      properties:
-        error:
+        message:
           type: string
+        statusCode:
+          type: integer
+          min: 400
+          max: 599
       required:
-        - error
+        - message
+        - statusCode
     AuthError:
       type: string
       example: Unauthorized
@@ -252,7 +234,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrors"
+                $ref: "#/components/schemas/OperationalError"
   /likes:
     post:
       summary: Add Like
@@ -295,7 +277,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrors"
+                $ref: "#/components/schemas/OperationalError"
         500:
           description: Internal Server Error
           content:
@@ -347,12 +329,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                required:
-                  - error
+                $ref: "#/components/schemas/OperationalError"
   /messages:
     get:
       summary: Get a list of messages
@@ -389,7 +366,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
     post:
       summary: Create a message
       operationId: createMessage
@@ -464,7 +441,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
     delete:
       summary: Delete a message
       operationId: deleteMessage
@@ -498,7 +475,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
           content:
@@ -510,7 +487,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
   /users:
     delete:
       summary: Delete user
@@ -574,7 +551,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
     patch:
       summary: Update user
       operationId: updateUser
@@ -621,7 +598,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationErrors"
+                $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
           content:
@@ -661,7 +638,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
   /users/picture:
     put:
       summary: Set user's picture
@@ -709,7 +686,6 @@ paths:
           schema:
             type: integer
           description: The id of the user
-
       responses:
         200:
           description: OK
@@ -731,4 +707,4 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DatabaseError"
+                $ref: "#/components/schemas/OperationalError"
