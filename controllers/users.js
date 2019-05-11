@@ -89,8 +89,13 @@ const getUserPicture = async (req, res, next) => {
   const { id } = req.params;
   try {
     const user = await User.scope("picture").findById(id);
-    if (user === null || user.picture === null) {
-      return res.status(404).send();
+    if (user === null) {
+      next({ statusCode: 404, message: "User does not exist" });
+      return;
+    }
+    if (user.picture === null) {
+      next({ statusCode: 404, message: "User does not have a picture" });
+      return;
     }
     const { picture, pictureContentType } = user;
     res.set({

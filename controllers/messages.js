@@ -56,7 +56,10 @@ const deleteMessage = [
         }
       });
       if (destroyedCount === 0) {
-        return res.status(404).send({ error: "Message does not exist" });
+        next({
+          statusCode: 404,
+          message: "Message does not exist"
+        });
       }
       res.send({ id: req.params.id });
     } catch (err) {

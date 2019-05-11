@@ -28,10 +28,14 @@ const removeLike = [
         }
       });
       if (destroyedCount === 0) {
-        return res.status(404).send({ error: "Like does not exist" });
-      } else {
-        return res.send({ id: req.params.id });
+        next({
+          statusCode: 404,
+          message: "Like does not exist"
+        });
+        return;
       }
+
+      res.send({ id: req.params.id });
     } catch (err) {
       next(err);
     }
