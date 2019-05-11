@@ -118,7 +118,12 @@ const setUserPicture = [
     const { id } = req.user;
 
     if (!supportedContentTypes.includes(mimetype)) {
-      res.status(415).send();
+      next({
+        statusCode: 415,
+        message: `Content-Type must be one of ${supportedContentTypes.join(
+          ", "
+        )}`
+      });
       return;
     }
 

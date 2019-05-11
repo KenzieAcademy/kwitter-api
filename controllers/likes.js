@@ -34,7 +34,6 @@ const removeLike = [
         });
         return;
       }
-
       res.send({ id: req.params.id });
     } catch (err) {
       next(err);

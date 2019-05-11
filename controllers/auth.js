@@ -33,7 +33,7 @@ const register = async (req, res, next) => {
 };
 
 // login user
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const { username, password } = req.body;
   const user = await User.scope(null).findOne({ where: { username } });
   if (user && (await bcrypt.compare(password, user.get("password")))) {
@@ -41,7 +41,10 @@ const login = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET);
     res.send({ token, id: payload.id });
   } else {
-    res.status(401).send({ message: "Invalid username or password" });
+    next({
+      statusCode: 400,
+      message: "Invalid username or password"
+    });
   }
 };
 

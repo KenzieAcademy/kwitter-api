@@ -147,17 +147,12 @@ paths:
                 required:
                   - id
                   - token
-        401:
-          description: Unauthorized
+        400:
+          description: Bad Request
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
+                $ref: "#/components/schemas/OperationalError"
   /auth/logout:
     get:
       summary: Logout a user
@@ -671,6 +666,12 @@ paths:
             text/plain:
               schema:
                 $ref: "#/components/schemas/AuthError"
+        415:
+          description: Unsupported Media type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
   /users/{userId}/picture:
     get:
       summary: Get a user's picture
@@ -704,6 +705,12 @@ paths:
                 format: binary
         400:
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
           content:
             application/json:
               schema:
