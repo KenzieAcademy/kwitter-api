@@ -24,8 +24,22 @@ passport.use(
       secretOrKey: process.env.JWT_SECRET
     },
     async (payload, done) => {
-      const user = await User.findById(payload.id);
-      done(null, user || false);
+      try {
+        const user = await User.findById(payload.id);
+        if (user === null) {
+          done(
+            {
+              statusCode: 404,
+              message: "User does not exist"
+            },
+            false
+          );
+          return;
+        }
+        done(null, user);
+      } catch (err) {
+        done(err);
+      }
     }
   )
 );
@@ -51,8 +65,10 @@ app
     if (err instanceof Sequelize.ValidationError) {
       err.statusCode = 400;
       if (err instanceof Sequelize.UniqueConstraintError) {
-        // Sequelize.UniqueConstraintError requires special handling to pull out the first error message
-        const uniqueConstraintError = new VError(err, err.errors[0].message);
+        // Sequelize.UniqueConstraintError requires special handling to create a clean error message
+        const uniqueConstraintError = Object.assign(err, {
+          message: err.errors[0].message
+        });
         next(uniqueConstraintError);
         return;
       }
