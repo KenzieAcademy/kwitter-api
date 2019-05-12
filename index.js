@@ -3,13 +3,12 @@ const express = require("express");
 const morgan = require("morgan");
 const passport = require("passport");
 const swaggerUi = require("swagger-ui-express");
-const { Strategy } = require("passport-jwt");
 const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
 const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./specification.yaml");
-const { User, sequelize } = require("./models");
-const { ExtractJwt } = require("passport-jwt");
+const { sequelize } = require("./models");
+
 const EnforcerMiddleware = require("openapi-enforcer-middleware");
 const statuses = require("statuses");
 const Sequelize = require("sequelize");
@@ -17,30 +16,6 @@ const Sequelize = require("sequelize");
 // Setup
 const app = express();
 const enforcer = EnforcerMiddleware("./specification.yaml");
-passport.use(
-  "jwt",
-  new Strategy(
-    {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET
-    },
-    async (payload, done) => {
-      try {
-        const user = await User.findById(payload.id);
-        if (user === null) {
-          done({
-            statusCode: 404,
-            message: "User does not exist"
-          });
-          return;
-        }
-        done(null, user);
-      } catch (err) {
-        done(err);
-      }
-    }
-  )
-);
 
 app
   .set("port", process.env.PORT || 3000)

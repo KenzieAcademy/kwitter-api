@@ -1,15 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
 const { User } = require("../models");
+const { jwtAuthMiddleware } = require("../authentication");
 
-const authMiddleware = passport.authenticate("jwt", {
-  session: false,
-  failWithError: true
-});
 // logout user
 const logout = [
-  authMiddleware,
+  jwtAuthMiddleware,
   (req, res) => {
     req.logout();
     res.send({ success: true, message: "Logged out!" });
@@ -51,7 +47,6 @@ const login = async (req, res, next) => {
 };
 
 module.exports = {
-  authMiddleware,
   login,
   logout,
   register

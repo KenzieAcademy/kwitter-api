@@ -1,9 +1,9 @@
 const { Like } = require("../models");
-const { authMiddleware } = require("./auth");
+const { jwtAuthMiddleware } = require("../authentication");
 
 // add a like
 const addLike = [
-  authMiddleware,
+  jwtAuthMiddleware,
   async (req, res, next) => {
     try {
       const like = await Like.create({
@@ -18,7 +18,7 @@ const addLike = [
 ];
 // remove a like
 const removeLike = [
-  authMiddleware,
+  jwtAuthMiddleware,
   async (req, res, next) => {
     try {
       const destroyedCount = await Like.destroy({
