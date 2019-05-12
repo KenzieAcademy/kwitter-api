@@ -27,13 +27,10 @@ passport.use(
       try {
         const user = await User.findById(payload.id);
         if (user === null) {
-          done(
-            {
-              statusCode: 404,
-              message: "User does not exist"
-            },
-            false
-          );
+          done({
+            statusCode: 404,
+            message: "User does not exist"
+          });
           return;
         }
         done(null, user);
