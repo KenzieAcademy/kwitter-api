@@ -80,6 +80,7 @@ app
       console.log(`API server now running on port ${app.get("port")}`)
     );
   } catch (err) {
-    console.error(err.toString());
+    console.error(err.stack);
+    process.exit(1);
   }
 })();
