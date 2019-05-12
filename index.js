@@ -34,11 +34,12 @@ app
   .get("/swagger.json", (req, res) => {
     res.send(swaggerSpec);
   })
+  // handle adding statusCode to Sequelize.ValidationError
+  // also handle Sequelize.UniqueConstraintError which requires special handling to create a clean error message
   .use((err, req, res, next) => {
     if (err instanceof Sequelize.ValidationError) {
       err.statusCode = 400;
       if (err instanceof Sequelize.UniqueConstraintError) {
-        // Sequelize.UniqueConstraintError requires special handling to create a clean error message
         const uniqueConstraintError = Object.assign(err, {
           message: err.errors[0].message
         });
