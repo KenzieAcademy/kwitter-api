@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"test2\",\n  \"password\": \"test2\",\n  \"displayName\": \"test2\"\n}"
+							"raw": "{\n  \"username\": \"t\",\n  \"password\": \"t\",\n  \"displayName\": \"test2\"\n}"
 						},
 						"url": {
 							"raw": "{{domain}}/auth/register",
@@ -44,13 +44,14 @@
 							"listen": "test",
 							"script": {
 								"id": "cff0182a-daff-4551-9e84-2b4dfc08e83c",
-								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"if (jsonData.token !== undefined) {",
-									"    pm.environment.set(\"token\", \"Bearer \" + jsonData.token)",
+									"    pm.environment.set(\"token\", \"Bearer \" + jsonData.token);",
+									"    pm.environment.set(\"userId\", jsonData.id);",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -64,7 +65,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testuser\"\n}"
+							"raw": "{\n  \"username\": \"test2\",\n  \"password\": \"test2\"\n}"
 						},
 						"url": {
 							"raw": "{{domain}}/auth/login",
@@ -297,29 +298,6 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "Get User by Id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{domain}}/users/21224",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"users",
-								"21224"
-							]
-						},
-						"description": "Get a specific user by id."
-					},
-					"response": []
-				},
-				{
 					"name": "Get Users",
 					"request": {
 						"method": "GET",
@@ -352,7 +330,30 @@
 					"response": []
 				},
 				{
-					"name": "*Update User",
+					"name": "Get User by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/users/{{userId}}",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						},
+						"description": "Get a specific user by id."
+					},
+					"response": []
+				},
+				{
+					"name": "*Update User by Id",
 					"request": {
 						"method": "PATCH",
 						"header": [
@@ -367,15 +368,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"displayName\": \"Test User\",\n\t\"password\": \"password\",\n\t\"about\": \"\"\n}"
+							"raw": "{\n\t\"displayName\": \"Test User\",\n\t\"password\": \"password\"\n}"
 						},
 						"url": {
-							"raw": "{{domain}}/users",
+							"raw": "{{domain}}/users/{{userId}}",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
-								"users"
+								"users",
+								"{{userId}}"
 							]
 						},
 						"description": "Update the currently logged in user."
@@ -383,7 +385,7 @@
 					"response": []
 				},
 				{
-					"name": "*Delete Currently Authenticated User",
+					"name": "*Delete User by Id",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -397,12 +399,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{domain}}/users",
+							"raw": "{{domain}}/users/{{userId}}",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
-								"users"
+								"users",
+								"{{userId}}"
 							]
 						},
 						"description": "Delete the currently signed on user."
@@ -410,7 +413,7 @@
 					"response": []
 				},
 				{
-					"name": "*Set User Profile Picture",
+					"name": "*Set User Profile Picture by Id",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -434,12 +437,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{domain}}/users/picture",
+							"raw": "{{domain}}/users/{{userId}}/picture",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
 								"users",
+								"{{userId}}",
 								"picture"
 							]
 						}
@@ -461,14 +465,41 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{domain}}/users/2/picture",
+							"raw": "{{domain}}/users/{{userId}}/picture",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
 								"users",
-								"2",
+								"{{userId}}",
 								"picture"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hashtags",
+			"item": [
+				{
+					"name": "Get Hashtag Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/hashtags/cool",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"hashtags",
+								"cool"
 							]
 						}
 					},
