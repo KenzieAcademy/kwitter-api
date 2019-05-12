@@ -18,6 +18,7 @@ const Sequelize = require("sequelize");
 const app = express();
 const enforcer = EnforcerMiddleware("./specification.yaml");
 passport.use(
+  "jwt",
   new Strategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -73,6 +74,11 @@ app
     next(err);
   })
   .use((err, req, res, next) => {
+    // some packages pass an error with a status property instead of statusCode
+    // reconcile that difference here by copying err.status to err.statusCode
+    if (err.status) {
+      err.statusCode = err.status;
+    }
     if (err.statusCode >= 400 && err.statusCode < 500) {
       res.status(err.statusCode).json({
         message: err.message,

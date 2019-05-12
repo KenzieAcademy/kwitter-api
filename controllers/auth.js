@@ -3,8 +3,10 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { User } = require("../models");
 
-const authMiddleware = passport.authenticate("jwt", { session: false });
-
+const authMiddleware = passport.authenticate("jwt", {
+  session: false,
+  failWithError: true
+});
 // logout user
 const logout = [
   authMiddleware,
