@@ -10,7 +10,16 @@ const createMessage = [
         text: req.body.text,
         userId: req.user.get("id")
       });
-      res.json({ message });
+      /*
+      when the message is created it does not include the likes.
+      while there are no likes after a message is first created,
+      getting the message again and ask sequelize to include the likes so
+      this will pass validation (the Message schema requires having a likes property)
+      */
+      const messageWithLikes = await Message.findById(message.id, {
+        include: [Like]
+      });
+      res.json({ message: messageWithLikes });
     } catch (err) {
       next(err);
     }
