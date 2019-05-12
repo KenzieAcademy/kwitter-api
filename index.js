@@ -3,7 +3,6 @@ const express = require("express");
 const morgan = require("morgan");
 const passport = require("passport");
 const swaggerUi = require("swagger-ui-express");
-const SwaggerParser = require("swagger-parser");
 const cors = require("cors");
 const YAML = require("yamljs");
 const swaggerSpec = YAML.load("./specification.yaml");
@@ -73,10 +72,9 @@ app
 // Startup
 (async () => {
   try {
-    await SwaggerParser.validate(swaggerSpec);
-    await sequelize.authenticate();
     await enforcer.promise;
     await enforcer.controllers("./controllers");
+    await sequelize.authenticate();
     app.listen(app.get("port"), () =>
       console.log(`API server now running on port ${app.get("port")}`)
     );
