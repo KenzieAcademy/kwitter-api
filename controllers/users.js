@@ -1,5 +1,5 @@
 const { User, Message, Like } = require("../models");
-const { jwtAuthMiddleware } = require("../authentication");
+const { validateJwtMiddleware } = require("../auth");
 const multer = require("multer");
 
 const upload = multer({
@@ -39,7 +39,7 @@ const getUsers = async (req, res, next) => {
 };
 // update a user by id
 const updateUser = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   async (req, res, next) => {
     const patch = {};
     if (req.body.password !== undefined) {
@@ -69,7 +69,7 @@ const updateUser = [
 ];
 // delete a user by id
 const deleteUser = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   async (req, res, next) => {
     try {
       await User.destroy({
@@ -110,7 +110,7 @@ const getUserPicture = async (req, res, next) => {
 
 // set user's picture
 const setUserPicture = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   upload.single("picture"),
   async (req, res, next) => {
     const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];

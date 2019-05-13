@@ -1,11 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
-const { jwtAuthMiddleware } = require("../authentication");
+const { validateJwtMiddleware } = require("../auth");
 
 // logout user
 const logout = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   (req, res) => {
     req.logout();
     res.send({ success: true, message: "Logged out!" });

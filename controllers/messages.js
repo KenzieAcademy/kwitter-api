@@ -1,9 +1,9 @@
 const { Message, Like } = require("../models");
-const { jwtAuthMiddleware } = require("../authentication");
+const { validateJwtMiddleware } = require("../auth");
 
 // create a message
 const createMessage = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   async (req, res, next) => {
     try {
       const message = await Message.create({
@@ -55,7 +55,7 @@ const getMessage = async (req, res, next) => {
 
 // delete message
 const deleteMessage = [
-  jwtAuthMiddleware,
+  validateJwtMiddleware,
   async (req, res, next) => {
     try {
       const destroyedCount = await Message.destroy({
