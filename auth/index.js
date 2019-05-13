@@ -1,6 +1,6 @@
 const passport = require("passport");
 const { Strategy, ExtractJwt } = require("passport-jwt");
-const { User } = require("../models");
+const { User, errorHandlerMiddleware } = require("../models");
 
 passport.use(
   "jwt",
@@ -34,5 +34,5 @@ const validateJwtMiddleware = passport.authenticate("jwt", {
 
 module.exports = {
   validateJwtMiddleware,
-  middleware: passport.initialize()
+  middleware: [passport.initialize(), errorHandlerMiddleware]
 };

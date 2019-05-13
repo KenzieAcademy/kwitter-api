@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const auth = require("./auth");
 const controllers = require("./controllers");
-const models = require("./models");
 const swaggerDocsRouter = require("./swaggerDocsRouter");
 const errorHandlerMiddleware = require("./errorHandlerMiddleware");
 
@@ -19,7 +18,6 @@ app
     auth.middleware,
     controllers.middleware,
     swaggerDocsRouter,
-    models.errorHandlerMiddleware,
     errorHandlerMiddleware
   );
 
@@ -27,7 +25,6 @@ app
 (async () => {
   try {
     await controllers.startup();
-    await models.startup();
     app.listen(app.get("port"), () =>
       console.log(`API server now running on port ${app.get("port")}`)
     );
