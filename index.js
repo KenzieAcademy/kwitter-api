@@ -12,14 +12,16 @@ const errorHandlerMiddleware = require("./errorHandlerMiddleware");
 const app = express();
 app
   .set("port", process.env.PORT || 3000)
-  .use(cors())
-  .use(morgan("tiny"))
-  .use(express.json())
-  .use(auth.middleware)
-  .use(controllers.middleware)
-  .use(swaggerDocsRouter)
-  .use(models.errorHandlerMiddleware)
-  .use(errorHandlerMiddleware);
+  .use(
+    cors(),
+    morgan("tiny"),
+    express.json(),
+    auth.middleware,
+    controllers.middleware,
+    swaggerDocsRouter,
+    models.errorHandlerMiddleware,
+    errorHandlerMiddleware
+  );
 
 // Startup
 (async () => {
