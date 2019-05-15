@@ -33,10 +33,10 @@ const getMessages = async (req, res, next) => {
       include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]],
-      raw: true
+      order: [["createdAt", "DESC"]]
     });
-    res.send({ messages });
+    const rawMessages = messages.map(message => message.dataValues);
+    res.send({ messages: rawMessages });
   } catch (err) {
     next(err);
   }
