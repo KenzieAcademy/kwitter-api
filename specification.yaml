@@ -335,14 +335,8 @@ paths:
       tags:
         - Messages
       parameters:
-        - in: query
-          name: offset
-          schema:
-            $ref: "#/components/parameters/offsetParam"
-        - in: query
-          name: limit
-          schema:
-            $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
       responses:
         200:
           description: OK
@@ -493,14 +487,8 @@ paths:
       tags:
         - Users
       parameters:
-        - in: query
-          name: offset
-          schema:
-            $ref: "#/components/parameters/offsetParam"
-        - in: query
-          name: limit
-          schema:
-            $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
       responses:
         200:
           description: OK
