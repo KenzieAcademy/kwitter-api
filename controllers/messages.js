@@ -46,9 +46,10 @@ const getMessages = async (req, res, next) => {
 const getMessage = async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id, {
-      include: [Like]
+      include: [Like],
+      raw: true
     });
-    res.json({ message });
+    res.send({ message });
   } catch (err) {
     next(err);
   }

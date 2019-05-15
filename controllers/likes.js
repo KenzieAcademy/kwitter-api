@@ -6,11 +6,14 @@ const addLike = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const like = await Like.create({
-        userId: req.user.id,
-        messageId: req.body.messageId
-      });
-      res.json({ like });
+      const like = await Like.create(
+        {
+          userId: req.user.id,
+          messageId: req.body.messageId
+        },
+        { raw: true }
+      );
+      res.send({ like });
     } catch (err) {
       next(err);
     }

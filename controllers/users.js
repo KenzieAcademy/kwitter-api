@@ -17,9 +17,10 @@ const getUser = async (req, res, next) => {
           model: Message,
           include: [Like]
         }
-      ]
+      ],
+      raw: true
     });
-    res.json({ user });
+    res.send({ user });
   } catch (err) {
     next(err);
   }
@@ -30,9 +31,10 @@ const getUsers = async (req, res, next) => {
     const users = await User.findAll({
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]]
+      order: [["createdAt", "DESC"]],
+      raw: true
     });
-    res.json({ users });
+    res.send({ users });
   } catch (err) {
     next(err);
   }
