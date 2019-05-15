@@ -60,6 +60,7 @@ components:
           type: integer
         createdAt:
           type: string
+          format: date-time
         likes:
           type: array
           items:
@@ -356,6 +357,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Message"
+                  required:
+                    - messages
         400:
           description: Bad Request
           content:

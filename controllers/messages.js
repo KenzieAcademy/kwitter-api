@@ -33,9 +33,10 @@ const getMessages = async (req, res, next) => {
       include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]]
+      order: [["createdAt", "DESC"]],
+      raw: true
     });
-    res.json({ messages });
+    res.send({ messages });
   } catch (err) {
     next(err);
   }
