@@ -39,6 +39,23 @@ const getUsers = async (req, res, next) => {
     next(err);
   }
 };
+
+// create a new user
+const createUser = async (req, res, next) => {
+  const { username, displayName, password } = req.body;
+  try {
+    const user = await User.create({
+      username,
+      displayName,
+      password
+    });
+    const userRaw = await User.findById(user.id, { raw: true });
+    res.send({ user: userRaw });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // update a user by id
 const updateUser = [
   validateJwtMiddleware,
@@ -148,5 +165,6 @@ module.exports = {
   getUserPicture,
   getUsers,
   deleteUser,
-  updateUser
+  updateUser,
+  createUser
 };

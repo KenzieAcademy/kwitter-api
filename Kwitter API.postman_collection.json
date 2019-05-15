@@ -10,34 +10,6 @@
 			"name": "Auth",
 			"item": [
 				{
-					"name": "Register New User",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"t\",\n  \"password\": \"t\",\n  \"displayName\": \"test2\"\n}"
-						},
-						"url": {
-							"raw": "{{domain}}/auth/register",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"auth",
-								"register"
-							]
-						},
-						"description": "Register a new user"
-					},
-					"response": []
-				},
-				{
 					"name": "Login",
 					"event": [
 						{
@@ -179,37 +151,6 @@
 			"name": "Messages",
 			"item": [
 				{
-					"name": "*Create Message",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"test\"\n}"
-						},
-						"url": {
-							"raw": "{{domain}}/messages",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"messages"
-							]
-						},
-						"description": "Creaet a new message."
-					},
-					"response": []
-				},
-				{
 					"name": "Get Messages",
 					"request": {
 						"method": "GET",
@@ -261,6 +202,37 @@
 							]
 						},
 						"description": "Get a specific message by id."
+					},
+					"response": []
+				},
+				{
+					"name": "*Create Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"text\": \"test\"\n}"
+						},
+						"url": {
+							"raw": "{{domain}}/messages",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"messages"
+							]
+						},
+						"description": "Creaet a new message."
 					},
 					"response": []
 				},
@@ -326,6 +298,34 @@
 							]
 						},
 						"description": "Get a specific user by id."
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test2\",\n  \"password\": \"test2\",\n  \"displayName\": \"test2\"\n}"
+						},
+						"url": {
+							"raw": "{{domain}}/auth/register",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user"
 					},
 					"response": []
 				},

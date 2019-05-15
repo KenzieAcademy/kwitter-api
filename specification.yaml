@@ -183,56 +183,6 @@ paths:
                 required:
                   - success
                   - message
-  /auth/register:
-    post:
-      summary: Register a new user
-      operationId: register
-      x-controller: auth
-      x-operation: register
-      tags:
-        - Auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
-                displayName:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
-                password:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
-              required:
-                - username
-                - displayName
-                - password
-              additionalProperties: false
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/User"
-                required:
-                  - user
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
   /likes:
     post:
       summary: Add Like
@@ -507,6 +457,55 @@ paths:
                       $ref: "#/components/schemas/User"
                 required:
                   - users
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+    post:
+      summary: Create a new user
+      operationId: createUser
+      x-controller: users
+      x-operation: createUser
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                displayName:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                password:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+              required:
+                - username
+                - displayName
+                - password
+              additionalProperties: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                required:
+                  - user
         400:
           description: Bad Request
           content:

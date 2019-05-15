@@ -12,22 +12,6 @@ const logout = [
   }
 ];
 
-// register a new user
-const register = async (req, res, next) => {
-  const { username, displayName, password } = req.body;
-  try {
-    const user = await User.create({
-      username,
-      displayName,
-      password
-    });
-    const userRaw = await User.findById(user.id, { raw: true });
-    res.send({ user: userRaw });
-  } catch (err) {
-    next(err);
-  }
-};
-
 // login user
 const login = async (req, res, next) => {
   const { username, password } = req.body;
@@ -46,6 +30,5 @@ const login = async (req, res, next) => {
 
 module.exports = {
   login,
-  logout,
-  register
+  logout
 };
