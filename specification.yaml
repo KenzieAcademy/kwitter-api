@@ -44,6 +44,7 @@ components:
           type: integer
         createdAt:
           type: string
+          format: date-time
       required:
         - id
         - userId
@@ -515,6 +516,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/User"
+                  required:
+                    - users
         400:
           description: Bad Request
           content:
@@ -546,7 +549,6 @@ paths:
                 properties:
                   user:
                     $ref: "#/components/schemas/User"
-                    nullable: true
                 required:
                   - user
         400:
@@ -578,7 +580,7 @@ paths:
           application/json:
             schema:
               type: object
-              properties: ## todo: is there a way to required at least one of these with openapi?
+              properties:
                 password:
                   type: string
                   minLength: 3
@@ -591,6 +593,7 @@ paths:
                   type: string
                   minLength: 3
                   maxLength: 20
+              additionalProperties: false
       responses:
         200:
           description: OK
