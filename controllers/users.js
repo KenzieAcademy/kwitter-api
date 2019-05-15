@@ -60,8 +60,8 @@ const updateUser = [
           id: req.user.id
         }
       });
-      const user = await User.findById(req.user.id);
-      res.json({ user });
+      const user = await User.findById(req.user.id, { raw: true });
+      res.send({ user });
     } catch (err) {
       next(err);
     }
