@@ -337,13 +337,11 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
-          description: The number of messages to skip before starting to collect the result set
+            $ref: "#/components/parameters/offsetParam"
         - in: query
           name: limit
           schema:
-            type: integer
-          description: The number of messages to return
+            $ref: "#/components/parameters/limitParam"
       responses:
         200:
           description: OK
@@ -495,13 +493,11 @@ paths:
         - in: query
           name: offset
           schema:
-            type: integer
-          description: The number of users to skip before starting to collect the result set
+            $ref: "#/components/parameters/offsetParam"
         - in: query
           name: limit
           schema:
-            type: integer
-          description: The number of users to return
+            $ref: "#/components/parameters/limitParam"
       responses:
         200:
           description: OK
