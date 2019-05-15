@@ -136,6 +136,7 @@ paths:
               required:
                 - username
                 - password
+              additionalProperties: false
       responses:
         200:
           description: OK
@@ -213,6 +214,7 @@ paths:
                 - username
                 - displayName
                 - password
+              additionalProperties: false
       responses:
         200:
           description: OK
@@ -252,6 +254,7 @@ paths:
                   type: integer
               required:
                 - messageId
+              additionalProperties: false
       responses:
         200:
           description: OK
@@ -380,6 +383,7 @@ paths:
                   maxLength: 255
               required:
                 - text
+              additionalProperties: false
       responses:
         200:
           description: OK
@@ -709,6 +713,7 @@ paths:
                   format: binary
               required:
                 - picture
+              additionalProperties: false
       responses:
         200:
           description: OK
