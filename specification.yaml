@@ -221,13 +221,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  username:
-                    type: string
-                  displayName:
-                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
                 required:
-                  - username
-                  - displayName
+                  - user
         400:
           description: Bad Request
           content:

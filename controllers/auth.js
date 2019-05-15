@@ -16,15 +16,13 @@ const logout = [
 const register = async (req, res, next) => {
   const { username, displayName, password } = req.body;
   try {
-    const user = await User.create(
-      {
-        username,
-        displayName,
-        password
-      },
-      { raw: true }
-    );
-    res.send({ user });
+    const user = await User.create({
+      username,
+      displayName,
+      password
+    });
+    const userRaw = await User.findById(user.id, { raw: true });
+    res.send({ user: userRaw });
   } catch (err) {
     next(err);
   }
