@@ -119,7 +119,6 @@ paths:
       summary: Login user
       operationId: login
       x-controller: auth
-      x-operation: login
       tags:
         - Auth
       requestBody:
@@ -163,7 +162,6 @@ paths:
       summary: Logout a user
       operationId: logout
       x-controller: auth
-      x-operation: logout
       tags:
         - Auth
       security:
@@ -188,7 +186,6 @@ paths:
       summary: Add Like
       operationId: addLike
       x-controller: likes
-      x-operation: addLike
       tags:
         - Likes
       security:
@@ -243,7 +240,6 @@ paths:
       summary: Remove Like
       operationId: removeLike
       x-controller: likes
-      x-operation: removeLike
       tags:
         - Likes
       security:
@@ -284,7 +280,6 @@ paths:
       summary: Get a list of messages
       operationId: getMessages
       x-controller: messages
-      x-operation: getMessages
       tags:
         - Messages
       parameters:
@@ -314,7 +309,6 @@ paths:
       summary: Create a message
       operationId: createMessage
       x-controller: messages
-      x-operation: createMessage
       tags:
         - Messages
       security:
@@ -357,7 +351,6 @@ paths:
       summary: Get a message
       operationId: getMessage
       x-controller: messages
-      x-operation: getMessage
       tags:
         - Messages
       parameters:
@@ -390,7 +383,6 @@ paths:
       summary: Delete a message
       operationId: deleteMessage
       x-controller: messages
-      x-operation: deleteMessage
       tags:
         - Messages
       security:
@@ -437,7 +429,6 @@ paths:
       summary: Get a list of users
       operationId: getUsers
       x-controller: users
-      x-operation: getUsers
       tags:
         - Users
       parameters:
@@ -467,7 +458,6 @@ paths:
       summary: Create a new user
       operationId: createUser
       x-controller: users
-      x-operation: createUser
       tags:
         - Auth
       requestBody:
@@ -517,7 +507,6 @@ paths:
       summary: Get a user
       operationId: getUser
       x-controller: users
-      x-operation: getUser
       tags:
         - Users
       parameters:
@@ -549,7 +538,6 @@ paths:
       summary: Update user
       operationId: updateUser
       x-controller: users
-      x-operation: updateUser
       tags:
         - Users
       parameters:
@@ -610,7 +598,6 @@ paths:
       summary: Delete user
       operationId: deleteUser
       x-controller: users
-      x-operation: deleteUser
       tags:
         - Users
       parameters:
@@ -645,7 +632,6 @@ paths:
       summary: Get a user's picture
       operationId: getUserPicture
       x-controller: users
-      x-operation: getUserPicture
       tags:
         - Users
       parameters:
@@ -687,7 +673,6 @@ paths:
       summary: Set user's picture
       operationId: setUserPicture
       x-controller: users
-      x-operation: setUserPicture
       tags:
         - Users
       parameters:
