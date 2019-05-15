@@ -358,8 +358,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Message"
-                  required:
-                    - messages
+                required:
+                  - messages
         400:
           description: Bad Request
           content:
@@ -516,8 +516,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/User"
-                  required:
-                    - users
+                required:
+                  - users
         400:
           description: Bad Request
           content:
