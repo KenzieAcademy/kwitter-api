@@ -60,19 +60,24 @@ const deleteMessage = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const destroyedCount = await Message.destroy({
-        where: {
-          id: req.params.id,
-          userId: req.user.id
-        }
-      });
-      if (destroyedCount === 0) {
+      const message = await Message.findById(req.params.messageId);
+      if (!message) {
         next({
           statusCode: 404,
           message: "Message does not exist"
         });
+        return;
       }
-      res.send({ id: req.params.id });
+      if (message.get("userId") !== req.user.id && req.user.role !== "admin") {
+        next({
+          statusCode: 403,
+          message:
+            "You do not have sufficient privileges to delete this message"
+        });
+        return;
+      }
+      await message.destroy();
+      res.send({ id: req.params.messageId });
     } catch (err) {
       next(err);
     }
