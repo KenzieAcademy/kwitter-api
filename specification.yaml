@@ -10,6 +10,7 @@ servers:
 components:
   schemas:
     User:
+      additionalProperties: false
       type: object
       properties:
         id:
@@ -34,6 +35,7 @@ components:
         - createdAt
         - updatedAt
     Like:
+      additionalProperties: false
       type: object
       properties:
         id:
@@ -51,6 +53,7 @@ components:
         - messageId
         - createdAt
     Message:
+      additionalProperties: false
       type: object
       properties:
         id:
@@ -73,20 +76,32 @@ components:
         - createdAt
         - likes
     OperationalError:
+      allOf:
+        - type: object
+          properties:
+            message:
+              type: string
+          required:
+            - message
+        - $ref: "#/components/schemas/ErrorStatusCode"
+    ErrorStatusCode:
       type: object
       properties:
-        message:
-          type: string
         statusCode:
           type: integer
           minimum: 400
           maximum: 599
       required:
-        - message
         - statusCode
-    AuthError:
-      type: string
-      example: Unauthorized
+    SuccessStatusCode:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          minimum: 200
+          maximum: 399
+      required:
+        - statusCode
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -126,6 +141,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 username:
@@ -135,22 +151,23 @@ paths:
               required:
                 - username
                 - password
-              additionalProperties: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  token:
-                    type: string
-                required:
-                  - id
-                  - token
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                      token:
+                        type: string
+                    required:
+                      - id
+                      - token
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -172,15 +189,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
-                required:
-                  - success
-                  - message
+                $ref: "#/components/schemas/SuccessStatusCode"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
   /likes:
     post:
       summary: Add Like
@@ -195,46 +210,37 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 messageId:
                   type: integer
               required:
                 - messageId
-              additionalProperties: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  like:
-                    $ref: "#/components/schemas/Like"
-        401:
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                $ref: "#/components/schemas/AuthError"
+                allOf:
+                  - type: object
+                    properties:
+                      like:
+                        $ref: "#/components/schemas/Like"
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/OperationalError"
-        500:
-          description: Internal Server Error
+        401:
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                required:
-                  - error
+                $ref: "#/components/schemas/OperationalError"
   /likes/{likeId}:
     delete:
       summary: Remove Like
@@ -257,18 +263,26 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                required:
-                  - id
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: number
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
         404:
           description: Not Found
           content:
@@ -291,14 +305,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  messages:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Message"
-                required:
-                  - messages
+                allOf:
+                  - type: object
+                    properties:
+                      messages:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Message"
+                    required:
+                      - messages
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -319,6 +335,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 text:
@@ -327,25 +344,32 @@ paths:
                   maxLength: 255
               required:
                 - text
-              additionalProperties: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    $ref: "#/components/schemas/Message"
-                required:
-                  - message
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
   /messages/{messageId}:
     get:
       summary: Get a message
@@ -366,13 +390,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    $ref: "#/components/schemas/Message"
-                    nullable: true
-                required:
-                  - message
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -400,12 +425,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                required:
-                  - id
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -415,9 +442,15 @@ paths:
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
         404:
           description: Not Found
           content:
@@ -440,14 +473,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
-                required:
-                  - users
+                allOf:
+                  - type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/User"
+                    required:
+                      - users
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -465,6 +500,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 username:
@@ -483,19 +519,20 @@ paths:
                 - username
                 - displayName
                 - password
-              additionalProperties: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/User"
-                required:
-                  - user
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -522,12 +559,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/User"
-                required:
-                  - user
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -555,6 +594,7 @@ paths:
         content:
           application/json:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 password:
@@ -569,19 +609,20 @@ paths:
                   type: string
                   minLength: 3
                   maxLength: 20
-              additionalProperties: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  user:
-                    $ref: "#/components/schemas/User"
-                required:
-                  - user
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
           content:
@@ -591,9 +632,15 @@ paths:
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
     delete:
       summary: Delete user
       operationId: deleteUser
@@ -615,18 +662,20 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                required:
-                  - id
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
   /users/{userId}/picture:
     get:
       summary: Get a user's picture
@@ -644,19 +693,26 @@ paths:
       responses:
         200:
           description: OK
+          headers:
+            Content-Type: 
+              schema:
+                type: string
           content:
             image/png:
               schema:
                 type: string
                 format: binary
+                x-serialize: false
             image/gif:
               schema:
                 type: string
                 format: binary
+                x-serialize: false
             image/jpeg:
               schema:
                 type: string
                 format: binary
+                x-serialize: false
         400:
           description: Bad Request
           content:
@@ -690,6 +746,7 @@ paths:
         content:
           multipart/form-data:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 picture:
@@ -697,16 +754,19 @@ paths:
                   format: binary
               required:
                 - picture
-              additionalProperties: false
       responses:
         200:
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessStatusCode"
         401:
           description: Unauthorized
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: "#/components/schemas/AuthError"
+                $ref: "#/components/schemas/OperationalError"
         415:
           description: Unsupported Media type
           content:

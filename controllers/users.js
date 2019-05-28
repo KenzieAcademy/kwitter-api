@@ -1,26 +1,23 @@
 const { User, Message, Like } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
-const multer = require("multer");
+// const multer = require("multer");
+// const enforcerMulter = require("openapi-enforcer-multer");
+// const enforcer = require("./").enforcer;
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 200000 }
-});
+// const upload = multer({
+//   storage: multer.memoryStorage(),
+//   limits: { fileSize: 200000 }
+// });
 
 // get a specific user by id
 const getUser = async (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.userId;
   try {
     const user = await User.findById(id, {
-      include: [
-        {
-          model: Message,
-          include: [Like]
-        }
-      ],
       raw: true
     });
-    res.send({ user });
+
+    res.send({ user, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -34,7 +31,7 @@ const getUsers = async (req, res, next) => {
       order: [["createdAt", "DESC"]],
       raw: true
     });
-    res.send({ users });
+    res.send({ users, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -50,7 +47,7 @@ const createUser = async (req, res, next) => {
       password
     });
     const userRaw = await User.findById(user.id, { raw: true });
-    res.send({ user: userRaw });
+    res.send({ user: userRaw, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -60,6 +57,14 @@ const createUser = async (req, res, next) => {
 const updateUser = [
   validateJwtMiddleware,
   async (req, res, next) => {
+    if (req.params.userId !== req.user.id && req.user.role !== "admin") {
+      next({
+        statusCode: 403,
+        message: "You do not have sufficient privileges to update this user"
+      });
+      return;
+    }
+
     const patch = {};
     if (req.body.password !== undefined) {
       patch.password = req.body.password;
@@ -74,18 +79,22 @@ const updateUser = [
     }
 
     try {
-      await User.update(patch, {
-        where: {
-          id: req.user.id
-        }
-      });
-      const user = await User.findById(req.user.id, { raw: true });
-      res.send({ user });
+      const user = await User.findById(req.params.userId, { raw: true });
+      if (!user) {
+        next({
+          statusCode: 404,
+          message: "User does not exist"
+        });
+        return;
+      }
+      await User.update(patch, { where: { id: req.params.userId } });
+      res.send({ user, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
   }
 ];
+
 // delete a user by id
 const deleteUser = [
   validateJwtMiddleware,
@@ -96,7 +105,7 @@ const deleteUser = [
           id: req.user.id
         }
       });
-      res.send({ id: req.user.id });
+      res.send({ id: req.user.id, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
@@ -105,9 +114,8 @@ const deleteUser = [
 
 // get user's picture
 const getUserPicture = async (req, res, next) => {
-  const { id } = req.params;
   try {
-    const user = await User.scope("picture").findById(id);
+    const user = await User.scope("picture").findById(req.params.userId);
     if (user === null) {
       next({ statusCode: 404, message: "User does not exist" });
       return;
@@ -130,10 +138,9 @@ const getUserPicture = async (req, res, next) => {
 // set user's picture
 const setUserPicture = [
   validateJwtMiddleware,
-  upload.single("picture"),
   async (req, res, next) => {
     const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
-    const { buffer, mimetype } = req.file;
+    const { buffer, mimetype } = req.files.picture;
     const { id } = req.user;
 
     if (!supportedContentTypes.includes(mimetype)) {
@@ -152,7 +159,7 @@ const setUserPicture = [
         { where: { id } }
       );
       res.set({ "Content-Location": `/users/${id}/picture` });
-      res.send();
+      res.send({ statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }

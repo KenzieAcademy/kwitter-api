@@ -13,13 +13,12 @@ const createMessage = [
       /*
       when the message is created it does not include the likes.
       while there are no likes after a message is first created,
-      getting the message again and ask sequelize to include the likes so
+      must add an empty array for likes so
       this will pass validation (the Message schema requires having a likes property)
       */
-      const messageWithLikes = await Message.findById(message.id, {
-        include: [Like]
-      });
-      res.json({ message: messageWithLikes });
+      const rawMessage = message.dataValues;
+      rawMessage.likes = [];
+      res.send({ message: rawMessage, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
@@ -35,8 +34,12 @@ const getMessages = async (req, res, next) => {
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    const rawMessages = messages.map(message => message.dataValues);
-    res.send({ messages: rawMessages });
+    const rawMessages = messages.map(message => {
+      const rawMessage = message.dataValues;
+      rawMessage.likes = message.likes.map(like => like.dataValues);
+      return rawMessage;
+    });
+    res.send({ messages: rawMessages, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -45,11 +48,16 @@ const getMessages = async (req, res, next) => {
 // get message by id
 const getMessage = async (req, res, next) => {
   try {
-    const message = await Message.findById(req.params.id, {
-      include: [Like],
-      raw: true
+    const message = await Message.findById(req.params.messageId, {
+      include: [Like]
     });
-    res.send({ message });
+    if (!message) {
+      next({ statusCode: 400, message: "Message does not exist" });
+      return;
+    }
+    const rawMessage = message.dataValues;
+    rawMessage.likes = message.likes.map(like => like.dataValues);
+    res.send({ message: rawMessage, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -77,7 +85,7 @@ const deleteMessage = [
         return;
       }
       await message.destroy();
-      res.send({ id: req.params.messageId });
+      res.send({ id: req.params.messageId, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }

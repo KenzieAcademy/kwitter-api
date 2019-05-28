@@ -13,11 +13,11 @@ app
   .set("port", process.env.PORT || 3000)
   .use(
     cors(),
+    swaggerDocsRouter,
     morgan("tiny"),
     express.json(),
     auth.middleware,
     controllers.middleware,
-    swaggerDocsRouter,
     errorHandlerMiddleware
   );
 

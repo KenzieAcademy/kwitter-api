@@ -11,7 +11,7 @@ swaggerDocsRouter
   .get("/", (req, res) => {
     res.redirect("/docs");
   })
-  .get("/swagger.json", (req, res) => {
-    res.send(swaggerSpec);
+  .get("/specification.json", (req, res) => {
+    res.send(openapiSpec);
   });
 module.exports = swaggerDocsRouter;

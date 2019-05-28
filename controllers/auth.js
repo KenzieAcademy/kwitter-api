@@ -8,7 +8,7 @@ const logout = [
   validateJwtMiddleware,
   (req, res) => {
     req.logout();
-    res.send({ success: true, message: "Logged out!" });
+    res.send({ statusCode: res.statusCode });
   }
 ];
 
@@ -19,7 +19,7 @@ const login = async (req, res, next) => {
   if (user && (await bcrypt.compare(password, user.get("password")))) {
     const payload = { id: user.get("id") };
     const token = jwt.sign(payload, process.env.JWT_SECRET);
-    res.send({ token, id: payload.id });
+    res.send({ token, id: payload.id, statusCode: res.statusCode });
   } else {
     next({
       statusCode: 400,
