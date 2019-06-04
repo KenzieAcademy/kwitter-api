@@ -14,6 +14,22 @@ const upload = multer({
   limits: { fileSize: 200000 }
 });
 
+const multerErrorHandlerMiddleware = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      res.status(413);
+    } else {
+      res.status(400);
+    }
+    next({
+      statusCode: res.statusCode,
+      message: `${err.message}: ${err.field}`
+    });
+    return;
+  }
+  next(err);
+};
+
 module.exports = {
   ...auth,
   ...likes,
@@ -22,20 +38,7 @@ module.exports = {
   middleware: [
     enforcerMulter(enforcer, upload),
     enforcer.middleware(),
-    (err, req, res, next) => {
-      if (err instanceof multer.MulterError) {
-        if (err.code === "LIMIT_FILE_SIZE") {
-          res.status(413);
-        } else {
-          res.status(400);
-        }
-        next({
-          statusCode: res.statusCode,
-          message: `${err.message}: ${err.field}`
-        });
-      }
-      next(err);
-    },
+    multerErrorHandlerMiddleware,
     models.errorHandlerMiddleware
   ],
   startup: async () => {
