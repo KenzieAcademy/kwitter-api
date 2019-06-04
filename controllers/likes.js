@@ -9,7 +9,7 @@ const addLike = [
       const message = await Message.findById(req.body.messageId);
       if (!message) {
         next({
-          statusCode: 400,
+          statusCode: 404,
           message: "Message does not exist"
         });
         return;
