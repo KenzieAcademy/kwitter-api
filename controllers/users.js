@@ -9,6 +9,13 @@ const getUser = async (req, res, next) => {
       raw: true
     });
 
+    if (!user) {
+      next({
+        statusCode: 404,
+        message: "User does not exist"
+      });
+      return;
+    }
     res.send({ user, statusCode: res.statusCode });
   } catch (err) {
     next(err);
