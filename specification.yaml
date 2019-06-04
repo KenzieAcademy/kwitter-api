@@ -128,6 +128,14 @@ components:
         format: int32
         minimum: 0
         default: 0
+  headers:
+    WWW-Authenticate:
+      description: Includes the URI location to receive a bearer token
+      required: true
+      schema:
+        type: string
+        enum:
+          - Bearer realm="POST your username and password to /auth/login to receive a token"
 paths:
   /auth/login:
     post:
@@ -192,6 +200,8 @@ paths:
                 $ref: "#/components/schemas/SuccessStatusCode"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -694,9 +704,13 @@ paths:
         200:
           description: OK
           headers:
-            Content-Type: 
+            Content-Disposition:
+              required: true
+              description: The value of this header will always be "inline"
               schema:
                 type: string
+                enum:
+                  - inline
           content:
             image/png:
               schema:
@@ -757,6 +771,12 @@ paths:
       responses:
         200:
           description: OK
+          headers:
+            Content-Location:
+              description: The URI to get the image
+              schema:
+                type: string
+                example: /users/1/picture
           content:
             application/json:
               schema:
