@@ -1,6 +1,6 @@
 ## Kwitter API
 
-**Basic setup for local development**
+### Basic setup for local development
 
 - fork this repo
 - git clone to your local computer then `cd kwitter-api`
@@ -21,8 +21,14 @@ JWT_SECRET="whateveryouwant"
   confirm that the api is working locally by making a request to `GET localhost:3000/messages`
 
   note: visiting `localhost:3000` will take you to the swagger ui specification, which is currently incomplete. there is also a more complete description of the api in the postman collection file, `Kwitter API.postman_collection.json`
-  
-  
- ### Feeling Stuck?
- - Make sure to run `$ heroku logs` to read the error message from your deployed instance
- - Refer to this guide https://devcenter.heroku.com/articles/getting-started-with-nodejs as well as other Heroku docs for more information on adjusting config vars and adding a postgres db on Heroku
+
+### Basic setup for deploying to heroku
+
+- Create your heorku app from the commandline: `heroku create your-api-name`
+- Setup a postgres database addon for your heroku app: `heroku addons:create heroku-postgresql`
+- Confirm that a `DATABASE_URL` variable was added to your heroku app: `heroku config`
+- Setup your config variable for the `JWT_SECRET` for your heroku app: `heroku config:set JWT_SECRET=whateveryouwant`
+- Push code to your heroku app: `git push heroku master`
+- Run `heroku logs --tail` to watch logs in real-time to confirm that the status of the app has started up successfully
+- Open your app with `heroku open` -- this should automatically take you to the openapi documentation page which lists all the server endpoints.
+- For more help, refer to this guide https://devcenter.heroku.com/articles/getting-started-with-nodejs as well as other Heroku docs for more information on adjusting config vars and adding a postgres db on Heroku
