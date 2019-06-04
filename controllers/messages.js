@@ -52,7 +52,7 @@ const getMessage = async (req, res, next) => {
       include: [Like]
     });
     if (!message) {
-      next({ statusCode: 400, message: "Message does not exist" });
+      next({ statusCode: 404, message: "Message does not exist" });
       return;
     }
     const rawMessage = message.dataValues;
