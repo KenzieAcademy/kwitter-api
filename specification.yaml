@@ -207,279 +207,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OperationalError"
-  /likes:
-    post:
-      summary: Add Like
-      operationId: addLike
-      x-controller: likes
-      tags:
-        - Likes
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              additionalProperties: false
-              type: object
-              properties:
-                messageId:
-                  type: integer
-              required:
-                - messageId
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      like:
-                        $ref: "#/components/schemas/Like"
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-  /likes/{likeId}:
-    delete:
-      summary: Remove Like
-      operationId: removeLike
-      x-controller: likes
-      tags:
-        - Likes
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: likeId
-          schema:
-            type: integer
-          required: true
-          description: id of the like to remove
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      id:
-                        type: number
-                    required:
-                      - id
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        404:
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-  /messages:
-    get:
-      summary: Get a list of messages
-      operationId: getMessages
-      x-controller: messages
-      tags:
-        - Messages
-      parameters:
-        - $ref: "#/components/parameters/limitParam"
-        - $ref: "#/components/parameters/offsetParam"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      messages:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Message"
-                    required:
-                      - messages
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-    post:
-      summary: Create a message
-      operationId: createMessage
-      x-controller: messages
-      tags:
-        - Messages
-      security:
-        - bearerAuth: []
-      requestBody:
-        description: The message to create
-        required: true
-        content:
-          application/json:
-            schema:
-              additionalProperties: false
-              type: object
-              properties:
-                text:
-                  type: string
-                  minLength: 2
-                  maxLength: 255
-              required:
-                - text
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      message:
-                        $ref: "#/components/schemas/Message"
-                    required:
-                      - message
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-  /messages/{messageId}:
-    get:
-      summary: Get a message
-      operationId: getMessage
-      x-controller: messages
-      tags:
-        - Messages
-      parameters:
-        - in: path
-          name: messageId
-          schema:
-            type: integer
-          required: true
-          description: id of the message to get
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      message:
-                        $ref: "#/components/schemas/Message"
-                    required:
-                      - message
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-    delete:
-      summary: Delete a message
-      operationId: deleteMessage
-      x-controller: messages
-      tags:
-        - Messages
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: messageId
-          schema:
-            type: integer
-          required: true
-          description: id of the message to delete
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      id:
-                        type: integer
-                    required:
-                      - id
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        403:
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
-        404:
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
   /users:
     get:
       summary: Get a list of users
@@ -517,7 +244,7 @@ paths:
       operationId: createUser
       x-controller: users
       tags:
-        - Auth
+        - Users
       requestBody:
         required: true
         content:
@@ -811,6 +538,279 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         415:
           description: Unsupported Media type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+  /messages:
+    get:
+      summary: Get a list of messages
+      operationId: getMessages
+      x-controller: messages
+      tags:
+        - Messages
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      messages:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Message"
+                    required:
+                      - messages
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+    post:
+      summary: Create a message
+      operationId: createMessage
+      x-controller: messages
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The message to create
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                text:
+                  type: string
+                  minLength: 2
+                  maxLength: 255
+              required:
+                - text
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        401:
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+  /messages/{messageId}:
+    get:
+      summary: Get a message
+      operationId: getMessage
+      x-controller: messages
+      tags:
+        - Messages
+      parameters:
+        - in: path
+          name: messageId
+          schema:
+            type: integer
+          required: true
+          description: id of the message to get
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+    delete:
+      summary: Delete a message
+      operationId: deleteMessage
+      x-controller: messages
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: messageId
+          schema:
+            type: integer
+          required: true
+          description: id of the message to delete
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        401:
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+  /likes:
+    post:
+      summary: Add Like
+      operationId: addLike
+      x-controller: likes
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                messageId:
+                  type: integer
+              required:
+                - messageId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      like:
+                        $ref: "#/components/schemas/Like"
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        401:
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+  /likes/{likeId}:
+    delete:
+      summary: Remove Like
+      operationId: removeLike
+      x-controller: likes
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: likeId
+          schema:
+            type: integer
+          required: true
+          description: id of the like to remove
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: number
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        401:
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
           content:
             application/json:
               schema:
