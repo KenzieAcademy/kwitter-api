@@ -71,7 +71,7 @@ const updateUser = [
     }
 
     try {
-      const user = await User.findById(req.params.userId, { raw: true });
+      const user = await User.findById(req.params.userId);
       if (!user) {
         next({
           statusCode: 404,
@@ -79,8 +79,9 @@ const updateUser = [
         });
         return;
       }
-      await User.update(patch, { where: { id: req.params.userId } });
-      res.send({ user, statusCode: res.statusCode });
+      await user.update(patch, { where: { id: req.params.userId } });
+      const rawUser = await User.findById(req.params.userId, { raw: true });
+      res.send({ user: rawUser, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
