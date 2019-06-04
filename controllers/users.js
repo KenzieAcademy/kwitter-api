@@ -122,7 +122,7 @@ const getUserPicture = async (req, res, next) => {
       "Content-Type": pictureContentType,
       "Content-Disposition": "inline"
     });
-    res.send(picture);
+    res.end(picture);
   } catch (err) {
     next(err);
   }
