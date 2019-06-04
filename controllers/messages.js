@@ -16,6 +16,7 @@ const createMessage = [
       must add an empty array for likes so
       this will pass validation (the Message schema requires having a likes property)
       */
+      await message.reload();
       const rawMessage = message.dataValues;
       rawMessage.likes = [];
       res.send({ message: rawMessage, statusCode: res.statusCode });
