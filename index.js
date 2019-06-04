@@ -15,8 +15,8 @@ app
     cors(),
     swaggerDocsRouter,
     morgan("tiny"),
-    express.json(),
     auth.middleware,
+    express.json(),
     controllers.middleware,
     errorHandlerMiddleware
   );
