@@ -201,7 +201,8 @@ paths:
         401:
           description: Unauthorized
           headers:
-            WWW-Authenticate: "#/components/headers/WWW-Authenticate"
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -247,6 +248,9 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -289,6 +293,9 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -376,6 +383,9 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -451,6 +461,9 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -641,6 +654,9 @@ paths:
                 $ref: "#/components/schemas/OperationalError"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -682,6 +698,9 @@ paths:
                   - $ref: "#/components/schemas/SuccessStatusCode"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
@@ -783,6 +802,9 @@ paths:
                 $ref: "#/components/schemas/SuccessStatusCode"
         401:
           description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWW-Authenticate"
           content:
             application/json:
               schema:
