@@ -7,24 +7,28 @@
     "node": ">=8.3.0"
   },
   "dependencies": {
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^3.0.6",
     "cors": "^2.8.5",
     "dotenv-safe": "^6.1.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
+    "openapi-enforcer": "^1.3.4",
+    "openapi-enforcer-middleware": "^1.1.2",
+    "openapi-enforcer-multer": "0.0.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pg": "^6.4.2",
-    "sequelize": "^4.43.0",
-    "swagger-parser": "^5.0.6",
-    "swagger-ui-express": "^4.0.2",
-    "yamljs": "^0.3.0",
-    "sequelize-cli": "^4.1.1"
+    "sequelize": "^4.44.0",
+    "sequelize-cli": "^4.1.1",
+    "statuses": "^1.5.0",
+    "swagger-ui-express": "^4.0.3",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10"
+    "@openapitools/openapi-generator-cli": "0.0.9-4.0.0-beta3",
+    "nodemon": "^1.19.0"
   },
   "scripts": {
     "start": "node index.js",

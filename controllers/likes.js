@@ -1,43 +1,62 @@
-const express = require("express");
-const router = express.Router();
-const { Like } = require("../models");
-const Sequelize = require("sequelize");
+const { Like, Message } = require("../models");
+const { validateJwtMiddleware } = require("../auth");
 
-router
-  // create a like
-  .post("/", async (req, res) => {
+// add a like
+const addLike = [
+  validateJwtMiddleware,
+  async (req, res, next) => {
     try {
-      const like = await Like.create({
-        userId: req.user.id,
-        messageId: req.body.messageId
-      });
-      res.json({ like });
-    } catch (err) {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
+      const message = await Message.findById(req.body.messageId);
+      if (!message) {
+        next({
+          statusCode: 404,
+          message: "Message does not exist"
+        });
+        return;
       }
-      console.error(err);
-      res.status(500).send({ error: err.toString() });
+      const [like, created] = await Like.findOrCreate({
+        where: {
+          userId: req.user.id,
+          messageId: req.body.messageId
+        }
+      });
+      if (!created) {
+        next({ statusCode: 400, message: "Like already exists" });
+        return;
+      }
+      await like.reload();
+      res.send({ like: like.dataValues, statusCode: res.statusCode });
+    } catch (err) {
+      next(err);
     }
-  })
-  // delete a like
-  .delete("/:id", async (req, res) => {
+  }
+];
+// remove a like
+const removeLike = [
+  validateJwtMiddleware,
+  async (req, res, next) => {
     try {
       const destroyedCount = await Like.destroy({
         where: {
-          id: req.params.id,
+          id: req.params.likeId,
           userId: req.user.id
         }
       });
       if (destroyedCount === 0) {
-        return res.status(404).send({ error: "Like does not exist" });
-      } else {
-        return res.json({ id: req.params.id });
+        next({
+          statusCode: 404,
+          message: "Like does not exist"
+        });
+        return;
       }
+      res.send({ id: req.params.likeId, statusCode: res.statusCode });
     } catch (err) {
-      console.error(err);
-      res.status(500).send({ error: err.toString() });
+      next(err);
     }
-  });
+  }
+];
 
-module.exports = router;
+module.exports = {
+  addLike,
+  removeLike
+};

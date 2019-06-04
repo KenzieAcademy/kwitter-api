@@ -18,8 +18,25 @@ Message.hasMany(Like);
 Like.belongsTo(User);
 Like.belongsTo(Message);
 
+// handle adding statusCode to Sequelize.ValidationError
+// also handle Sequelize.UniqueConstraintError which requires special handling to create a clean error message
+const errorHandlerMiddleware = (err, req, res, next) => {
+  if (err instanceof Sequelize.ValidationError) {
+    err.statusCode = 400;
+    if (err instanceof Sequelize.UniqueConstraintError) {
+      const uniqueConstraintError = Object.assign(err, {
+        message: err.errors[0].message
+      });
+      next(uniqueConstraintError);
+      return;
+    }
+  }
+  next(err);
+};
+
 module.exports = {
-  sequelize,
+  startup: () => sequelize.authenticate(),
+  errorHandlerMiddleware,
   Like,
   Message,
   User

@@ -1,54 +1,101 @@
-const express = require("express");
-const router = express.Router();
 const { Message, Like } = require("../models");
-const { authMiddleware } = require("./auth");
-const Sequelize = require("sequelize");
+const { validateJwtMiddleware } = require("../auth");
 
-router
-  // create a message
-  .post("/", authMiddleware, async (req, res) => {
+// create a message
+const createMessage = [
+  validateJwtMiddleware,
+  async (req, res, next) => {
     try {
       const message = await Message.create({
         text: req.body.text,
         userId: req.user.get("id")
       });
-      res.json({ message });
+      /*
+      when the message is created it does not include the likes.
+      while there are no likes after a message is first created,
+      must add an empty array for likes so
+      this will pass validation (the Message schema requires having a likes property)
+      */
+      await message.reload();
+      const rawMessage = message.dataValues;
+      rawMessage.likes = [];
+      res.send({ message: rawMessage, statusCode: res.statusCode });
     } catch (err) {
-      if (err instanceof Sequelize.ValidationError) {
-        return res.status(400).send({ errors: err.errors });
-      }
-      res.status(500).send();
+      next(err);
     }
-  })
-  // read all messages
-  .get("/", async (req, res) => {
+  }
+];
+
+// get messages
+const getMessages = async (req, res, next) => {
+  try {
     const messages = await Message.findAll({
       include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    res.json({ messages });
-  })
-  // read message by id
-  .get("/:id", async (req, res) => {
-    const message = await Message.findById(req.params.id, {
+    const rawMessages = messages.map(message => {
+      const rawMessage = message.dataValues;
+      rawMessage.likes = message.likes.map(like => like.dataValues);
+      return rawMessage;
+    });
+    res.send({ messages: rawMessages, statusCode: res.statusCode });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// get message by id
+const getMessage = async (req, res, next) => {
+  try {
+    const message = await Message.findById(req.params.messageId, {
       include: [Like]
     });
-    res.json({ message });
-  })
-  // delete message
-  .delete("/:id", authMiddleware, async (req, res) => {
-    const destroyedCount = await Message.destroy({
-      where: {
-        id: req.params.id,
-        userId: req.user.id
-      }
-    });
-    if (destroyedCount === 0) {
-      return res.status(404).send({ error: "Message does not exist" });
+    if (!message) {
+      next({ statusCode: 404, message: "Message does not exist" });
+      return;
     }
-    res.json({ id: req.params.id });
-  });
+    const rawMessage = message.dataValues;
+    rawMessage.likes = message.likes.map(like => like.dataValues);
+    res.send({ message: rawMessage, statusCode: res.statusCode });
+  } catch (err) {
+    next(err);
+  }
+};
 
-module.exports = router;
+// delete message
+const deleteMessage = [
+  validateJwtMiddleware,
+  async (req, res, next) => {
+    try {
+      const message = await Message.findById(req.params.messageId);
+      if (!message) {
+        next({
+          statusCode: 404,
+          message: "Message does not exist"
+        });
+        return;
+      }
+      if (message.get("userId") !== req.user.id && req.user.role !== "admin") {
+        next({
+          statusCode: 403,
+          message:
+            "You do not have sufficient privileges to delete this message"
+        });
+        return;
+      }
+      await message.destroy();
+      res.send({ id: req.params.messageId, statusCode: res.statusCode });
+    } catch (err) {
+      next(err);
+    }
+  }
+];
+
+module.exports = {
+  deleteMessage,
+  getMessage,
+  getMessages,
+  createMessage
+};
