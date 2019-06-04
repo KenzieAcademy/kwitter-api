@@ -14,24 +14,18 @@ const addLike = [
         });
         return;
       }
-      let like = await Like.find({
+      const [like, created] = await Like.findOrCreate({
         where: {
           userId: req.user.id,
           messageId: req.body.messageId
         }
       });
-      if (like) {
+      if (!created) {
         next({ statusCode: 400, message: "Like already exists" });
         return;
       }
-      like = await Like.create(
-        {
-          userId: req.user.id,
-          messageId: req.body.messageId
-        },
-        { raw: true }
-      );
-      res.send({ like, statusCode: res.statusCode });
+      await like.reload();
+      res.send({ like: like.dataValues, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
