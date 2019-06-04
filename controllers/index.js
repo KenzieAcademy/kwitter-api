@@ -26,6 +26,13 @@ const multerErrorHandlerMiddleware = (err, req, res, next) => {
       message: `${err.message}: ${err.field}`
     });
     return;
+  } else if (err.message === "Multipart: Boundary not found") {
+    res.status(400);
+    next({
+      statusCode: res.statusCode,
+      message: "Did not receive picture data"
+    });
+    return;
   }
   next(err);
 };
