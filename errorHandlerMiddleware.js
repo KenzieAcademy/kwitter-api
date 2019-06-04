@@ -10,7 +10,7 @@ module.exports = (err, req, res, next) => {
     if (err.statusCode === 401) {
       res.set(
         "WWW-Authenticate",
-        `Bearer realm="include your username and password to POST /auth/login to receive a token"`
+        `Bearer realm="POST your username and password to /auth/login to receive a token"`
       );
     }
     res.status(err.statusCode).json({
