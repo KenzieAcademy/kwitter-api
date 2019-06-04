@@ -1,13 +1,5 @@
-const { User, Message, Like } = require("../models");
+const { User } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
-// const multer = require("multer");
-// const enforcerMulter = require("openapi-enforcer-multer");
-// const enforcer = require("./").enforcer;
-
-// const upload = multer({
-//   storage: multer.memoryStorage(),
-//   limits: { fileSize: 200000 }
-// });
 
 // get a specific user by id
 const getUser = async (req, res, next) => {
