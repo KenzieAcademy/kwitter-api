@@ -6,7 +6,7 @@ const addLike = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const message = await Message.findById(req.body.message);
+      const message = await Message.findById(req.body.messageId);
       if (!message) {
         next({
           statusCode: 400,
