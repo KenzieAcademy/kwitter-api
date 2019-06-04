@@ -37,7 +37,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"test2\",\n  \"password\": \"test2\"\n}"
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testuser\"\n}"
 						},
 						"url": {
 							"raw": "{{domain}}/auth/login",
@@ -78,189 +78,6 @@
 							]
 						},
 						"description": "Log out of gaggle."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Likes",
-			"item": [
-				{
-					"name": "*Add Like",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"messageId\": 31\n}"
-						},
-						"url": {
-							"raw": "{{domain}}/likes",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"likes"
-							]
-						},
-						"description": "Like an existing message."
-					},
-					"response": []
-				},
-				{
-					"name": "*Remove Like",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{domain}}/likes/542",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"likes",
-								"542"
-							]
-						},
-						"description": "Unlike an existing message."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Messages",
-			"item": [
-				{
-					"name": "Get Messages",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{domain}}/messages?limit=1000&offset=0",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"messages"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "1000"
-								},
-								{
-									"key": "offset",
-									"value": "0"
-								}
-							]
-						},
-						"description": "Get all messages posted by users."
-					},
-					"response": []
-				},
-				{
-					"name": "Get Message by id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{domain}}/messages/563",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"messages",
-								"563"
-							]
-						},
-						"description": "Get a specific message by id."
-					},
-					"response": []
-				},
-				{
-					"name": "*Create Message",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"test\"\n}"
-						},
-						"url": {
-							"raw": "{{domain}}/messages",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"messages"
-							]
-						},
-						"description": "Creaet a new message."
-					},
-					"response": []
-				},
-				{
-					"name": "*Delete Message by id",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{domain}}/messages/587",
-							"host": [
-								"{{domain}}"
-							],
-							"path": [
-								"messages",
-								"587"
-							]
-						},
-						"description": "Delete a specific message by id."
 					},
 					"response": []
 				}
@@ -316,13 +133,12 @@
 							"raw": "{\n  \"username\": \"test2\",\n  \"password\": \"test2\",\n  \"displayName\": \"test2\"\n}"
 						},
 						"url": {
-							"raw": "{{domain}}/auth/register",
+							"raw": "{{domain}}/users",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
-								"auth",
-								"register"
+								"users"
 							]
 						},
 						"description": "Register a new user"
@@ -368,7 +184,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"displayName\": \"Test User\",\n\t\"password\": \"password\"\n}"
+							"raw": "{\n\t\"displayName\": \"Test User\",\n\t\"password\": \"password\",\n\t\"about\": \"All about me\"\n}"
 						},
 						"url": {
 							"raw": "{{domain}}/users/{{userId}}",
@@ -454,12 +270,7 @@
 					"name": "Get User Profile Picture by Id",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "{{token}}"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": ""
@@ -481,10 +292,10 @@
 			]
 		},
 		{
-			"name": "Hashtags",
+			"name": "Messages",
 			"item": [
 				{
-					"name": "Get Hashtag Messages",
+					"name": "Get Messages",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -493,15 +304,171 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{domain}}/hashtags/cool",
+							"raw": "{{domain}}/messages?limit=100&offset=0",
 							"host": [
 								"{{domain}}"
 							],
 							"path": [
-								"hashtags",
-								"cool"
+								"messages"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
 							]
-						}
+						},
+						"description": "Get all messages posted by users."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Message by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/messages/94",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"messages",
+								"94"
+							]
+						},
+						"description": "Get a specific message by id."
+					},
+					"response": []
+				},
+				{
+					"name": "*Create Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"text\": \"test\"\n}"
+						},
+						"url": {
+							"raw": "{{domain}}/messages",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"messages"
+							]
+						},
+						"description": "Creaet a new message."
+					},
+					"response": []
+				},
+				{
+					"name": "*Delete Message by id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/messages/96",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"messages",
+								"96"
+							]
+						},
+						"description": "Delete a specific message by id."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Likes",
+			"item": [
+				{
+					"name": "*Add Like",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"messageId\": 95\n}"
+						},
+						"url": {
+							"raw": "{{domain}}/likes",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"likes"
+							]
+						},
+						"description": "Like an existing message."
+					},
+					"response": []
+				},
+				{
+					"name": "*Remove Like",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{domain}}/likes/36",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"likes",
+								"36"
+							]
+						},
+						"description": "Unlike an existing message."
 					},
 					"response": []
 				}
