@@ -552,6 +552,14 @@ paths:
       parameters:
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
+        - name: userId
+          in: query
+          description: Get messages created by this userId
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
       responses:
         200:
           description: OK

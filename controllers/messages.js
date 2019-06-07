@@ -28,8 +28,15 @@ const createMessage = [
 
 // get messages
 const getMessages = async (req, res, next) => {
+  let where = null;
+  if (req.query.userId) {
+    where = {
+      userId: req.query.userId
+    };
+  }
   try {
     const messages = await Message.findAll({
+      where,
       include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
