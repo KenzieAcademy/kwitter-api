@@ -152,6 +152,8 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/OperationalError"
+    403:
+      $ref: "#/components/responses/403"
     404:
       description: Not Found
       content:
@@ -379,11 +381,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         403:
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/403"
         404:
           $ref: "#/components/responses/404"
     delete:
@@ -657,11 +655,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         403:
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/403"
         404:
           $ref: "#/components/responses/404"
   /likes:
