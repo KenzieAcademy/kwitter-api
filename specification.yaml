@@ -108,6 +108,15 @@ components:
       scheme: bearer
       bearerFormat: JWT # optional, arbitrary value for documentation purposes
   parameters:
+    userId:
+      in: path
+      name: userId
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      description: The id of the user
     limitParam:
       name: limit
       in: query
@@ -153,7 +162,11 @@ components:
           schema:
             $ref: "#/components/schemas/OperationalError"
     403:
-      $ref: "#/components/responses/403"
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
     404:
       description: Not Found
       content:
@@ -302,12 +315,7 @@ paths:
       tags:
         - Users
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: The id of the user
+        - $ref: "#/components/parameters/userId"
       responses:
         200:
           description: OK
@@ -333,12 +341,7 @@ paths:
       tags:
         - Users
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: The id of the user
+        - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
       requestBody:
@@ -391,12 +394,7 @@ paths:
       tags:
         - Users
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: The id of the user
+        - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
       responses:
@@ -425,12 +423,7 @@ paths:
       tags:
         - Users
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: The id of the user
+        - $ref: "#/components/parameters/userId"
       responses:
         200:
           description: OK
@@ -469,12 +462,7 @@ paths:
       tags:
         - Users
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-          description: The id of the user
+        - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
       requestBody:
