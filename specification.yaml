@@ -117,6 +117,15 @@ components:
         format: int32
         minimum: 1
       description: The id of the user
+    messageId:
+      in: path
+      name: messageId
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      required: true
+      description: The id of the message
     limitParam:
       name: limit
       in: query
@@ -585,12 +594,7 @@ paths:
       tags:
         - Messages
       parameters:
-        - in: path
-          name: messageId
-          schema:
-            type: integer
-          required: true
-          description: id of the message to get
+        - $ref: "#/components/parameters/messageId"
       responses:
         200:
           description: OK
@@ -618,12 +622,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - in: path
-          name: messageId
-          schema:
-            type: integer
-          required: true
-          description: id of the message to delete
+        - $ref: "#/components/parameters/messageId"
       responses:
         200:
           description: OK
