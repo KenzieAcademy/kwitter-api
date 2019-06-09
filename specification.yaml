@@ -137,6 +137,15 @@ components:
         enum:
           - Bearer realm="POST your username and password to /auth/login to receive a token"
   responses:
+    401:
+      description: Unauthorized
+      headers:
+        WWW-Authenticate:
+          $ref: "#/components/headers/WWW-Authenticate"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
     404:
       description: Not Found
       content:
@@ -206,14 +215,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessStatusCode"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
   /users:
     get:
       summary: Get a list of users
@@ -389,14 +391,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/OperationalError"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
         403:
           description: Forbidden
           content:
@@ -435,14 +430,7 @@ paths:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404"
   /users/{userId}/picture:
@@ -537,14 +525,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessStatusCode"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
         415:
           description: Unsupported Media type
           content:
@@ -635,14 +616,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/OperationalError"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
   /messages/{messageId}:
     get:
       summary: Get a message
@@ -715,14 +689,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/OperationalError"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
         403:
           description: Forbidden
           content:
@@ -771,14 +738,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/OperationalError"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
   /likes/{likeId}:
     delete:
       summary: Remove Like
@@ -816,13 +776,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/OperationalError"
         401:
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              $ref: "#/components/headers/WWW-Authenticate"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404"
