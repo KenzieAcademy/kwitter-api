@@ -137,6 +137,12 @@ components:
         enum:
           - Bearer realm="POST your username and password to /auth/login to receive a token"
   responses:
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
     401:
       description: Unauthorized
       headers:
@@ -193,11 +199,7 @@ paths:
                       - token
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
   /auth/logout:
     get:
       summary: Logout a user
@@ -243,11 +245,7 @@ paths:
                       - users
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
     post:
       summary: Create a new user
       operationId: createUser
@@ -293,11 +291,7 @@ paths:
                       - user
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
   /users/{userId}:
     get:
       summary: Get a user
@@ -327,11 +321,7 @@ paths:
                       - user
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         404:
           $ref: "#/components/responses/404"
     patch:
@@ -385,11 +375,7 @@ paths:
                       - user
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -475,11 +461,7 @@ paths:
                 format: binary
                 x-serialize: false
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         404:
           $ref: "#/components/responses/404"
     put:
@@ -567,11 +549,7 @@ paths:
                       - messages
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
     post:
       summary: Create a message
       operationId: createMessage
@@ -610,11 +588,7 @@ paths:
                       - message
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
   /messages/{messageId}:
@@ -646,11 +620,7 @@ paths:
                       - message
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         404:
           $ref: "#/components/responses/404"
     delete:
@@ -683,11 +653,7 @@ paths:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -732,11 +698,7 @@ paths:
                         $ref: "#/components/schemas/Like"
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
   /likes/{likeId}:
@@ -770,11 +732,7 @@ paths:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/400"
         401:
           $ref: "#/components/responses/401"
         404:
