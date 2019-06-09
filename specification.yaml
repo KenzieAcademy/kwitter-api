@@ -323,6 +323,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
     patch:
       summary: Update user
       operationId: updateUser
@@ -394,6 +400,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
     delete:
       summary: Delete user
       operationId: deleteUser
@@ -428,6 +440,12 @@ paths:
           headers:
             WWW-Authenticate:
               $ref: "#/components/headers/WWW-Authenticate"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
           content:
             application/json:
               schema:
@@ -664,6 +682,12 @@ paths:
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationalError"
+        404:
+          description: Not Found
           content:
             application/json:
               schema:
