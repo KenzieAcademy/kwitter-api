@@ -126,6 +126,15 @@ components:
         minimum: 1
       required: true
       description: The id of the message
+    likeId:
+      in: path
+      name: likeId
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      required: true
+      description: The id of the like
     limitParam:
       name: limit
       in: query
@@ -692,12 +701,7 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - in: path
-          name: likeId
-          schema:
-            type: integer
-          required: true
-          description: id of the like to remove
+        - $ref: "#/components/parameters/likeId"
       responses:
         200:
           description: OK
@@ -708,7 +712,7 @@ paths:
                   - type: object
                     properties:
                       id:
-                        type: number
+                        $ref: "#/components/schemas/likeId"
                     required:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
