@@ -59,7 +59,7 @@ components:
         id:
           $ref: "#/components/schemas/messageId"
         text:
-          type: string
+          $ref: "#/components/schemas/text"
         userId:
           $ref: "#/components/schemas/userId"
         createdAt:
@@ -129,6 +129,10 @@ components:
     about:
       type: string
       minLength: 0
+      maxLength: 255
+    text:
+      type: string
+      minLength: 2
       maxLength: 255
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -582,9 +586,7 @@ paths:
               type: object
               properties:
                 text:
-                  type: string
-                  minLength: 2
-                  maxLength: 255
+                  $ref: "#/components/schemas/text"
               required:
                 - text
       responses:
