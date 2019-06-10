@@ -16,7 +16,7 @@ components:
         id:
           type: integer
         username:
-          type: string
+          $ref: "#/components/schemas/username"
         displayName:
           type: string
         about:
@@ -102,6 +102,10 @@ components:
           maximum: 399
       required:
         - statusCode
+    username:
+      type: string
+      minLength: 3
+      maxLength: 20
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -214,7 +218,7 @@ paths:
               type: object
               properties:
                 username:
-                  type: string
+                  $ref: "#/components/schemas/username"
                 password:
                   type: string
               required:
@@ -300,9 +304,7 @@ paths:
               type: object
               properties:
                 username:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
+                  $ref: "#/components/schemas/username"
                 displayName:
                   type: string
                   minLength: 3
