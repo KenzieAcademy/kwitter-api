@@ -46,7 +46,15 @@ module.exports = {
     enforcerMulter(enforcer, upload),
     enforcer.middleware(),
     multerErrorHandlerMiddleware,
-    models.errorHandlerMiddleware
+    models.errorHandlerMiddleware,
+    // this error handler middleware adjusts err.statusCode and err.message in the case when enforcer.middleware encounters an undefined operation (ie this means the operation does not exist)
+    (err, req, res, next) => {
+      if (err.message === "Cannot read property 'operation' of undefined") {
+        err.statusCode = 404;
+        err.message = "Operation does not exist";
+      }
+      next(err);
+    }
   ],
   startup: async () => {
     await enforcer.promise;
