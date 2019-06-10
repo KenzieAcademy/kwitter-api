@@ -118,6 +118,10 @@ components:
       type: integer
       format: int32
       minimum: 1
+    password:
+      type: string
+      minLength: 3
+      maxLength: 20
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -226,7 +230,7 @@ paths:
                 username:
                   $ref: "#/components/schemas/username"
                 password:
-                  type: string
+                  $ref: "#/components/schemas/password"
               required:
                 - username
                 - password
@@ -316,9 +320,7 @@ paths:
                   minLength: 3
                   maxLength: 20
                 password:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
+                  $ref: "#/components/schemas/password"
               required:
                 - username
                 - displayName
@@ -386,9 +388,7 @@ paths:
               type: object
               properties:
                 password:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
+                  $ref: "#/components/schemas/password"
                 about:
                   type: string
                   minLength: 0
