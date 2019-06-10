@@ -43,7 +43,7 @@ components:
         userId:
           $ref: "#/components/schemas/userId"
         messageId:
-          type: integer
+          $ref: "#/components/schemas/messageId"
         createdAt:
           type: string
           format: date-time
@@ -57,7 +57,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          $ref: "#/components/schemas/messageId"
         text:
           type: string
         userId:
@@ -110,6 +110,10 @@ components:
       type: integer
       format: int32
       minimum: 1
+    messageId:
+      type: integer
+      format: int32
+      minimum: 1
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -127,9 +131,7 @@ components:
       in: path
       name: messageId
       schema:
-        type: integer
-        format: int32
-        minimum: 1
+        $ref: "#/components/schemas/messageId"
       required: true
       description: The id of the message
     likeId:
@@ -646,7 +648,7 @@ paths:
                   - type: object
                     properties:
                       id:
-                        type: integer
+                        $ref: "#/components/schemas/messageId"
                     required:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
@@ -676,7 +678,7 @@ paths:
               type: object
               properties:
                 messageId:
-                  type: integer
+                  $ref: "#/components/schemas/messageId"
               required:
                 - messageId
       responses:
