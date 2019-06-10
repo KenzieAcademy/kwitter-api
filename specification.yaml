@@ -20,7 +20,7 @@ components:
         displayName:
           $ref: "#/components/schemas/displayName"
         about:
-          type: string
+          $ref: "#/components/schemas/about"
         createdAt:
           type: string
           format: date-time
@@ -126,6 +126,10 @@ components:
       type: string
       minLength: 3
       maxLength: 20
+    about:
+      type: string
+      minLength: 0
+      maxLength: 255
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -392,9 +396,7 @@ paths:
                 password:
                   $ref: "#/components/schemas/password"
                 about:
-                  type: string
-                  minLength: 0
-                  maxLength: 255
+                  $ref: "#/components/schemas/about"
                 displayName:
                   $ref: "#/components/schemas/displayName"
       responses:
