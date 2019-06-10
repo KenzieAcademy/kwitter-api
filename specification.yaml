@@ -191,6 +191,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/OperationalError"
+    415:
+      description: Unsupported Media type
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
 paths:
   /auth/login:
     post:
@@ -513,11 +519,7 @@ paths:
         401:
           $ref: "#/components/responses/401"
         415:
-          description: Unsupported Media type
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OperationalError"
+          $ref: "#/components/responses/415"
   /messages:
     get:
       summary: Get a list of messages
