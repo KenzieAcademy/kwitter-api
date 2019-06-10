@@ -14,7 +14,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          $ref: "#/components/schemas/userId"
         username:
           $ref: "#/components/schemas/username"
         displayName:
@@ -41,7 +41,7 @@ components:
         id:
           type: integer
         userId:
-          type: integer
+          $ref: "#/components/schemas/userId"
         messageId:
           type: integer
         createdAt:
@@ -61,7 +61,7 @@ components:
         text:
           type: string
         userId:
-          type: integer
+          $ref: "#/components/schemas/userId"
         createdAt:
           type: string
           format: date-time
@@ -106,6 +106,10 @@ components:
       type: string
       minLength: 3
       maxLength: 20
+    userId:
+      type: integer
+      format: int32
+      minimum: 1
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -117,9 +121,7 @@ components:
       name: userId
       required: true
       schema:
-        type: integer
-        format: int32
-        minimum: 1
+        $ref: "#/components/schemas/userId"
       description: The id of the user
     messageId:
       in: path
@@ -234,7 +236,7 @@ paths:
                   - type: object
                     properties:
                       id:
-                        type: integer
+                        $ref: "#/components/schemas/userId"
                       token:
                         type: string
                     required:
@@ -433,7 +435,7 @@ paths:
                   - type: object
                     properties:
                       id:
-                        type: integer
+                        $ref: "#/components/schemas/userId"
                     required:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
@@ -537,9 +539,7 @@ paths:
           description: Get messages created by this userId
           required: false
           schema:
-            type: integer
-            format: int32
-            minimum: 1
+            $ref: "#/components/schemas/userId"
       responses:
         200:
           description: OK
