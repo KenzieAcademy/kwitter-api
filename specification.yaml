@@ -39,7 +39,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          $ref: "#/components/schemas/likeId"
         userId:
           $ref: "#/components/schemas/userId"
         messageId:
@@ -114,6 +114,10 @@ components:
       type: integer
       format: int32
       minimum: 1
+    likeId:
+      type: integer
+      format: int32
+      minimum: 1
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -138,9 +142,7 @@ components:
       in: path
       name: likeId
       schema:
-        type: integer
-        format: int32
-        minimum: 1
+        $ref: "#/components/schemas/likeId"
       required: true
       description: The id of the like
     limitParam:
