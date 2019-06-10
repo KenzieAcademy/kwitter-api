@@ -18,7 +18,7 @@ components:
         username:
           $ref: "#/components/schemas/username"
         displayName:
-          type: string
+          $ref: "#/components/schemas/displayName"
         about:
           type: string
         createdAt:
@@ -119,6 +119,10 @@ components:
       format: int32
       minimum: 1
     password:
+      type: string
+      minLength: 3
+      maxLength: 20
+    displayName:
       type: string
       minLength: 3
       maxLength: 20
@@ -316,9 +320,7 @@ paths:
                 username:
                   $ref: "#/components/schemas/username"
                 displayName:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
+                  $ref: "#/components/schemas/displayName"
                 password:
                   $ref: "#/components/schemas/password"
               required:
@@ -394,9 +396,7 @@ paths:
                   minLength: 0
                   maxLength: 255
                 displayName:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
+                  $ref: "#/components/schemas/displayName"
       responses:
         200:
           description: OK
