@@ -25,6 +25,9 @@ components:
           $ref: "#/components/schemas/timestamp"
         updatedAt:
           $ref: "#/components/schemas/timestamp"
+        pictureLocation:
+          type: string
+          nullable: true
       required:
         - id
         - username
@@ -32,6 +35,7 @@ components:
         - about
         - createdAt
         - updatedAt
+        - pictureLocation
     Like:
       additionalProperties: false
       type: object

@@ -1,13 +1,18 @@
 const { User } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
 
+function getRawUser(user) {
+  const rawUser = user.toJSON();
+  delete rawUser.password;
+  delete rawUser.picture;
+  delete rawUser.pictureContentType;
+  return rawUser;
+}
 // get a specific user by id
 const getUser = async (req, res, next) => {
   const id = req.params.userId;
   try {
-    const user = await User.findById(id, {
-      raw: true
-    });
+    const user = await User.scope(null).findById(id);
 
     if (!user) {
       next({
@@ -16,7 +21,8 @@ const getUser = async (req, res, next) => {
       });
       return;
     }
-    res.send({ user, statusCode: res.statusCode });
+
+    res.send({ user: getRawUser(user), statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -24,13 +30,13 @@ const getUser = async (req, res, next) => {
 // get list of users
 const getUsers = async (req, res, next) => {
   try {
-    const users = await User.findAll({
+    const users = await User.scope(null).findAll({
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]],
-      raw: true
+      order: [["createdAt", "DESC"]]
     });
-    res.send({ users, statusCode: res.statusCode });
+
+    res.send({ users: users.map(getRawUser), statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -40,13 +46,12 @@ const getUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   const { username, displayName, password } = req.body;
   try {
-    const user = await User.create({
+    const user = await User.scope(null).create({
       username,
       displayName,
       password
     });
-    const userRaw = await User.findById(user.id, { raw: true });
-    res.send({ user: userRaw, statusCode: res.statusCode });
+    res.send({ user: getRawUser(user), statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }
@@ -78,7 +83,7 @@ const updateUser = [
     }
 
     try {
-      const user = await User.findById(req.params.userId);
+      const user = await User.scope(null).findById(req.params.userId);
       if (!user) {
         next({
           statusCode: 404,
@@ -87,8 +92,8 @@ const updateUser = [
         return;
       }
       await user.update(patch, { where: { id: req.params.userId } });
-      const rawUser = await User.findById(req.params.userId, { raw: true });
-      res.send({ user: rawUser, statusCode: res.statusCode });
+      //const rawUser = await User.findById(req.params.userId, { raw: true });
+      res.send({ user: getRawUser(user), statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
