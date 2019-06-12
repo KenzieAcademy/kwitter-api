@@ -37,6 +37,11 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     {
+      getterMethods: {
+        pictureLocation() {
+          return this.picture ? `/users/${this.id}/picture` : null;
+        }
+      },
       hooks: {
         afterValidate: async function(user) {
           // PATCH /users endpoint does not require a password to be passed
