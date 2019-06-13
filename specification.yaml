@@ -465,6 +465,12 @@ paths:
         - Users
       parameters:
         - $ref: "#/components/parameters/userId"
+        - in: query
+          name: t
+          description: This query parameter does not affect the response. It can be provided in cases where you want to circumvent the browser's internal cache. Providing this query parameter with a unique timestamp will cause the browser to re-download the picture.
+          schema:
+            type: integer
+          required: false
       responses:
         200:
           description: OK
