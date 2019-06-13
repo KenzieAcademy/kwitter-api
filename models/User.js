@@ -39,7 +39,11 @@ module.exports = function(sequelize, DataTypes) {
     {
       getterMethods: {
         pictureLocation() {
-          return this.picture ? `/users/${this.id}/picture` : null;
+          return this.picture
+            ? `/users/${this.id}/picture?t=${new Date(
+                this.updatedAt
+              ).getTime()}`
+            : null;
         }
       },
       hooks: {
