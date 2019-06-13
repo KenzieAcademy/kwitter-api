@@ -481,17 +481,14 @@ paths:
               schema:
                 type: string
                 format: binary
-                x-serialize: false
             image/gif:
               schema:
                 type: string
                 format: binary
-                x-serialize: false
             image/jpeg:
               schema:
                 type: string
                 format: binary
-                x-serialize: false
         400:
           $ref: "#/components/responses/400"
         404:
