@@ -91,7 +91,7 @@ const updateUser = [
         });
         return;
       }
-      await user.update(patch, { where: { id: req.params.userId } });
+      await user.update(patch);
       //const rawUser = await User.findById(req.params.userId, { raw: true });
       res.send({ user: getRawUser(user), statusCode: res.statusCode });
     } catch (err) {

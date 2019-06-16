@@ -47,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
         }
       },
       hooks: {
-        afterValidate: async function(user) {
+        beforeUpdate: async (user, options) => {
           // PATCH /users endpoint does not require a password to be passed
           // so check if the password is provided before trying to hash it (this prevents bcrypt from throwing an error)
           if (user.password) {
