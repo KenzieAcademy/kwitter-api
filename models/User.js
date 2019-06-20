@@ -51,9 +51,17 @@ module.exports = function(sequelize, DataTypes) {
           user.password = await bcrypt.hash(user.password, 8);
         },
         beforeUpdate: async user => {
-          // PATCH /users endpoint does not require a password to be passed
-          // so check if the password is provided before trying to hash it (this prevents bcrypt from throwing an error)
-          if (user.password) {
+          /*
+          PATCH /users/{userId} endpoint does not require a password to be passed
+          so check if the password is provided before trying to hash it.
+          we can determine whether the password was provided in PATCH /users/{userId}
+          by checking the length. if a password was not provided in the PATCH, then
+          the password will be the original hashed password from the DB.
+          the hashed password from the DB is always 60 characters long (according to bcrypt).
+          while a new password provided to PATCH must be 2 to 20 characters
+          (according to the api specification)
+          */
+          if (user.password.length !== 60) {
             user.password = await bcrypt.hash(user.password, 8);
           }
         }
