@@ -20,7 +20,7 @@ JWT_SECRET="whateveryouwant"
 
   confirm that the api is working locally by making a request to `GET localhost:3000/messages`
 
-  note: visiting `localhost:3000` will take you to the swagger ui specification, which is currently incomplete. there is also a more complete description of the api in the postman collection file, `Kwitter API.postman_collection.json`
+  note: visiting `localhost:3000` will take you to a swagger/openapi documentation page for the available api endpoints. There is also a postman collection file available to use: `Kwitter API.postman_collection.json`
 
 ### Basic setup for deploying to heroku
 
