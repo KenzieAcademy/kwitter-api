@@ -1,6 +1,13 @@
 const { Like, Message } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
 
+// helper function
+const getRawLike = like => {
+  const rawLike = like.dataValues;
+  rawLike.username = like.user.dataValues.username;
+  delete rawLike.user;
+  return rawLike;
+};
 // add a like
 const addLike = [
   validateJwtMiddleware,
@@ -14,18 +21,21 @@ const addLike = [
         });
         return;
       }
-      const [like, created] = await Like.findOrCreate({
-        where: {
-          userId: req.user.id,
-          messageId: req.body.messageId
-        }
-      });
+      const [like, created] = await Like.findOrCreate(
+        {
+          where: {
+            userId: req.user.id,
+            messageId: req.body.messageId
+          }
+        },
+        { include: [{ model: User, attributes: "username" }] }
+      );
       if (!created) {
         next({ statusCode: 400, message: "Like already exists" });
         return;
       }
       await like.reload();
-      res.send({ like: like.dataValues, statusCode: res.statusCode });
+      res.send({ like: getRawLike(like), statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
@@ -58,5 +68,6 @@ const removeLike = [
 
 module.exports = {
   addLike,
-  removeLike
+  removeLike,
+  getRawLike
 };

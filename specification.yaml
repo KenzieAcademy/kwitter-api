@@ -44,6 +44,8 @@ components:
           $ref: "#/components/schemas/likeId"
         userId:
           $ref: "#/components/schemas/userId"
+        username:
+          $ref: "#/components/schemas/username"
         messageId:
           $ref: "#/components/schemas/messageId"
         createdAt:
@@ -51,6 +53,7 @@ components:
       required:
         - id
         - userId
+        - username
         - messageId
         - createdAt
     Message:
@@ -63,6 +66,8 @@ components:
           $ref: "#/components/schemas/text"
         userId:
           $ref: "#/components/schemas/userId"
+        username:
+          $ref: "#/components/schemas/username"
         createdAt:
           $ref: "#/components/schemas/timestamp"
         likes:
@@ -73,6 +78,7 @@ components:
         - id
         - text
         - userId
+        - username
         - createdAt
         - likes
     OperationalError:

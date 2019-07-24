@@ -1,24 +1,38 @@
-const { Message, Like } = require("../models");
+const { Message, Like, User } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
+const { getRawLike } = require("./likes");
+
+// helper function
+const getRawMessage = message => {
+  const rawMessage = message.dataValues;
+  rawMessage.username = message.user.dataValues.username;
+  delete rawMessage.user;
+  rawMessage.likes = message.likes.map(getRawLike);
+  return rawMessage;
+};
 
 // create a message
 const createMessage = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const message = await Message.create({
-        text: req.body.text,
-        userId: req.user.get("id")
-      });
-      /*
-      when the message is created it does not include the likes.
-      while there are no likes after a message is first created,
-      must add an empty array for likes so
-      this will pass validation (the Message schema requires having a likes property)
-      */
+      const message = await Message.create(
+        {
+          text: req.body.text,
+          userId: req.user.get("id")
+        },
+        {
+          include: [
+            {
+              model: Like,
+              include: [{ model: User, attributes: ["username"] }]
+            },
+            { model: User, attributes: ["username"] }
+          ]
+        }
+      );
       await message.reload();
-      const rawMessage = message.dataValues;
-      rawMessage.likes = [];
+      const rawMessage = getRawMessage(message);
       res.send({ message: rawMessage, statusCode: res.statusCode });
     } catch (err) {
       next(err);
@@ -37,16 +51,18 @@ const getMessages = async (req, res, next) => {
   try {
     const messages = await Message.findAll({
       where,
-      include: [Like],
+      include: [
+        {
+          model: Like,
+          include: [{ model: User, attributes: ["username"] }]
+        },
+        { model: User, attributes: ["username"] }
+      ],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
-    const rawMessages = messages.map(message => {
-      const rawMessage = message.dataValues;
-      rawMessage.likes = message.likes.map(like => like.dataValues);
-      return rawMessage;
-    });
+    const rawMessages = messages.map(getRawMessage);
     res.send({ messages: rawMessages, statusCode: res.statusCode });
   } catch (err) {
     next(err);
@@ -57,14 +73,19 @@ const getMessages = async (req, res, next) => {
 const getMessage = async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.messageId, {
-      include: [Like]
+      include: [
+        {
+          model: Like,
+          include: [{ model: User, attributes: ["username"] }]
+        },
+        { model: User, attributes: ["username"] }
+      ]
     });
     if (!message) {
       next({ statusCode: 404, message: "Message does not exist" });
       return;
     }
-    const rawMessage = message.dataValues;
-    rawMessage.likes = message.likes.map(like => like.dataValues);
+    const rawMessage = getRawMessage(message);
     res.send({ message: rawMessage, statusCode: res.statusCode });
   } catch (err) {
     next(err);
