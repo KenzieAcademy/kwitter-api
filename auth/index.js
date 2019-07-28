@@ -11,7 +11,7 @@ passport.use(
     },
     async (payload, done) => {
       try {
-        const user = await User.findById(payload.id);
+        const user = await User.findByPk(payload.username);
         if (user === null) {
           done({
             statusCode: 404,

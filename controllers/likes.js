@@ -4,8 +4,6 @@ const { validateJwtMiddleware } = require("../auth");
 // helper function
 const getRawLike = like => {
   const rawLike = like.dataValues;
-  rawLike.username = like.user.dataValues.username;
-  delete rawLike.user;
   return rawLike;
 };
 // add a like
@@ -13,7 +11,7 @@ const addLike = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const message = await Message.findById(req.body.messageId);
+      const message = await Message.findByPk(req.body.messageId);
       if (!message) {
         next({
           statusCode: 404,
@@ -21,15 +19,12 @@ const addLike = [
         });
         return;
       }
-      const [like, created] = await Like.findOrCreate(
-        {
-          where: {
-            userId: req.user.id,
-            messageId: req.body.messageId
-          }
-        },
-        { include: [{ model: User, attributes: "username" }] }
-      );
+      const [like, created] = await Like.findOrCreate({
+        where: {
+          username: req.user.username,
+          messageId: req.body.messageId
+        }
+      });
       if (!created) {
         next({ statusCode: 400, message: "Like already exists" });
         return;
@@ -49,7 +44,7 @@ const removeLike = [
       const destroyedCount = await Like.destroy({
         where: {
           id: req.params.likeId,
-          userId: req.user.id
+          username: req.user.username
         }
       });
       if (destroyedCount === 0) {

@@ -7,6 +7,8 @@ module.exports = function(sequelize, DataTypes) {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
+        primaryKey: true,
+        unique: true,
         validate: {
           notContains: {
             args: " ",
@@ -52,9 +54,9 @@ module.exports = function(sequelize, DataTypes) {
         },
         beforeUpdate: async user => {
           /*
-          PATCH /users/{userId} endpoint does not require a password to be passed
+          PATCH /users/{username} endpoint does not require a password to be passed
           so check if the password is provided before trying to hash it.
-          we can determine whether the password was provided in PATCH /users/{userId}
+          we can determine whether the password was provided in PATCH /users/{username}
           by checking the length. if a password was not provided in the PATCH, then
           the password will be the original hashed password from the DB.
           the hashed password from the DB is always 60 characters long (according to bcrypt).

@@ -13,8 +13,6 @@ components:
       additionalProperties: false
       type: object
       properties:
-        id:
-          $ref: "#/components/schemas/userId"
         username:
           $ref: "#/components/schemas/username"
         displayName:
@@ -29,7 +27,6 @@ components:
           type: string
           nullable: true
       required:
-        - id
         - username
         - displayName
         - about
@@ -42,8 +39,6 @@ components:
       properties:
         id:
           $ref: "#/components/schemas/likeId"
-        userId:
-          $ref: "#/components/schemas/userId"
         username:
           $ref: "#/components/schemas/username"
         messageId:
@@ -52,7 +47,6 @@ components:
           $ref: "#/components/schemas/timestamp"
       required:
         - id
-        - userId
         - username
         - messageId
         - createdAt
@@ -64,8 +58,6 @@ components:
           $ref: "#/components/schemas/messageId"
         text:
           $ref: "#/components/schemas/text"
-        userId:
-          $ref: "#/components/schemas/userId"
         username:
           $ref: "#/components/schemas/username"
         createdAt:
@@ -77,7 +69,6 @@ components:
       required:
         - id
         - text
-        - userId
         - username
         - createdAt
         - likes
@@ -112,10 +103,6 @@ components:
       type: string
       minLength: 3
       maxLength: 20
-    userId:
-      type: integer
-      format: int32
-      minimum: 1
     messageId:
       type: integer
       format: int32
@@ -149,13 +136,13 @@ components:
       scheme: bearer
       bearerFormat: JWT # optional, arbitrary value for documentation purposes
   parameters:
-    userId:
+    username:
       in: path
-      name: userId
+      name: username
       required: true
       schema:
-        $ref: "#/components/schemas/userId"
-      description: The id of the user
+        $ref: "#/components/schemas/username"
+      description: The username of the user
     messageId:
       in: path
       name: messageId
@@ -264,12 +251,12 @@ paths:
                 allOf:
                   - type: object
                     properties:
-                      id:
-                        $ref: "#/components/schemas/userId"
+                      username:
+                        $ref: "#/components/schemas/username"
                       token:
                         type: string
                     required:
-                      - id
+                      - username
                       - token
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
@@ -360,7 +347,7 @@ paths:
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           $ref: "#/components/responses/400"
-  /users/{userId}:
+  /users/{username}:
     get:
       summary: Get a user
       operationId: getUser
@@ -368,7 +355,7 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/username"
       responses:
         200:
           description: OK
@@ -394,7 +381,7 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/username"
       security:
         - bearerAuth: []
       requestBody:
@@ -441,7 +428,7 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/username"
       security:
         - bearerAuth: []
       responses:
@@ -454,7 +441,7 @@ paths:
                   - type: object
                     properties:
                       id:
-                        $ref: "#/components/schemas/userId"
+                        $ref: "#/components/schemas/username"
                     required:
                       - id
                   - $ref: "#/components/schemas/SuccessStatusCode"
@@ -462,7 +449,7 @@ paths:
           $ref: "#/components/responses/401"
         404:
           $ref: "#/components/responses/404"
-  /users/{userId}/picture:
+  /users/{username}/picture:
     get:
       summary: Get a user's picture
       operationId: getUserPicture
@@ -470,7 +457,7 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/username"
         - in: query
           name: t
           description: This query parameter does not affect the response. It can be provided in cases where you want to circumvent the browser's internal cache. Providing this query parameter with a unique timestamp will cause the browser to re-download the picture.
@@ -512,7 +499,7 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: "#/components/parameters/userId"
+        - $ref: "#/components/parameters/username"
       security:
         - bearerAuth: []
       requestBody:
@@ -556,12 +543,12 @@ paths:
       parameters:
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
-        - name: userId
+        - name: username
           in: query
-          description: Get messages created by this userId
+          description: Get messages created by this username
           required: false
           schema:
-            $ref: "#/components/schemas/userId"
+            $ref: "#/components/schemas/username"
       responses:
         200:
           description: OK

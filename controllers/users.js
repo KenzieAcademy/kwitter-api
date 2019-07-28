@@ -3,6 +3,7 @@ const { validateJwtMiddleware } = require("../auth");
 
 function getRawUser(user) {
   const rawUser = user.toJSON();
+  delete rawUser.id;
   delete rawUser.password;
   delete rawUser.picture;
   delete rawUser.pictureContentType;
@@ -10,9 +11,9 @@ function getRawUser(user) {
 }
 // get a specific user by id
 const getUser = async (req, res, next) => {
-  const id = req.params.userId;
+  const username = req.params.username;
   try {
-    const user = await User.scope(null).findById(id);
+    const user = await User.scope(null).findByPk(username);
 
     if (!user) {
       next({
@@ -61,7 +62,10 @@ const createUser = async (req, res, next) => {
 const updateUser = [
   validateJwtMiddleware,
   async (req, res, next) => {
-    if (req.params.userId !== req.user.id && req.user.role !== "admin") {
+    if (
+      req.params.username !== req.user.username &&
+      req.user.role !== "admin"
+    ) {
       next({
         statusCode: 403,
         message: "You do not have sufficient privileges to update this user"
@@ -83,7 +87,7 @@ const updateUser = [
     }
 
     try {
-      const user = await User.scope(null).findById(req.params.userId);
+      const user = await User.scope(null).findByPk(req.params.username);
       if (!user) {
         next({
           statusCode: 404,
@@ -92,7 +96,6 @@ const updateUser = [
         return;
       }
       await user.update(patch);
-      //const rawUser = await User.findById(req.params.userId, { raw: true });
       res.send({ user: getRawUser(user), statusCode: res.statusCode });
     } catch (err) {
       next(err);
@@ -120,7 +123,7 @@ const deleteUser = [
 // get user's picture
 const getUserPicture = async (req, res, next) => {
   try {
-    const user = await User.scope("picture").findById(req.params.userId);
+    const user = await User.scope("picture").findByPk(req.params.username);
     if (user === null) {
       next({ statusCode: 404, message: "User does not exist" });
       return;
@@ -146,7 +149,7 @@ const setUserPicture = [
   async (req, res, next) => {
     const supportedContentTypes = ["image/gif", "image/jpeg", "image/png"];
     const { buffer, mimetype } = req.files.picture;
-    const { id } = req.user;
+    const { username } = req.user;
 
     if (!supportedContentTypes.includes(mimetype)) {
       next({
@@ -159,11 +162,18 @@ const setUserPicture = [
     }
 
     try {
-      await User.scope("picture").update(
+      const [updated] = await User.scope("picture").update(
         { picture: buffer, pictureContentType: mimetype },
-        { where: { id } }
+        { where: { username } }
       );
-      res.set({ "Content-Location": `/users/${id}/picture` });
+      if (!updated) {
+        next({
+          message: "User does not exist",
+          statusCode: 404
+        });
+        return;
+      }
+      res.set({ "Content-Location": `/users/${username}/picture` });
       res.send({ statusCode: res.statusCode });
     } catch (err) {
       next(err);

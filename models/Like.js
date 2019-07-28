@@ -3,7 +3,7 @@ module.exports = function(sequelize, DataTypes) {
   const Like = sequelize.define(
     "like",
     {
-      userId: DataTypes.INTEGER,
+      username: DataTypes.STRING,
       messageId: DataTypes.INTEGER
     },
     {

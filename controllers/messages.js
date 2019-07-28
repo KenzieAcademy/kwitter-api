@@ -5,8 +5,6 @@ const { getRawLike } = require("./likes");
 // helper function
 const getRawMessage = message => {
   const rawMessage = message.dataValues;
-  rawMessage.username = message.user.dataValues.username;
-  delete rawMessage.user;
   rawMessage.likes = message.likes.map(getRawLike);
   return rawMessage;
 };
@@ -19,16 +17,10 @@ const createMessage = [
       const message = await Message.create(
         {
           text: req.body.text,
-          userId: req.user.get("id")
+          username: req.user.get("username")
         },
         {
-          include: [
-            {
-              model: Like,
-              include: [{ model: User, attributes: ["username"] }]
-            },
-            { model: User, attributes: ["username"] }
-          ]
+          include: [Like]
         }
       );
       await message.reload();
@@ -43,21 +35,15 @@ const createMessage = [
 // get messages
 const getMessages = async (req, res, next) => {
   let where = null;
-  if (req.query.userId) {
+  if (req.query.username) {
     where = {
-      userId: req.query.userId
+      username: req.query.username
     };
   }
   try {
     const messages = await Message.findAll({
       where,
-      include: [
-        {
-          model: Like,
-          include: [{ model: User, attributes: ["username"] }]
-        },
-        { model: User, attributes: ["username"] }
-      ],
+      include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
@@ -72,14 +58,8 @@ const getMessages = async (req, res, next) => {
 // get message by id
 const getMessage = async (req, res, next) => {
   try {
-    const message = await Message.findById(req.params.messageId, {
-      include: [
-        {
-          model: Like,
-          include: [{ model: User, attributes: ["username"] }]
-        },
-        { model: User, attributes: ["username"] }
-      ]
+    const message = await Message.findByPk(req.params.messageId, {
+      include: [Like]
     });
     if (!message) {
       next({ statusCode: 404, message: "Message does not exist" });
@@ -97,7 +77,7 @@ const deleteMessage = [
   validateJwtMiddleware,
   async (req, res, next) => {
     try {
-      const message = await Message.findById(req.params.messageId);
+      const message = await Message.findByPk(req.params.messageId);
       if (!message) {
         next({
           statusCode: 404,
@@ -105,7 +85,10 @@ const deleteMessage = [
         });
         return;
       }
-      if (message.get("userId") !== req.user.id && req.user.role !== "admin") {
+      if (
+        message.get("username") !== req.user.username &&
+        req.user.role !== "admin"
+      ) {
         next({
           statusCode: 403,
           message:

@@ -10,12 +10,18 @@ const Message = sequelize.import("./Message");
 const User = sequelize.import("./User");
 
 // setup associations between models
-User.hasMany(Message);
+User.hasMany(Message, {
+  foreignKey: "username"
+});
 
-Message.belongsTo(User);
+Message.belongsTo(User, {
+  foreignKey: "username"
+});
 Message.hasMany(Like);
 
-Like.belongsTo(User);
+Like.belongsTo(User, {
+  foreignKey: "username"
+});
 Like.belongsTo(Message);
 
 // handle adding statusCode to Sequelize.ValidationError

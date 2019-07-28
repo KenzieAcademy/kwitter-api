@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      userId: DataTypes.INTEGER
+      username: DataTypes.STRING
     },
     {
       defaultScope: {
