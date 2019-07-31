@@ -7,7 +7,8 @@ passport.use(
   new Strategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET
+      secretOrKey: process.env.JWT_SECRET,
+      session: false
     },
     async (payload, done) => {
       try {
