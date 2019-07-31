@@ -18,7 +18,9 @@ const login = async (req, res, next) => {
   const user = await User.scope(null).findOne({ where: { username } });
   if (user && (await bcrypt.compare(password, user.get("password")))) {
     const payload = { username: user.get("username") };
-    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "24h"
+    });
     res.send({
       token,
       username: user.get("username"),
