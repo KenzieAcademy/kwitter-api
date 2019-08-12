@@ -36,13 +36,17 @@ module.exports = function(sequelize, DataTypes) {
       pictureContentType: {
         type: DataTypes.STRING,
         allowNull: true
+      },
+      googleId: {
+        type: DataTypes.CHAR,
+        allowNull: true
       }
     },
     {
       getterMethods: {
         pictureLocation() {
           return this.picture
-            ? `/users/${this.id}/picture?t=${new Date(
+            ? `/users/${this.username}/picture?t=${new Date(
                 this.updatedAt
               ).getTime()}`
             : null;

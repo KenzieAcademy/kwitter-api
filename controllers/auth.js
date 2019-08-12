@@ -1,7 +1,37 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
-const { validateJwtMiddleware } = require("../auth");
+const { validateJwtMiddleware, validateGoogleMiddleware } = require("../auth");
+const passport = require("passport");
+
+const loginGoogle = passport.authenticate("google", {
+  scope: ["https://www.googleapis.com/auth/plus.login"]
+});
+
+const loginGoogleCallback = [
+  validateGoogleMiddleware,
+  (req, res) => {
+    const payload = { username: req.user.username };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "24h"
+    });
+    res.send(
+      `
+      <h1>Logged In!</h1>
+      <script>
+        window.opener.postMessage(
+          {
+            username: "${req.user.username}",
+            token: "${token}",
+            statusCode: 200
+          },
+          "*"
+        )
+      </script>
+      `
+    );
+  }
+];
 
 // logout user
 const logout = [
@@ -36,5 +66,7 @@ const login = async (req, res, next) => {
 
 module.exports = {
   login,
-  logout
+  logout,
+  loginGoogle,
+  loginGoogleCallback
 };

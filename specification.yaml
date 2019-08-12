@@ -26,6 +26,9 @@ components:
         pictureLocation:
           type: string
           nullable: true
+        googleId:
+          type: string
+          nullable: true
       required:
         - username
         - displayName
@@ -33,6 +36,7 @@ components:
         - createdAt
         - updatedAt
         - pictureLocation
+        - googleId
     Like:
       additionalProperties: false
       type: object
@@ -220,6 +224,35 @@ components:
           schema:
             $ref: "#/components/schemas/OperationalError"
 paths:
+  /auth/google/callback:
+    get:
+      summary: Callback endpoint for Google login
+      operationId: loginGoogleCallback
+      x-controller: auth
+      tags:
+        - Auth
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+        - in: query
+          name: scope
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+  /auth/google/login:
+    get:
+      summary: Login user via Google
+      operationId: loginGoogle
+      x-controller: auth
+      tags:
+        - Auth
+      responses:
+        200:
+          description: OK
   /auth/login:
     post:
       summary: Login user
