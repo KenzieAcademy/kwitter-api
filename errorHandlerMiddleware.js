@@ -36,6 +36,7 @@ module.exports = [
       // morgan is NOT an error handler, so must add error to req so morgan has access to it
       // also ensure req/res gets passed to following morgan logging middleware by calling next()
       req.error = err;
+      console.log(err);
       next();
     }
   },
