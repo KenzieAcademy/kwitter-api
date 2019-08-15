@@ -41,7 +41,7 @@ const getMessages = async (req, res, next) => {
     };
   }
   try {
-    const messages = await Message.findAll({
+    const { count, rows: messages } = await Message.findAndCountAll({
       where,
       include: [Like],
       limit: req.query.limit || 100,
@@ -49,7 +49,7 @@ const getMessages = async (req, res, next) => {
       order: [["createdAt", "DESC"]]
     });
     const rawMessages = messages.map(getRawMessage);
-    res.send({ messages: rawMessages, statusCode: res.statusCode });
+    res.send({ messages: rawMessages, count, statusCode: res.statusCode });
   } catch (err) {
     next(err);
   }

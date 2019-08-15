@@ -335,8 +335,11 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/User"
+                      count:
+                        type: integer
                     required:
                       - users
+                      - count
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           $ref: "#/components/responses/400"
@@ -595,8 +598,11 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/Message"
+                      count:
+                        type: integer
                     required:
                       - messages
+                      - count
                   - $ref: "#/components/schemas/SuccessStatusCode"
         400:
           $ref: "#/components/responses/400"

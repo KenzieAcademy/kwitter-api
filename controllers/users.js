@@ -31,13 +31,17 @@ const getUser = async (req, res, next) => {
 // get list of users
 const getUsers = async (req, res, next) => {
   try {
-    const users = await User.scope(null).findAll({
+    const { count, rows: users } = await User.scope(null).findAndCountAll({
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
       order: [["createdAt", "DESC"]]
     });
 
-    res.send({ users: users.map(getRawUser), statusCode: res.statusCode });
+    res.send({
+      users: users.map(getRawUser),
+      count,
+      statusCode: res.statusCode
+    });
   } catch (err) {
     next(err);
   }
