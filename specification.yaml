@@ -476,10 +476,10 @@ paths:
                 allOf:
                   - type: object
                     properties:
-                      id:
+                      username:
                         $ref: "#/components/schemas/username"
                     required:
-                      - id
+                      - username
                   - $ref: "#/components/schemas/SuccessStatusCode"
         401:
           $ref: "#/components/responses/401"

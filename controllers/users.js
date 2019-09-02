@@ -114,10 +114,10 @@ const deleteUser = [
     try {
       await User.destroy({
         where: {
-          id: req.user.id
+          username: req.user.username
         }
       });
-      res.send({ id: req.user.id, statusCode: res.statusCode });
+      res.send({ username: req.user.username, statusCode: res.statusCode });
     } catch (err) {
       next(err);
     }
