@@ -217,6 +217,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/OperationalError"
+    413:
+      description: Payload Too Large
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
     415:
       description: Unsupported Media type
       content:
@@ -539,7 +545,7 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-        description: Picture data that is one of gif, jpeg, png
+        description: Picture data that is one of gif, jpeg, png. PICTURE DATA SIZE IS RESTRICTED TO <= 200kb
         required: true
         content:
           multipart/form-data:
@@ -567,6 +573,8 @@ paths:
                 $ref: "#/components/schemas/SuccessStatusCode"
         401:
           $ref: "#/components/responses/401"
+        413:
+          $ref: "#/components/responses/413"
         415:
           $ref: "#/components/responses/415"
   /messages:
