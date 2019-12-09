@@ -46,7 +46,8 @@ const getMessages = async (req, res, next) => {
       include: [Like],
       limit: req.query.limit || 100,
       offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]]
+      order: [["createdAt", "DESC"]],
+      distinct: true
     });
     const rawMessages = messages.map(getRawMessage);
     res.send({ messages: rawMessages, count, statusCode: res.statusCode });
