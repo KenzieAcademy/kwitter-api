@@ -1,0 +1,782 @@
+openapi: 3.0.1
+info:
+  title: SocialApp API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:3000
+    description: localhost
+  - url: https://socialapp-api.herokuapp.com
+    description: Production Server
+components:
+  schemas:
+    User:
+      additionalProperties: false
+      type: object
+      properties:
+        username:
+          $ref: "#/components/schemas/username"
+        displayName:
+          $ref: "#/components/schemas/displayName"
+        about:
+          $ref: "#/components/schemas/about"
+        createdAt:
+          $ref: "#/components/schemas/timestamp"
+        updatedAt:
+          $ref: "#/components/schemas/timestamp"
+        pictureLocation:
+          type: string
+          nullable: true
+        googleId:
+          type: string
+          nullable: true
+      required:
+        - username
+        - displayName
+        - about
+        - createdAt
+        - updatedAt
+        - pictureLocation
+        - googleId
+    Like:
+      additionalProperties: false
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/likeId"
+        username:
+          $ref: "#/components/schemas/username"
+        messageId:
+          $ref: "#/components/schemas/messageId"
+        createdAt:
+          $ref: "#/components/schemas/timestamp"
+      required:
+        - id
+        - username
+        - messageId
+        - createdAt
+    Message:
+      additionalProperties: false
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/messageId"
+        text:
+          $ref: "#/components/schemas/text"
+        username:
+          $ref: "#/components/schemas/username"
+        createdAt:
+          $ref: "#/components/schemas/timestamp"
+        likes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Like"
+      required:
+        - id
+        - text
+        - username
+        - createdAt
+        - likes
+    OperationalError:
+      allOf:
+        - type: object
+          properties:
+            message:
+              type: string
+          required:
+            - message
+        - $ref: "#/components/schemas/ErrorStatusCode"
+    ErrorStatusCode:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          minimum: 400
+          maximum: 599
+      required:
+        - statusCode
+    SuccessStatusCode:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          minimum: 200
+          maximum: 399
+      required:
+        - statusCode
+    username:
+      type: string
+      minLength: 3
+      maxLength: 20
+    messageId:
+      type: integer
+      format: int32
+      minimum: 1
+    likeId:
+      type: integer
+      format: int32
+      minimum: 1
+    password:
+      type: string
+      minLength: 3
+      maxLength: 20
+    displayName:
+      type: string
+      minLength: 3
+      maxLength: 20
+    about:
+      type: string
+      minLength: 0
+      maxLength: 255
+    text:
+      type: string
+      minLength: 2
+      maxLength: 255
+    timestamp:
+      type: string
+      format: date-time
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+  parameters:
+    username:
+      in: path
+      name: username
+      required: true
+      schema:
+        $ref: "#/components/schemas/username"
+      description: The username of the user
+    messageId:
+      in: path
+      name: messageId
+      schema:
+        $ref: "#/components/schemas/messageId"
+      required: true
+      description: The id of the message
+    likeId:
+      in: path
+      name: likeId
+      schema:
+        $ref: "#/components/schemas/likeId"
+      required: true
+      description: The id of the like
+    limitParam:
+      name: limit
+      in: query
+      description: Number of items to return
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        default: 100
+    offsetParam:
+      name: offset
+      in: query
+      description: Number of items to skip
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        default: 0
+  headers:
+    WWW-Authenticate:
+      description: Includes the URI location to receive a bearer token
+      required: true
+      schema:
+        type: string
+        enum:
+          - Bearer realm="POST your username and password to /auth/login to receive a token"
+  responses:
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+    401:
+      description: Unauthorized
+      headers:
+        WWW-Authenticate:
+          $ref: "#/components/headers/WWW-Authenticate"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+    413:
+      description: Payload Too Large
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+    415:
+      description: Unsupported Media type
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OperationalError"
+paths:
+  /auth/google/callback:
+    get:
+      summary: Callback endpoint for Google login
+      operationId: loginGoogleCallback
+      x-controller: auth
+      tags:
+        - Auth
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+        - in: query
+          name: scope
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+  /auth/google/login:
+    get:
+      summary: Login user via Google
+      operationId: loginGoogle
+      x-controller: auth
+      tags:
+        - Auth
+      responses:
+        200:
+          description: OK
+  /auth/login:
+    post:
+      summary: Login user
+      operationId: login
+      x-controller: auth
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                username:
+                  $ref: "#/components/schemas/username"
+                password:
+                  $ref: "#/components/schemas/password"
+              required:
+                - username
+                - password
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        $ref: "#/components/schemas/username"
+                      token:
+                        type: string
+                    required:
+                      - username
+                      - token
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+  /auth/logout:
+    get:
+      summary: Logout a user
+      operationId: logout
+      x-controller: auth
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessStatusCode"
+        401:
+          $ref: "#/components/responses/401"
+  /users:
+    get:
+      summary: Get a list of users
+      operationId: getUsers
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/User"
+                      count:
+                        type: integer
+                    required:
+                      - users
+                      - count
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+    post:
+      summary: Create a new user
+      operationId: createUser
+      x-controller: users
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                username:
+                  $ref: "#/components/schemas/username"
+                displayName:
+                  $ref: "#/components/schemas/displayName"
+                password:
+                  $ref: "#/components/schemas/password"
+              required:
+                - username
+                - displayName
+                - password
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+  /users/{username}:
+    get:
+      summary: Get a user
+      operationId: getUser
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/username"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+    patch:
+      summary: Update user
+      operationId: updateUser
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/username"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The user updates
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                password:
+                  $ref: "#/components/schemas/password"
+                about:
+                  $ref: "#/components/schemas/about"
+                displayName:
+                  $ref: "#/components/schemas/displayName"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      user:
+                        $ref: "#/components/schemas/User"
+                    required:
+                      - user
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+    delete:
+      summary: Delete user
+      operationId: deleteUser
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/username"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        $ref: "#/components/schemas/username"
+                    required:
+                      - username
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
+  /users/{username}/picture:
+    get:
+      summary: Get a user's picture
+      operationId: getUserPicture
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/username"
+        - in: query
+          name: t
+          description: This query parameter does not affect the response. It can be provided in cases where you want to circumvent the browser's internal cache. Providing this query parameter with a unique timestamp will cause the browser to re-download the picture.
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          headers:
+            Content-Disposition:
+              required: true
+              description: The value of this header will always be "inline"
+              schema:
+                type: string
+                enum:
+                  - inline
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/gif:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+    put:
+      summary: Set user's picture
+      operationId: setUserPicture
+      x-controller: users
+      tags:
+        - Users
+      parameters:
+        - $ref: "#/components/parameters/username"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Picture data that is one of gif, jpeg, png. PICTURE DATA SIZE IS RESTRICTED TO <= 200kb
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                picture:
+                  type: string
+                  format: binary
+              required:
+                - picture
+      responses:
+        200:
+          description: OK
+          headers:
+            Content-Location:
+              description: The URI to get the image
+              schema:
+                type: string
+                example: /users/1/picture
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessStatusCode"
+        401:
+          $ref: "#/components/responses/401"
+        413:
+          $ref: "#/components/responses/413"
+        415:
+          $ref: "#/components/responses/415"
+  /messages:
+    get:
+      summary: Get a list of messages
+      operationId: getMessages
+      x-controller: messages
+      tags:
+        - Messages
+      parameters:
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/offsetParam"
+        - name: username
+          in: query
+          description: Get messages created by this username
+          required: false
+          schema:
+            $ref: "#/components/schemas/username"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      messages:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Message"
+                      count:
+                        type: integer
+                    required:
+                      - messages
+                      - count
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+    post:
+      summary: Create a message
+      operationId: createMessage
+      x-controller: messages
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: The message to create
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                text:
+                  $ref: "#/components/schemas/text"
+              required:
+                - text
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+  /messages/{messageId}:
+    get:
+      summary: Get a message
+      operationId: getMessage
+      x-controller: messages
+      tags:
+        - Messages
+      parameters:
+        - $ref: "#/components/parameters/messageId"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        $ref: "#/components/schemas/Message"
+                    required:
+                      - message
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          $ref: "#/components/responses/404"
+    delete:
+      summary: Delete a message
+      operationId: deleteMessage
+      x-controller: messages
+      tags:
+        - Messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/messageId"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/messageId"
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        403:
+          $ref: "#/components/responses/403"
+        404:
+          $ref: "#/components/responses/404"
+  /likes:
+    post:
+      summary: Add Like
+      operationId: addLike
+      x-controller: likes
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                messageId:
+                  $ref: "#/components/schemas/messageId"
+              required:
+                - messageId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      like:
+                        $ref: "#/components/schemas/Like"
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+  /likes/{likeId}:
+    delete:
+      summary: Remove Like
+      operationId: removeLike
+      x-controller: likes
+      tags:
+        - Likes
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/likeId"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        $ref: "#/components/schemas/likeId"
+                    required:
+                      - id
+                  - $ref: "#/components/schemas/SuccessStatusCode"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401"
+        404:
+          $ref: "#/components/responses/404"
