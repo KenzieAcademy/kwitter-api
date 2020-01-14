@@ -3,10 +3,10 @@ info:
   title: SocialApp API
   version: "1.0.0"
 servers:
-  - url: http://localhost:3000
-    description: localhost
   - url: https://socialapp-api.herokuapp.com
     description: Production Server
+  - url: http://localhost:3000
+    description: localhost
 components:
   schemas:
     User:
