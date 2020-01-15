@@ -70,12 +70,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Like"
+        category:
+          $ref: "#/components/schemas/category"
       required:
         - id
         - text
         - username
         - createdAt
         - likes
+        - category
     OperationalError:
       allOf:
         - type: object
@@ -134,6 +137,10 @@ components:
     timestamp:
       type: string
       format: date-time
+    category:
+      type: string
+      minLength: 3
+      maxLength: 255
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http
@@ -593,6 +600,12 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/username"
+        - name: category
+          in: query
+          description: Get messages created in a certain category
+          required: false
+          schema:
+            $ref: "#/components/schemas/category"
       responses:
         200:
           description: OK
@@ -633,8 +646,11 @@ paths:
               properties:
                 text:
                   $ref: "#/components/schemas/text"
+                category:
+                  $ref: "#/components/schemas/category"
               required:
                 - text
+                - category
       responses:
         200:
           description: OK

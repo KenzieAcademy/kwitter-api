@@ -17,6 +17,7 @@ const createMessage = [
       const message = await Message.create(
         {
           text: req.body.text,
+          category: req.body.category,
           username: req.user.get("username")
         },
         {
@@ -34,11 +35,12 @@ const createMessage = [
 
 // get messages
 const getMessages = async (req, res, next) => {
-  let where = null;
+  let where = {};
   if (req.query.username) {
-    where = {
-      username: req.query.username
-    };
+    where.username = req.query.username;
+  }
+  if (req.query.category) {
+    where.category = req.query.category;
   }
   try {
     const { count, rows: messages } = await Message.findAndCountAll({
@@ -50,6 +52,7 @@ const getMessages = async (req, res, next) => {
       distinct: true
     });
     const rawMessages = messages.map(getRawMessage);
+    console.log(rawMessages);
     res.send({ messages: rawMessages, count, statusCode: res.statusCode });
   } catch (err) {
     next(err);
