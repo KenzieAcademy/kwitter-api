@@ -64,6 +64,8 @@ components:
           $ref: "#/components/schemas/text"
         username:
           $ref: "#/components/schemas/username"
+        to:
+          $ref: "#/components/schemas/username"
         createdAt:
           $ref: "#/components/schemas/timestamp"
         likes:
@@ -579,18 +581,20 @@ paths:
           $ref: "#/components/responses/415"
   /messages:
     get:
-      summary: Get a list of messages
+      summary: Get a list of messages with another user
       operationId: getMessages
       x-controller: messages
       tags:
         - Messages
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/limitParam"
         - $ref: "#/components/parameters/offsetParam"
-        - name: username
+        - name: to
           in: query
-          description: Get messages created by this username
-          required: false
+          description: Get messages with this user
+          required: true
           schema:
             $ref: "#/components/schemas/username"
       responses:
@@ -633,8 +637,11 @@ paths:
               properties:
                 text:
                   $ref: "#/components/schemas/text"
+                to:
+                  $ref: "#/components/schemas/username"
               required:
                 - text
+                - to
       responses:
         200:
           description: OK
@@ -654,32 +661,6 @@ paths:
         401:
           $ref: "#/components/responses/401"
   /messages/{messageId}:
-    get:
-      summary: Get a message
-      operationId: getMessage
-      x-controller: messages
-      tags:
-        - Messages
-      parameters:
-        - $ref: "#/components/parameters/messageId"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      message:
-                        $ref: "#/components/schemas/Message"
-                    required:
-                      - message
-                  - $ref: "#/components/schemas/SuccessStatusCode"
-        400:
-          $ref: "#/components/responses/400"
-        404:
-          $ref: "#/components/responses/404"
     delete:
       summary: Delete a message
       operationId: deleteMessage

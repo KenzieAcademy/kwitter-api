@@ -1,6 +1,7 @@
 const { Message, Like, User } = require("../models");
 const { validateJwtMiddleware } = require("../auth");
 const { getRawLike } = require("./likes");
+const { Op } = require("sequelize");
 
 // helper function
 const getRawMessage = message => {
@@ -17,6 +18,7 @@ const createMessage = [
       const message = await Message.create(
         {
           text: req.body.text,
+          to: req.body.to,
           username: req.user.get("username")
         },
         {
@@ -33,45 +35,30 @@ const createMessage = [
 ];
 
 // get messages
-const getMessages = async (req, res, next) => {
-  let where = null;
-  if (req.query.username) {
-    where = {
-      username: req.query.username
-    };
-  }
-  try {
-    const { count, rows: messages } = await Message.findAndCountAll({
-      where,
-      include: [Like],
-      limit: req.query.limit || 100,
-      offset: req.query.offset || 0,
-      order: [["createdAt", "DESC"]],
-      distinct: true
-    });
-    const rawMessages = messages.map(getRawMessage);
-    res.send({ messages: rawMessages, count, statusCode: res.statusCode });
-  } catch (err) {
-    next(err);
-  }
-};
-
-// get message by id
-const getMessage = async (req, res, next) => {
-  try {
-    const message = await Message.findByPk(req.params.messageId, {
-      include: [Like]
-    });
-    if (!message) {
-      next({ statusCode: 404, message: "Message does not exist" });
-      return;
+const getMessages = [
+  validateJwtMiddleware,
+  async (req, res, next) => {
+    let where = {};
+    where.username = { [Op.or]: [req.query.to, req.user.get("username")] };
+    // if (req.query.to) {
+    //   where.to = req.query.to;
+    // }
+    try {
+      const { count, rows: messages } = await Message.findAndCountAll({
+        where,
+        include: [Like],
+        limit: req.query.limit || 100,
+        offset: req.query.offset || 0,
+        order: [["createdAt", "DESC"]],
+        distinct: true
+      });
+      const rawMessages = messages.map(getRawMessage);
+      res.send({ messages: rawMessages, count, statusCode: res.statusCode });
+    } catch (err) {
+      next(err);
     }
-    const rawMessage = getRawMessage(message);
-    res.send({ message: rawMessage, statusCode: res.statusCode });
-  } catch (err) {
-    next(err);
   }
-};
+];
 
 // delete message
 const deleteMessage = [
@@ -107,7 +94,6 @@ const deleteMessage = [
 
 module.exports = {
   deleteMessage,
-  getMessage,
   getMessages,
   createMessage
 };
