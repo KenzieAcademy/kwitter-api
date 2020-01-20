@@ -22,9 +22,9 @@ GOOGLE_CLIENT_SECRET=whateveryouwant
 
   confirm that the api is working locally by making a request to `GET localhost:3000/messages`
 
-  note: visiting `localhost:3000` will take you to a swagger/openapi documentation page for the available api endpoints. There is also a postman collection file available to use: `Kwitter API.postman_collection.json`
+  note: visiting `localhost:3000` will take you to a swagger/openapi documentation page for the available api endpoints.
 
-### Basic setup for deploying to heroku
+  ### Basic setup for deploying to heroku
 
 - Create your heorku app from the commandline: `heroku create your-api-name`
 - Setup a postgres database addon for your heroku app: `heroku addons:create heroku-postgresql`
