@@ -11,8 +11,10 @@
 - edit the `.env` file to look like:
 
 ```
-DATABASE_URL="postgres://127.0.0.1/kwitter"
-JWT_SECRET="whateveryouwant"
+DATABASE_URL=postgres://127.0.0.1/kwitter
+JWT_SECRET=whateveryouwant
+GOOGLE_CLIENT_ID=whateveryouwant
+GOOGLE_CLIENT_SECRET=whateveryouwant
 ```
 
 - From the command line, type `npm install`
@@ -28,6 +30,7 @@ JWT_SECRET="whateveryouwant"
 - Setup a postgres database addon for your heroku app: `heroku addons:create heroku-postgresql`
 - Confirm that a `DATABASE_URL` variable was added to your heroku app: `heroku config`
 - Setup your config variable for the `JWT_SECRET` for your heroku app: `heroku config:set JWT_SECRET=whateveryouwant`
+- Setup yuor config variable for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for yur heroku app: `heroku config:set GOOGLE_CLIENT_ID=whateveryouwant && heroku config:set GOOGLE_CLIENT_SECRET=whateveryouwant`
 - Push code to your heroku app: `git push heroku master`
 - Run `heroku logs --tail` to watch logs in real-time to confirm that the status of the app has started up successfully
 - Open your app with `heroku open` -- this should automatically take you to the openapi documentation page which lists all the server endpoints.
