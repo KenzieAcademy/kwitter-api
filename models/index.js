@@ -1,7 +1,10 @@
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  operatorsAliases: false
+  operatorsAliases: false,
+  dialectOptions: {
+    ssl: true
+  }
 });
 
 // import models into sequelize
