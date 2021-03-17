@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:3000
     description: localhost
-  - url: https://kwitter-api.herokuapp.com
+  - url: https://kwitter-api-b.herokuapp.com
     description: Production Server
 components:
   schemas:
