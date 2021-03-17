@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "engines": {
-    "node": ">=8.3.0"
+    "node": "10.22.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
