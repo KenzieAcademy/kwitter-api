@@ -35,7 +35,7 @@
     "start": "node index.js",
     "watch": "nodemon",
     "postinstall": "npm run migrate:up",
-    "migrate:up": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate --url $DATABASE_URL",
-    "migrate:down": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate:undo --url $DATABASE_URL"
+    "migrate:up": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate --url $DATABASE_URL?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+    "migrate:down": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate:undo --url $DATABASE_URL?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
   }
 }
